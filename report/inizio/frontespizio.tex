@@ -1,0 +1,24 @@
+\documentclass[crop=false]{standalone}
+
+\usepackage{frontespizio}
+
+\begin{document}
+	\begin{frontespizio}
+		\Universita{Padova}
+		\Logo[3cm]{./resources/images/loghi.jpg}
+		\Dipartimento{Ingegneria dell'Informazione}
+		\Corso[Laurea]{Ingegneria Informatica}
+		\Titolo{Titolo}
+		%aggiunge più candidati
+		\NCandidati{}
+		%elimina il carattere ":"
+		\Punteggiatura{}
+		\Preambolo{\renewcommand{\frontcandidatesep}{0.5cm}}
+		\Candidato[1234567]{Tizio Caio 1}
+		\Candidato[0987765]{Tizio Caio 2}
+		\Candidato[2345675]{Tizio Caio 3}
+		\Rientro{1cm}
+		\Annoaccademico{2021-2022}
+		\Margini{1.5cm}{1cm}{1.5cm}{1cm}
+	\end{frontespizio}
+\end{document}
