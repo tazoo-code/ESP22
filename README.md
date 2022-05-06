@@ -12,7 +12,7 @@ Nota 2: è difficile completare questo progetto senza possedere un dispositivo f
 Per iniziare la ricerca bibliografica
   * [ARCore](https://developers.google.com/ar?hl=en)
   * [Overview of ARCore and supported development environments](https://developers.google.com/ar/develop)
-  * [ARCore SDK for Android] (https://github.com/google-ar/arcore-android-sdk)
+  * [ARCore SDK for Android](https://github.com/google-ar/arcore-android-sdk)
   * [ARCore.how](https://arcore.how/)
   * [AR Experiments](https://experiments.withgoogle.com/collection/ar)
   * [Official Blog: AR and VR](https://blog.google/products/google-ar-vr/)
