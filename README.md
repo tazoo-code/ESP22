@@ -12,6 +12,13 @@ Nota 1: Molti progetti di esempio ARCore per Android che si trovano in rete util
 Java e/o C, ma per il progetto è richiesto di utilizzare i linguaggi Kotlin e/o C. 
 Nota 2: è difficile completare questo progetto senza possedere un dispositivo fisico che supporti ARCore.
 
+Here's a line for us to start with.
+
+This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
+
+This line is also a separate paragraph, but...
+This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+
 Per iniziare la ricerca bibliografica
   * [ARCore](https://developers.google.com/ar?hl=en)
   * [Overview of ARCore and supported development environments](https://developers.google.com/ar/develop)
