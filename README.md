@@ -4,7 +4,7 @@ ARCore 2022
 Le tecnologie di realtà virtuale (VR) e realtà aumentata (AR) esistono da decenni, entrambe con alterne fortune e sempre senza una “killer application” che le renda determinanti. In questo momento storico, AR è la tecnologia che, tra le due, sembra godere di maggior credito: si dice che Apple stia lavorando a un progetto a lungo termine per AR e Google continua lo sviluppo del suo framework ARCore, mentre ha invece discontinuato la sua
 piattaforma per VR chiamata DayDream.
 
-Indicazioni per la realizzazione del progetto
+Indicazioni per la realizzazione del progetto:
 Report: si spieghi molto brevemente cos’è la realtà aumentata, dopodiché si illustrino le funzionalità offerte dal framework ARCore, incluse le API Augmented Faces, Augmented Images, Depth, Instant Placement, Lighting Estimation.
 App: si implementi un’app che esemplifica le funzionalità del framework ARCore. È accettabile che l’app prenda spunto da uno o più esempi forniti dal produttore del framework: tali spunti devono però essere esplicitamente citati nella documentazione del progetto. 
 
