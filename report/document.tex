@@ -1,11 +1,12 @@
 \documentclass[a4paper,12pt,final, openany, titlepage, twoside]{book}
 
+%permette di aggiungere altri pacchetti dai file inclusi
+\usepackage[subpreambles]{standalone}
+
+%impostazioni lingua
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english,italian]{babel}
-
-%permette di aggiungere altri pacchetti dai file inclusi
-\usepackage[subpreambles]{standalone}
 
 %sistema i margini
 \usepackage{geometry}
@@ -26,6 +27,7 @@
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
 
+%formattazione titoli paragrafo
 \usepackage{titlesec}
 \titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
 
@@ -40,12 +42,13 @@
 	
 	
 	\frontmatter
-	\include{inizio/frontespizio}
-	\include{inizio/indice}
+	\input{inizio/frontespizio}
+	\input{inizio/indice}
 	
 	\mainmatter
-	\include{capitoli/capitolo1}
+	\input{capitoli/capitolo1}
 	\section{d}
+	\lipsum[1-10]
 	\backmatter
 	
 	

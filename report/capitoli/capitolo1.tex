@@ -1,4 +1,35 @@
-\documentclass[crop=false]{standalone}
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+%gestione delle testatine
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{Titolo}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+
+\usepackage{lipsum}
 
 \begin{document}
 	\chapter{Capitolo uno}
