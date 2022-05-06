@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             return
         }*/
 
+        //Modifica
 
         // Verify that ARCore is installed and using the current version.
         fun isARCoreSupportedAndUpToDate(): Boolean {
