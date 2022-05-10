@@ -5,10 +5,10 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
+import android.hardware.camera2.*
+import android.media.ImageReader
 import android.opengl.GLSurfaceView
+import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -16,10 +16,12 @@ import android.view.KeyCharacterMap
 import android.view.Surface
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.ArCoreApk
+import com.google.ar.core.ImageFormat
 import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
 import com.threed.jpct.*
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         super.onCreate(savedInstanceState)
-
+        setContentView(R.layout.activity_main)
 
         //Check della disponibilità
         /*val availability = ArCoreApk.getInstance().checkAvailability(this)
@@ -90,19 +92,20 @@ class MainActivity : AppCompatActivity() {
             //TODO agire in qualche modo quando l'applicazione non supporta ArCore
         }
         */
-
-        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
 
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), MY_CAMERA_REQUEST_CODE);
-        }*/
+        }
 
 
         if(isARCoreSupportedAndUpToDate() /*&& isCameraPermissionsOk*/){
             createSession()
         }
 
-        setContentView(R.layout.activity_main)
-        /*
+
+
+
+    /*
         //Renderer
         renderer = MyRenderer()
         mGLView!!.setRenderer(renderer)
@@ -194,9 +197,8 @@ class MainActivity : AppCompatActivity() {
 
         sharedSession = Session(this, EnumSet.of(Session.Feature.SHARED_CAMERA))
 
-        openCameraForSharing()
-        createCameraCaptureSession()
-
+        //SharedCamera.createARDeviceStateCallback(android.hardware.camera2.CameraDevice.StateCallback, android.os.Handler)
+        //SharedCamera.createARSessionStateCallback(android.hardware.camera2.CameraCaptureSession.StateCallback, android.os.Handler)
         // Create a session config.
         val config = com.google.ar.core.Config(sharedSession)
 
@@ -205,6 +207,12 @@ class MainActivity : AppCompatActivity() {
 
         // Configure the session.
         sharedSession!!.configure(config)
+
+
+        openCameraForSharing()
+        //createCameraCaptureSession()
+
+
 
     }
 
@@ -217,19 +225,22 @@ class MainActivity : AppCompatActivity() {
 
 
         //shareCamera permette di condividere il controllo della fotocamera con ARCore
-        sharedCamera =  sharedSession!!.getSharedCamera();
+        sharedCamera =  sharedSession!!.sharedCamera;
 
         //Id della fotocamera che usa ARCore
         cameraId= sharedSession!!.cameraConfig.cameraId
 
-        // Use callback wrapper.
+        //TODO guarda sta riga
+        //sharedCamera!!.setAppSurfaces(this.cameraId, listOf(imageReader.surface))
+
 
         // Wrap the callback in a shared camera callback.
-        val wrappedCallback =  sharedSession!!.getSharedCamera().createARDeviceStateCallback(cameraDeviceCallback, appHandler)
+        val wrappedCallback =  sharedCamera!!.createARDeviceStateCallback(cameraDeviceCallback, appHandler)
 
         // Store a reference to the camera system service.
         val cameraManager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
+        Log.i("DEBUG","Id"+cameraId.toString())
         cameraManager.openCamera(
             cameraId!!,
             wrappedCallback,
@@ -241,9 +252,10 @@ class MainActivity : AppCompatActivity() {
         object : CameraDevice.StateCallback() {
 
             override fun onOpened(cd: CameraDevice) {
-                Log.d(TAG, "Camera devicec ID " + cd.id + " opened.")
-                this@MainActivity.cameraDevice=cd
+                Log.d(TAG, "Camera device ID " + cd.id + " opened.")
+                cameraDevice = cd
                 createCameraCaptureSession()
+
             }
 
             override fun onClosed(cd: CameraDevice) {
@@ -269,12 +281,46 @@ class MainActivity : AppCompatActivity() {
 
         private fun createCameraCaptureSession() {
 
+            try {
+                // Create an ARCore-compatible capture request using `TEMPLATE_RECORD`.
+                var previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
+
+                // Build a list of surfaces, starting with ARCore provided surfaces.
+                val surfaceList: MutableList<Surface> = sharedCamera!!.arCoreSurfaces
+
+                // (Optional) Add a CPU image reader surface.
+                //surfaceList.add(cpuImageReader.getSurface())
+
+                // The list should now contain three surfaces:
+                // 0. sharedCamera.getSurfaceTexture()
+                // 1. …
+                // 2. cpuImageReader.getSurface()
+
+                // Add ARCore surfaces and CPU image surface targets.
+                for (surface in surfaceList) {
+                    previewCaptureRequestBuilder.addTarget(surface)
+                }
+
+                // Wrap the callback in a shared camera callback.
+                val wrappedCallback = sharedCamera!!.createARSessionStateCallback(cameraSessionStateCallback, appHandler)
+
+                // Create a camera capture session for camera preview using an ARCore wrapped callback.
+                cameraDevice!!.createCaptureSession(surfaceList, wrappedCallback, appHandler)
+            } catch (e: CameraAccessException) {
+                Log.e(TAG, "CameraAccessException", e)
+            }
+
+        /*
             // Get list of ARCore created surfaces. Required for ARCore tracking.
-            val surfaceList: MutableList<Surface> =  sharedSession!!.sharedCamera.arCoreSurfaces
+            var test = sharedSession!!.sharedCamera.arCoreSurfaces
+
+            Session.Feature.SHARED_CAMERA
+
+            var surfaceList: MutableList<Surface> =  sharedSession!!.sharedCamera.arCoreSurfaces
 
             // (Optional) Add a custom CPU image reader surface on devices that support CPU image access.
-            //ImageReader cpuImageReader = ImageReader.newInstance(…);
-            //surfaceList.add(cpuImageReader.getSurface());
+            var cpuImageReader : ImageReader = ImageReader.newInstance(540,540,android.graphics.ImageFormat.YUV_420_888,30)
+            surfaceList.add(cpuImageReader.getSurface());
             // Use callback wrapper.
 
             val wrappedCallback=sharedCamera!!.createARSessionStateCallback(cameraSessionStateCallback, appHandler)
@@ -283,6 +329,7 @@ class MainActivity : AppCompatActivity() {
                 surfaceList,
                 wrappedCallback,
                 appHandler)
+            */
         }
 
     //Callback che permette di ricevere gli aggiornamenti sullo stato di una sessione di acquisizione della telecamera.
