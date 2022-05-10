@@ -11,12 +11,14 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <!-- Freccia verso l'alto-->
-    <ImageView
+    <ImageButton
         android:id="@+id/gallery_arrow"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_keyboard_arrow_up_40"
-        android:contentDescription="@string/gallery_arrow" />
+        android:contentDescription="@string/gallery_arrow"
+        android:layout_gravity="center"
+        android:background="@drawable/round_corner"/>
 
     <!-- RecyclerView per contenere le preview -->
     <androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@color/gray"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>
