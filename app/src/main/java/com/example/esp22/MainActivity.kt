@@ -5,10 +5,7 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
+import android.hardware.camera2.*
 import android.media.ImageReader
 import android.opengl.GLSurfaceView
 import android.os.Bundle
@@ -17,6 +14,7 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.Surface
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -70,6 +68,11 @@ class MainActivity : AppCompatActivity() {
     private var backgroundHandler: Handler? = null
     private var captureSessionChangesPossible = false;
 
+    private var previewCaptureRequestBuilder : CaptureRequest.Builder? =null
+    private var arcoreActive = false
+
+    //Per la telecamera
+    private var surfaceView: GLSurfaceView? = null
 
     companion object{
 
@@ -79,8 +82,8 @@ class MainActivity : AppCompatActivity() {
 
         //OpenGl Renderer
         mGLView = GLSurfaceView(this)
-        //Usato per creare un Handler per l'apertura della camera
-        //appHandler = Handler(Looper.getMainLooper())
+
+        //Usato per creare un thread per l'apertura della camera
         startBackgroundThread()
 
         //Impostazioni dell'Engine dell'OpenGl
@@ -97,6 +100,16 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        /*
+        surfaceView = findViewById(R.id.surfaceView);
+
+        surfaceView!!.setPreserveEGLContextOnPause(true)
+        surfaceView!!.setEGLContextClientVersion(2)
+        surfaceView!!.setEGLConfigChooser(8, 8, 8, 8, 16, 0)
+        surfaceView!!.setRenderer(this)
+        surfaceView!!.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY)
+        */
 
         //Check della disponibilità
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
@@ -155,6 +168,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        stopBackgroundThread()
 
     }
 
@@ -215,12 +229,7 @@ class MainActivity : AppCompatActivity() {
         sharedSession!!.configure(config)
 
         openCameraForSharing()
-        cpuImageReader= ImageReader.newInstance(540,540,android.graphics.ImageFormat.YUV_420_888,60)
-        sharedCamera!!.setAppSurfaces(this.cameraId, listOf(cpuImageReader!!.surface))
         waitUntilCameraCaptureSessionIsActive()
-        //createCameraCaptureSession()
-
-
 
     }
 
@@ -233,18 +242,15 @@ class MainActivity : AppCompatActivity() {
 
 
         //shareCamera permette di condividere il controllo della fotocamera con ARCore
-        sharedCamera =  sharedSession!!.sharedCamera;
+        sharedCamera = sharedSession!!.sharedCamera;
 
         //Id della fotocamera che usa ARCore
-        cameraId= sharedSession!!.cameraConfig.cameraId
-
-        //TODO guarda sta riga
-        //sharedCamera!!.setAppSurfaces(this.cameraId, listOf(imageReader.surface))
+        cameraId = sharedSession!!.cameraConfig.cameraId
 
 
         // Wrap the callback in a shared camera callback.
 
-        val wrappedCallback =  sharedCamera!!.createARDeviceStateCallback(cameraDeviceCallback, backgroundHandler)
+        val wrappedCallback = sharedCamera!!.createARDeviceStateCallback(cameraDeviceCallback, backgroundHandler)
 
         // Store a reference to the camera system service.
         val cameraManager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -254,6 +260,7 @@ class MainActivity : AppCompatActivity() {
             cameraId!!,
             wrappedCallback,
             backgroundHandler)
+
         Log.i("DEBUG","Dato l'apertura di Id " + cameraId.toString())
     }
 
@@ -294,26 +301,23 @@ class MainActivity : AppCompatActivity() {
     private fun createCameraCaptureSession(){
             try {
                 // Create an ARCore-compatible capture request using `TEMPLATE_RECORD`.
-                //TODO per qualche motivo non va il callback
                 if(cameraDevice == null){
                         Log.e("Camera","cameraDevice is null")
                 }
+                cpuImageReader= ImageReader.newInstance(640,480,android.graphics.ImageFormat.YUV_420_888,16)
+                sharedCamera!!.setAppSurfaces(this.cameraId, listOf(cpuImageReader!!.surface))
 
-                var previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
+                previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
 
                 // Build a list of surfaces, starting with ARCore provided surfaces.
                 val surfaceList: MutableList<Surface> = sharedCamera!!.arCoreSurfaces
                 // (Optional) Add a CPU image reader surface.
-                //surfaceList.add(cpuImageReader.getSurface())
+                surfaceList.add(cpuImageReader!!.getSurface())
 
-                // The list should now contain three surfaces:
-                // 0. sharedCamera.getSurfaceTexture()
-                // 1. …
-                // 2. cpuImageReader.getSurface()
 
                 // Add ARCore surfaces and CPU image surface targets.
                 for (surface in surfaceList) {
-                    previewCaptureRequestBuilder.addTarget(surface)
+                    previewCaptureRequestBuilder!!.addTarget(surface)
                 }
 
                 // Wrap the callback in a shared camera callback.
@@ -335,13 +339,14 @@ class MainActivity : AppCompatActivity() {
         // initializing the app, and again each time the activity resumes.
         override fun onConfigured(session: CameraCaptureSession) {
             captureSession = session
-            //setRepeatingCaptureRequest()
+            setRepeatingCaptureRequest()
         }
 
         override fun onActive(session: CameraCaptureSession) {
-            /*if (arMode && !arcoreActive) {
+            if(!arcoreActive){
                 resumeARCore()
-            }*/
+            }
+
         }
 
         override fun onSurfacePrepared(
@@ -359,6 +364,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onClosed(session: CameraCaptureSession) {
             Log.d(TAG, "Camera capture session closed.")
+
         }
         override fun onConfigureFailed(session: CameraCaptureSession) {
             Log.e(TAG, "Failed to configure camera capture session.")
@@ -366,15 +372,35 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    val cameraCaptureCallback = object : CameraCaptureSession.CaptureCallback() {
+        override fun onCaptureCompleted(
+            session: CameraCaptureSession,
+            request: CaptureRequest,
+            result: TotalCaptureResult
+        ) {
+            //shouldUpdateSurfaceTexture.set(true);
+        }
+    }
 
-        fun hasCameraPermission(activity: Activity?): Boolean {
-            return (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA)
+
+    fun resumeARCore() {
+        // Resume ARCore.
+        sharedSession!!.resume()
+        arcoreActive = true
+
+        // Set the capture session callback while in AR mode.
+        sharedCamera!!.setCaptureCallback(cameraCaptureCallback, backgroundHandler)
+    }
+
+    fun hasCameraPermission(activity: Activity?): Boolean {
+        return (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED)
-        }
-        //Controlla se sono necessari permessi per l'app, e li richiede se non ci sono
-        fun requestCameraPermission(activity: Activity?) {
-            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 0)
-        }
+    }
+
+    //Controlla se sono necessari permessi per l'app, e li richiede se non ci sono
+    private fun requestCameraPermission(activity: Activity?) {
+        ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 0)
+    }
 
     private fun startBackgroundThread() {
         backgroundThread = HandlerThread("sharedCameraBackground")
@@ -412,9 +438,9 @@ class MainActivity : AppCompatActivity() {
     }
     fun setRepeatingCaptureRequest() {
 
-        /*captureSession.setRepeatingRequest(
-            previewCaptureRequestBuilder.build(), cameraCaptureCallback, appHandler
-        )*/
+        captureSession!!.setRepeatingRequest(
+            previewCaptureRequestBuilder!!.build(), cameraCaptureCallback, backgroundHandler
+        )
     }
 
 
