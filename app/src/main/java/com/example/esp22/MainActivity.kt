@@ -1,16 +1,54 @@
 package com.example.esp22
 
 import android.content.ContentValues.TAG
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyCharacterMap
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.ar.core.ArCoreApk
-import com.threed.jpct.*
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_main)
+
+        //RecyclerView dello slider
+        val recyclerView : RecyclerView = findViewById(R.id.recycler_view)
+        // TODO prendere/salvare le preview
+        val list = arrayOf("1","2","3","4","5")
+        //Applica l'adapter alla recyclerView
+        recyclerView.adapter = GalleryAdapter(list)
+
+        val bottomSheet : LinearLayout = findViewById(R.id.bottom_sheet_layout)
+        val bottomSheetBehavior = from(bottomSheet)
+        //Rileva quando lo slider cambia di stato
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, i: Int) {
+                //cambia immagine alla freccia
+                changeArrow(i)
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) { }
+        })
+
+        //Rileva il tocco della freccia, e cambia lo stato dello slider
+        val arrow : ImageView = findViewById(R.id.gallery_arrow)
+        arrow.setOnClickListener {
+            when (bottomSheetBehavior.state) {
+                STATE_EXPANDED -> bottomSheetBehavior.state = STATE_COLLAPSED
+                STATE_COLLAPSED -> bottomSheetBehavior.state = STATE_EXPANDED
+            }
+        }
+
+
+
         //Check della disponibilità
         val availability = ArCoreApk.getInstance().checkAvailability(this)
         if(!availability.isSupported){
@@ -79,6 +117,23 @@ class MainActivity : AppCompatActivity() {
             // Configure the session.
             session.configure(config)
         }*/
-        setContentView(R.layout.activity_main)
+
+    }
+
+
+    //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
+    fun changeArrow(state: Int){
+        //Se lo stato è EXPANDED, la freccia diventa verso il basso
+        if (state == STATE_EXPANDED) {
+            val iv : ImageView = findViewById(R.id.gallery_arrow)
+            val myDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_keyboard_arrow_down_40, null)
+            iv.setImageDrawable(myDrawable)
+        }
+        //Se lo stato è EXPANDED, la freccia diventa verso l'alto
+        if (state == STATE_COLLAPSED){
+            val iv : ImageView = findViewById(R.id.gallery_arrow)
+            val myDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_keyboard_arrow_up_40, null)
+            iv.setImageDrawable(myDrawable)
+        }
     }
 }
