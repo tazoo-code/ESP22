@@ -5,34 +5,29 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.camera2.*
-import android.hardware.camera2.params.OutputConfiguration
-import android.media.Image
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraManager
 import android.media.ImageReader
 import android.opengl.GLSurfaceView
-import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
+import android.os.HandlerThread
 import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.Surface
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.ArCoreApk
-import com.google.ar.core.ImageFormat
 import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
-import com.threed.jpct.*
 import java.util.*
-import java.util.concurrent.Executor
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
-import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -66,7 +61,14 @@ class MainActivity : AppCompatActivity() {
     private var cameraId: String? = null
 
     //Looper handler.
-    private var appHandler: Handler?= null;
+    //private var appHandler: Handler?= null;
+
+    // Looper handler thread.
+    private var backgroundThread: HandlerThread? = null
+
+    // Looper handler.
+    private var backgroundHandler: Handler? = null
+    private var captureSessionChangesPossible = false;
 
 
     companion object{
@@ -78,7 +80,8 @@ class MainActivity : AppCompatActivity() {
         //OpenGl Renderer
         mGLView = GLSurfaceView(this)
         //Usato per creare un Handler per l'apertura della camera
-        appHandler = Handler(mainLooper)
+        //appHandler = Handler(Looper.getMainLooper())
+        startBackgroundThread()
 
         //Impostazioni dell'Engine dell'OpenGl
         mGLView!!.setEGLConfigChooser(GLSurfaceView.EGLConfigChooser { egl, display ->
@@ -214,7 +217,8 @@ class MainActivity : AppCompatActivity() {
         openCameraForSharing()
         cpuImageReader= ImageReader.newInstance(540,540,android.graphics.ImageFormat.YUV_420_888,60)
         sharedCamera!!.setAppSurfaces(this.cameraId, listOf(cpuImageReader!!.surface))
-        createCameraCaptureSession()
+        waitUntilCameraCaptureSessionIsActive()
+        //createCameraCaptureSession()
 
 
 
@@ -240,7 +244,7 @@ class MainActivity : AppCompatActivity() {
 
         // Wrap the callback in a shared camera callback.
 
-        val wrappedCallback =  sharedCamera!!.createARDeviceStateCallback(cameraDeviceCallback, appHandler)
+        val wrappedCallback =  sharedCamera!!.createARDeviceStateCallback(cameraDeviceCallback, backgroundHandler)
 
         // Store a reference to the camera system service.
         val cameraManager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -249,8 +253,8 @@ class MainActivity : AppCompatActivity() {
         cameraManager.openCamera(
             cameraId!!,
             wrappedCallback,
-            appHandler)
-        Log.i("DEBUG","Dato l'apertura di Id "+cameraId.toString())
+            backgroundHandler)
+        Log.i("DEBUG","Dato l'apertura di Id " + cameraId.toString())
     }
 
     //Callback che permette di ricevere aggiornamenti sullo stato della fotocamera
@@ -261,7 +265,7 @@ class MainActivity : AppCompatActivity() {
                 Log.i("CameraTag", "Camera device ID " + cd.id + " opened.")
                 cameraDevice = cd
                 cameraOpened = true
-                //CameraCaptureSession()
+                captureSessionChangesPossible = true;
                 createCameraCaptureSession()
 
             }
@@ -291,6 +295,10 @@ class MainActivity : AppCompatActivity() {
             try {
                 // Create an ARCore-compatible capture request using `TEMPLATE_RECORD`.
                 //TODO per qualche motivo non va il callback
+                if(cameraDevice == null){
+                        Log.e("Camera","cameraDevice is null")
+                }
+
                 var previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
 
                 // Build a list of surfaces, starting with ARCore provided surfaces.
@@ -309,10 +317,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 // Wrap the callback in a shared camera callback.
-                val wrappedCallback = sharedCamera!!.createARSessionStateCallback(cameraSessionStateCallback, appHandler)
+                val wrappedCallback = sharedCamera!!.createARSessionStateCallback(cameraSessionStateCallback, backgroundHandler)
 
                 // Create a camera capture session for camera preview using an ARCore wrapped callback.
-                cameraDevice!!.createCaptureSession(surfaceList, wrappedCallback, appHandler)
+                cameraDevice!!.createCaptureSession(surfaceList, wrappedCallback, backgroundHandler)
             } catch (e: CameraAccessException) {
                 Log.e(TAG, "CameraAccessException", e)
             }
@@ -368,6 +376,40 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 0)
         }
 
+    private fun startBackgroundThread() {
+        backgroundThread = HandlerThread("sharedCameraBackground")
+        backgroundThread!!.start()
+        backgroundHandler = Handler(backgroundThread!!.getLooper())
+    }
+
+    // Stop background handler thread.
+    private fun stopBackgroundThread() {
+        if (backgroundThread != null) {
+            backgroundThread!!.quitSafely()
+            try {
+                backgroundThread!!.join()
+                backgroundThread = null
+                backgroundHandler = null
+            } catch (e: InterruptedException) {
+                Log.e(TAG, "Interrupted while trying to join background handler thread", e)
+            }
+        }
+    }
+
+    @Synchronized
+    private fun waitUntilCameraCaptureSessionIsActive() {
+        while (!captureSessionChangesPossible) {
+            try {
+                Thread.sleep(5)
+            } catch (e: InterruptedException) {
+                Log.e(
+                    TAG,
+                    "Unable to wait for a safe time to make changes to the capture session",
+                    e
+                )
+            }
+        }
+    }
     fun setRepeatingCaptureRequest() {
 
         /*captureSession.setRepeatingRequest(
