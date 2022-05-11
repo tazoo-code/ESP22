@@ -13,7 +13,7 @@
     <!-- Freccia verso l'alto-->
     <ImageButton
         android:id="@+id/gallery_arrow"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_keyboard_arrow_up_40"
         android:contentDescription="@string/gallery_arrow"
