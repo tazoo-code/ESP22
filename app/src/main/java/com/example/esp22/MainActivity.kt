@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.camera2.*
 import android.media.ImageReader
+import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.Handler
@@ -15,17 +16,20 @@ import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.Surface
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.ArCoreApk
+import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
 import java.util.*
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
+import javax.microedition.khronos.opengles.GL10
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,9 +37,9 @@ class MainActivity : AppCompatActivity() {
     private var mGLView: GLSurfaceView? = null
 
     //Renderer dell'openGL
-    //private var renderer: MyRenderer? = null
+    private var renderer: MyRenderer? = null
 
-    var session : Session? = null
+    //var session : Session? = null
 
     //TextView che contiene fsp
     var fpsText : TextView? = null
@@ -43,10 +47,7 @@ class MainActivity : AppCompatActivity() {
     //Definizione delle variabili per l'accesso alla fotocamera
 
     //GL Surface utilizzata per l'immagine di anteprima della fotocamera
-    private var surfaceView: GLSurfaceView? = null
-
-    //Sessione ARCore che supporta la condivisione
-    var sharedSession: Session?=null
+    //private var surfaceView: GLSurfaceView? = null
 
     // Istanza sharedCamera, ottenuta da una sessione ARCore che supporta lo sharing.
     private var sharedCamera: SharedCamera? = null
@@ -70,8 +71,7 @@ class MainActivity : AppCompatActivity() {
     //Usato per le richieste di acquisizione dell'anteprima della fotocamera
     private var previewCaptureRequestBuilder : CaptureRequest.Builder? =null
 
-    // Consente di accedere ai dati ricavati dal rendering di una superfice
-    private var cpuImageReader: ImageReader? = null
+    private var surfaceList : MutableList<Surface>? = null
 
     private var arcoreActive = false
 
@@ -89,6 +89,12 @@ class MainActivity : AppCompatActivity() {
     private var backgroundHandler: Handler? = null
 
     companion object{
+
+        //Sessione ARCore che supporta la condivisione
+        var sharedSession: Session?=null
+
+        // Consente di accedere ai dati ricavati dal rendering di una superfice
+        var cpuImageReader: ImageReader? = null
 
     }
 
@@ -121,41 +127,42 @@ class MainActivity : AppCompatActivity() {
         surfaceView!!.setPreserveEGLContextOnPause(true)
         surfaceView!!.setEGLContextClientVersion(2)
         surfaceView!!.setEGLConfigChooser(8, 8, 8, 8, 16, 0)
-        surfaceView!!.setRenderer(this)
+        surfaceView!!.setRenderer(ImagePreviewRender())
         surfaceView!!.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY)
         */
 
-        /*Check della disponibilità
+        //Check della disponibilità fotocamera
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
 
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), MY_CAMERA_REQUEST_CODE);
-        }*/
+        }
 
-        //
+
         if(isARCoreSupportedAndUpToDate() /*&& isCameraPermissionsOk*/){
             createSession()
         }
 
-        /*
-            //Renderer
-            renderer = MyRenderer()
-            mGLView!!.setRenderer(renderer)
+         //Renderer
+         renderer = MyRenderer()
+         mGLView!!.setRenderer(renderer)
 
-            //Imposto la view dell'openGL nel primo posto del linearLayout
-            val l = findViewById<LinearLayout>(R.id.linearL)
-            l.addView(mGLView,0)
-            */
+        //Imposto la view dell'openGL nel primo posto del linearLayout
+        val l = findViewById<LinearLayout>(R.id.linearL)
+        l.addView(mGLView,0)
 
         //fpsText = findViewById(R.id.FpsTextView)
+
     }
 
     override fun onPause() {
         super.onPause()
+        stopBackgroundThread()
         //mGLView!!.onPause()
     }
 
     override fun onResume() {
         super.onResume()
+        startBackgroundThread()
         //mGLView!!.onResume()
     }
 
@@ -164,6 +171,8 @@ class MainActivity : AppCompatActivity() {
         stopBackgroundThread()
 
     }
+
+    //-----------------------Metodi per la configurazione della sessione ARCore-----------------------
 
     // Verifica se ARCore è installato e usa la versione corrente
     private fun isARCoreSupportedAndUpToDate(): Boolean {
@@ -208,6 +217,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Metodo che crea e configura la sessione
+    private fun createSession() {
+
+        // Create a new ARCore session.
+        //session = Session(this)
+
+        //Creazione e configurazione della sessione
+        sharedSession = Session(this, EnumSet.of(Session.Feature.SHARED_CAMERA))
+
+        val config = com.google.ar.core.Config(sharedSession)
+
+        config.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
+
+        //Aggiunta di specifiche per la configurazione
+
+        sharedSession!!.configure(config)
+
+        //Apertura della fotocamera e creazione di una sessione di acquiszione
+        openCameraForSharing()
+        waitUntilCameraCaptureSessionIsActive()
+    }
+
+
+    //-------------------------Metodi per la configurazione della fotocamera--------------------------
+
     //FORSE DA TOGLIERE PERCHE' NON FUNZIONA ALL'INTERNO DI OPENCAMERA
     private fun hasCameraPermission(activity: Activity?): Boolean {
         return (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA)
@@ -235,26 +269,6 @@ class MainActivity : AppCompatActivity() {
                 isCameraPermissionsOk = false
             }
         }
-    }
-
-    //Metodo che crea e configura la sessione
-    private fun createSession() {
-
-        // Create a new ARCore session.
-        //session = Session(this)
-
-        //Creazione e configurazione della sessione
-        sharedSession = Session(this, EnumSet.of(Session.Feature.SHARED_CAMERA))
-
-        val config = com.google.ar.core.Config(sharedSession)
-
-        //Aggiunta di specifiche per la configurazione
-
-        sharedSession!!.configure(config)
-
-        //Apertura della fotocamera e creazione di una sessione di acquiszione
-        openCameraForSharing()
-        waitUntilCameraCaptureSessionIsActive()
     }
 
     private fun openCameraForSharing() {
@@ -295,6 +309,8 @@ class MainActivity : AppCompatActivity() {
                 cameraOpened = true
                 captureSessionChangesPossible = true;
                 createCameraCaptureSession()
+                //TODO strana cosa -> viene scritto
+                //UpdateBugFixes on CameraConfigManager is unimplemented!
             }
 
             override fun onClosed(cd: CameraDevice) {
@@ -331,24 +347,24 @@ class MainActivity : AppCompatActivity() {
             //Imposta le superfici create dall'app, per ricevere immagini aggiuntive quando ARCore è attivo.
             sharedCamera!!.setAppSurfaces(this.cameraId, listOf(cpuImageReader!!.surface))
 
-            previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
+            //previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
 
             // Costruisce una serie di superfici, a partire da quelle fornite da ARCore.
-            val surfaceList: MutableList<Surface> = sharedCamera!!.arCoreSurfaces
+            surfaceList = sharedCamera!!.arCoreSurfaces
 
             // (Optional) Add a CPU image reader surface.
-            surfaceList.add(cpuImageReader!!.getSurface())
+            surfaceList!!.add(cpuImageReader!!.getSurface())
 
             // Add ARCore surfaces and CPU image surface targets.
-            for (surface in surfaceList) {
+            /*for (surface in surfaceList) {
                 previewCaptureRequestBuilder!!.addTarget(surface)
-            }
+            }*/
 
             // Wrap the callback in a shared camera callback.
             val wrappedCallback = sharedCamera!!.createARSessionStateCallback(cameraSessionStateCallback, backgroundHandler)
 
             //Crea una sessione di acquisizione per l'anteprima della fotocamera usando wrappedCallback
-            cameraDevice!!.createCaptureSession(surfaceList, wrappedCallback, backgroundHandler)
+            cameraDevice!!.createCaptureSession(surfaceList!!, wrappedCallback, backgroundHandler)
 
         } catch (e: CameraAccessException) {
             Log.e(TAG, "CameraAccessException", e)
@@ -356,21 +372,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Callback che permette di ricevere gli aggiornamenti sullo stato di una sessione di acquisizione della telecamera.
-    val cameraSessionStateCallback =
-        object : CameraCaptureSession.StateCallback() {
+    val cameraSessionStateCallback = object : CameraCaptureSession.StateCallback() {
 
         /*Chiamato quando ARCore configura per la prima volta la sessione do acquisizione, dopo
           l'inizializzazione dell'app, e ad ogni resume()*/
         override fun onConfigured(session: CameraCaptureSession) {
             captureSession = session
-            setRepeatingCaptureRequest()
+
         }
 
         override fun onActive(session: CameraCaptureSession) {
+            //Se la sessione di ArCore non è attiva la riattivo
             if(!arcoreActive){
                 resumeARCore()
             }
-
+            setRepeatingCaptureRequest()
         }
 
         override fun onSurfacePrepared(
@@ -450,8 +466,40 @@ class MainActivity : AppCompatActivity() {
 
     //Richiede l'acquisizione di immagini (che si ripetono all'infinito) utilizzando la stessa sessione di acquisizione.
     fun setRepeatingCaptureRequest() {
+
+        Log.i("Capture","Surface -> "+captureSession!!.inputSurface.toString())
+        Log.i("Capture","Surface -> "+surfaceList!![0].toString())
+
+        val requestTemplate = CameraDevice.TEMPLATE_PREVIEW
+        val combinedRequest = captureSession!!.device.createCaptureRequest(requestTemplate)
+
+        // Link the Surface targets with the combined request
+        combinedRequest.addTarget(sharedCamera!!.arCoreSurfaces[0])
+        combinedRequest.addTarget(sharedCamera!!.arCoreSurfaces[1])
+        combinedRequest.addTarget(cpuImageReader!!.surface)
+
         captureSession!!.setRepeatingRequest(
             previewCaptureRequestBuilder!!.build(), cameraCaptureCallback, backgroundHandler
         )
     }
+
+
+    //-----------------------Classe annidata ImagePreviewRender-----------------------
+
+    class ImagePreviewRender : GLSurfaceView.Renderer{
+        override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onDrawFrame(gl: GL10?) {
+            TODO("Not yet implemented")
+            //Pulizia
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
+        }
+    }
+    //-----------------------Fine Classe annidata ImagePreviewRender---------------------
 }
