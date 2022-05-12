@@ -5,10 +5,13 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.hardware.camera2.*
 import android.media.ImageReader
-import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import android.opengl.GLUtils
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -16,9 +19,7 @@ import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.Surface
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,10 +27,14 @@ import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
+import java.nio.Buffer
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.*
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     //Definizione delle variabili per l'accesso alla fotocamera
 
     //GL Surface utilizzata per l'immagine di anteprima della fotocamera
-    //private var surfaceView: GLSurfaceView? = null
+    private var surfaceView: GLSurfaceView? = null
 
     // Istanza sharedCamera, ottenuta da una sessione ARCore che supporta lo sharing.
     private var sharedCamera: SharedCamera? = null
@@ -69,9 +74,10 @@ class MainActivity : AppCompatActivity() {
     private var captureSessionChangesPossible = false;
 
     //Usato per le richieste di acquisizione dell'anteprima della fotocamera
-    private var previewCaptureRequestBuilder : CaptureRequest.Builder? =null
+    private var combinedRequest : CaptureRequest.Builder? =null
 
     private var surfaceList : MutableList<Surface>? = null
+    var imgView: ImageView? = null
 
     private var arcoreActive = false
 
@@ -87,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
     // Looper handler per avvio callback
     private var backgroundHandler: Handler? = null
+    var ba : Bitmap? = null
 
     companion object{
 
@@ -95,6 +102,8 @@ class MainActivity : AppCompatActivity() {
 
         // Consente di accedere ai dati ricavati dal rendering di una superfice
         var cpuImageReader: ImageReader? = null
+
+        var isAllReady = false
 
     }
 
@@ -121,16 +130,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*
-        surfaceView = findViewById(R.id.surfaceView);
+        imgView = findViewById<ImageView>(R.id.imageView)
+
+        val button = findViewById<Button>(R.id.button)
+        button.setOnClickListener {
+            var toast = Toast.makeText(this,sharedCamera!!.arCoreSurfaces.toString()+ cpuImageReader!!.surface.toString(),Toast.LENGTH_SHORT)
+            toast.show()
+
+            imgView!!.setImageBitmap(ba)
+        }
+
+        //surfaceView = findViewById(R.id.surfaceView);
+/*
+        surfaceView = GLSurfaceView(this)
 
         surfaceView!!.setPreserveEGLContextOnPause(true)
         surfaceView!!.setEGLContextClientVersion(2)
         surfaceView!!.setEGLConfigChooser(8, 8, 8, 8, 16, 0)
-        surfaceView!!.setRenderer(ImagePreviewRender())
+        surfaceView!!.setRenderer(ImagePreviewRender(resources))
         surfaceView!!.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY)
-        */
 
+*/
         //Check della disponibilità fotocamera
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
 
@@ -147,8 +167,10 @@ class MainActivity : AppCompatActivity() {
          mGLView!!.setRenderer(renderer)
 
         //Imposto la view dell'openGL nel primo posto del linearLayout
-        val l = findViewById<LinearLayout>(R.id.linearL)
-        l.addView(mGLView,0)
+        val l0 = findViewById<LinearLayout>(R.id.linearL0)
+        //val l1 = findViewById<LinearLayout>(R.id.linearL1)
+        l0.addView(mGLView,0)
+        //l1.addView(surfaceView,0)
 
         //fpsText = findViewById(R.id.FpsTextView)
 
@@ -170,6 +192,23 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         stopBackgroundThread()
 
+    }
+
+
+
+    fun currentImageToBitmap(): Bitmap {
+        var mImage = cpuImageReader!!.acquireLatestImage()
+        if(cpuImageReader!!.acquireLatestImage() == null)
+            Log.e("Image","Image null")
+        var buffer: ByteBuffer = mImage.getPlanes().get(0).getBuffer()
+        var bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+
+
+        //Save pixel values by converting to Bitmap first
+        var ba = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        mImage.close()
+        return ba
     }
 
     //-----------------------Metodi per la configurazione della sessione ARCore-----------------------
@@ -308,6 +347,7 @@ class MainActivity : AppCompatActivity() {
                 cameraDevice = cd
                 cameraOpened = true
                 captureSessionChangesPossible = true;
+
                 createCameraCaptureSession()
                 //TODO strana cosa -> viene scritto
                 //UpdateBugFixes on CameraConfigManager is unimplemented!
@@ -337,23 +377,53 @@ class MainActivity : AppCompatActivity() {
     private fun createCameraCaptureSession(){
         try {
 
-            // Crea una richiesta di acquisizione compatibile con ARCore utilizzando `TEMPLATE_RECORD`
+
             if(cameraDevice == null){
                 Log.e("Camera","cameraDevice is null")
             }
 
             cpuImageReader= ImageReader.newInstance(640,480,android.graphics.ImageFormat.YUV_420_888,16)
 
+            cpuImageReader!!.setOnImageAvailableListener({
+                //val previewSurface = surfaceView.holder.surface
+
+                cpuImageReader!!.setOnImageAvailableListener({
+                    Log.d("camera","setOnImageAvailableListener")
+                    cpuImageReader!!.acquireLatestImage()?.let { mImage ->
+
+                        var buffer: ByteBuffer = mImage.getPlanes().get(0).getBuffer()
+                        var bytes = ByteArray(buffer.remaining())
+                        buffer.get(bytes)
+                        mImage.close()
+
+                        //Save pixel values by converting to Bitmap first
+                        ba = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        //imgView!!.setImageBitmap(ba)
+
+                    }
+                }, backgroundHandler)
+
+            }, backgroundHandler)
+
+
             //Imposta le superfici create dall'app, per ricevere immagini aggiuntive quando ARCore è attivo.
-            sharedCamera!!.setAppSurfaces(this.cameraId, listOf(cpuImageReader!!.surface))
+            sharedCamera!!.setAppSurfaces(cameraDevice!!.id, listOf(cpuImageReader!!.surface))
 
             //previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
 
             // Costruisce una serie di superfici, a partire da quelle fornite da ARCore.
             surfaceList = sharedCamera!!.arCoreSurfaces
+            surfaceList!!.removeAt(1)
+            surfaceList!!.add(cpuImageReader!!.surface)
+
+            //TODO Capire perchè throw questo errore
+            //E/SharedConfiguredCameraControlContext(0): Saw invalid request: CameraControlConfigureRequest(outputs=Camera2Outputs{api21Outputs=Api21Outputs{surfaces=[Surface(name=android.graphics.SurfaceTexture@cdfc04f)/@0x582126b, Surface(name=null)/@0x53f7337]}}, captureSessionConfigs=[]) in state: SHARED_CONFIGURED
+            //2022-05-12 19:40:38.650 14580-14641/com.example.esp22
+
+
 
             // (Optional) Add a CPU image reader surface.
-            surfaceList!!.add(cpuImageReader!!.getSurface())
+            //surfaceList!!.add(cpuImageReader!!.getSurface())
 
             // Add ARCore surfaces and CPU image surface targets.
             /*for (surface in surfaceList) {
@@ -365,6 +435,7 @@ class MainActivity : AppCompatActivity() {
 
             //Crea una sessione di acquisizione per l'anteprima della fotocamera usando wrappedCallback
             cameraDevice!!.createCaptureSession(surfaceList!!, wrappedCallback, backgroundHandler)
+            Log.i(TAG,"Camera Device created Capture Session")
 
         } catch (e: CameraAccessException) {
             Log.e(TAG, "CameraAccessException", e)
@@ -378,6 +449,8 @@ class MainActivity : AppCompatActivity() {
           l'inizializzazione dell'app, e ad ogni resume()*/
         override fun onConfigured(session: CameraCaptureSession) {
             captureSession = session
+            Log.d(TAG, "Camera capture configured.")
+
 
         }
 
@@ -386,7 +459,9 @@ class MainActivity : AppCompatActivity() {
             if(!arcoreActive){
                 resumeARCore()
             }
-            setRepeatingCaptureRequest()
+            Log.d(TAG, "Camera capture active.")
+
+            isAllReady = true
         }
 
         override fun onSurfacePrepared(
@@ -396,6 +471,14 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReady(session: CameraCaptureSession) {
             Log.d(TAG, "Camera capture session ready.")
+            val requestTemplate = CameraDevice.TEMPLATE_PREVIEW
+            combinedRequest = cameraDevice!!.createCaptureRequest(requestTemplate)
+
+            // Link the Surface targets with the combined request
+            combinedRequest!!.addTarget(sharedCamera!!.arCoreSurfaces[0])
+            combinedRequest!!.addTarget(cpuImageReader!!.surface)
+            setRepeatingCaptureRequest()
+
         }
 
         override fun onCaptureQueueEmpty(session: CameraCaptureSession) {
@@ -465,41 +548,139 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Richiede l'acquisizione di immagini (che si ripetono all'infinito) utilizzando la stessa sessione di acquisizione.
+
     fun setRepeatingCaptureRequest() {
 
-        Log.i("Capture","Surface -> "+captureSession!!.inputSurface.toString())
+        Log.i("Capture","Surface -> "+captureSession!!.inputSurface.toString()) //null
         Log.i("Capture","Surface -> "+surfaceList!![0].toString())
+        //Log.i("Capture","Surface -> "+surfaceList!![1].toString())//null
+        //Log.i("Capture","Surface -> "+cpuImageReader!!.surface.toString())//null
 
-        val requestTemplate = CameraDevice.TEMPLATE_PREVIEW
-        val combinedRequest = captureSession!!.device.createCaptureRequest(requestTemplate)
+        Log.i("Capture","Surface -> "+sharedCamera!!.arCoreSurfaces[0].toString())
 
-        // Link the Surface targets with the combined request
-        combinedRequest.addTarget(sharedCamera!!.arCoreSurfaces[0])
-        combinedRequest.addTarget(sharedCamera!!.arCoreSurfaces[1])
-        combinedRequest.addTarget(cpuImageReader!!.surface)
+
+        //combinedRequest.addTarget(sharedCamera!!.arCoreSurfaces[1])
+        //combinedRequest.addTarget(cpuImageReader!!.surface)
+
+        Log.i("Capture","CaptureSession -> "+captureSession.toString())
+        Log.i("Capture","PreviewCaptureRequestBuilder -> "+combinedRequest.toString())
+        Log.i("Capture","cameraCaptureCallback -> "+ cameraCaptureCallback.toString())
+        Log.i("Capture","BackgroundHandler -> "+backgroundHandler.toString())
 
         captureSession!!.setRepeatingRequest(
-            previewCaptureRequestBuilder!!.build(), cameraCaptureCallback, backgroundHandler
-        )
+            combinedRequest!!.build(), cameraCaptureCallback, backgroundHandler )
+
+
     }
+
+
 
 
     //-----------------------Classe annidata ImagePreviewRender-----------------------
+/*
+    private class ImagePreviewRender(resources: Resources) : GLSurfaceView.Renderer {
 
-    class ImagePreviewRender : GLSurfaceView.Renderer{
-        override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-            TODO("Not yet implemented")
+        private lateinit var textures: IntArray
+        private val resources: Resources
+
+        override fun onSurfaceCreated(gl: GL10, config: EGLConfig) {
+            textures = IntArray(1)
+            gl.glEnable(GL10.GL_TEXTURE_2D)
+            gl.glEnableClientState(GL10.GL_VERTEX_ARRAY)
+            gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY)
+            gl.glGenTextures(1, textures, 0)
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0])
+            gl.glTexParameterf(
+                GL10.GL_TEXTURE_2D,
+                GL10.GL_TEXTURE_MAG_FILTER,
+                GL10.GL_LINEAR.toFloat()
+            )
+            gl.glTexParameterf(
+                GL10.GL_TEXTURE_2D,
+                GL10.GL_TEXTURE_MIN_FILTER,
+                GL10.GL_LINEAR.toFloat()
+            )
+            gl.glTexParameterf(
+                GL10.GL_TEXTURE_2D,
+                GL10.GL_TEXTURE_WRAP_S,
+                GL10.GL_CLAMP_TO_EDGE.toFloat()
+            )
+            gl.glTexParameterf(
+                GL10.GL_TEXTURE_2D,
+                GL10.GL_TEXTURE_WRAP_T,
+                GL10.GL_CLAMP_TO_EDGE.toFloat()
+            )
+
+
         }
 
-        override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-            TODO("Not yet implemented")
+
+        override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
+            gl.glViewport(0, 0, width, height)
         }
 
-        override fun onDrawFrame(gl: GL10?) {
-            TODO("Not yet implemented")
-            //Pulizia
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
+        override fun onDrawFrame(gl: GL10) {
+            gl.glClear(GL10.GL_COLOR_BUFFER_BIT or GL10.GL_DEPTH_BUFFER_BIT)
+
+            if(isAllReady){
+                Log.i("ImagePreview","yo")
+                GLUtils.texImage2D(
+                    GL10.GL_TEXTURE_2D,
+                    0,
+                    currentImageToBitmap(),
+                    0
+                )
+                gl.glActiveTexture(GL10.GL_TEXTURE0)
+                gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0])
+                gl.glVertexPointer(3, GL10.GL_FLOAT, 0, VERTEX_BUFFER)
+                gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, TEXCOORD_BUFFER)
+                gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4)
+
+            }
+
+        }
+
+        companion object {
+            private val VERTEX_COORDINATES = floatArrayOf(
+                -1.0f, +1.0f, 0.0f,
+                +1.0f, +1.0f, 0.0f,
+                -1.0f, -1.0f, 0.0f,
+                +1.0f, -1.0f, 0.0f
+            )
+            private val TEXTURE_COORDINATES = floatArrayOf(
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f
+            )
+            private val TEXCOORD_BUFFER: Buffer =
+                ByteBuffer.allocateDirect(TEXTURE_COORDINATES.size * 4)
+                    .order(ByteOrder.nativeOrder()).asFloatBuffer().put(TEXTURE_COORDINATES)
+                    .rewind()
+            private val VERTEX_BUFFER: Buffer =
+                ByteBuffer.allocateDirect(VERTEX_COORDINATES.size * 4)
+                    .order(ByteOrder.nativeOrder()).asFloatBuffer().put(VERTEX_COORDINATES).rewind()
+        }
+
+
+        private fun currentImageToBitmap(): Bitmap? {
+            var mImage = cpuImageReader!!.acquireLatestImage()
+
+            var buffer: ByteBuffer = mImage.getPlanes().get(0).getBuffer()
+            var bytes = ByteArray(buffer.remaining())
+            buffer.get(bytes)
+            mImage.close()
+
+            //Save pixel values by converting to Bitmap first
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        }
+
+        init {
+            this.resources = resources
         }
     }
+
+ */
     //-----------------------Fine Classe annidata ImagePreviewRender---------------------
+
 }
