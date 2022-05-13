@@ -2,20 +2,20 @@ package com.example.esp22
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
-import android.graphics.ImageFormat
 import android.hardware.camera2.*
+import android.hardware.camera2.params.OutputConfiguration
+import android.hardware.camera2.params.SessionConfiguration
 import android.media.Image
 import android.media.ImageReader
-import android.media.MediaCodec
-import android.media.MediaPlayer
+import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -23,17 +23,18 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.KeyCharacterMap
 import android.view.Surface
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.Preview
+import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
-import java.lang.Exception
+import com.google.ar.sceneform.Scene
 import java.nio.ByteBuffer
 import java.util.*
 import javax.microedition.khronos.egl.EGL10
@@ -93,6 +94,8 @@ class MainActivity : AppCompatActivity() {
 
     val MY_CAMERA_REQUEST_CODE = 100
 
+    var previewView : PreviewView? = null
+
     //Looper Handler
     // Looper handler thread per apertura fotocamera
     private var backgroundThread: HandlerThread? = null
@@ -140,17 +143,19 @@ class MainActivity : AppCompatActivity() {
         //imgView = findViewById<ImageView>(R.id.imageView)
 
 
+        //previewView = findViewById<PreviewView>(R.id.previewView)
 
         val button = findViewById<Button>(R.id.button)
         button.setOnClickListener {
             var toast = Toast.makeText(this,sharedCamera!!.arCoreSurfaces.toString()+ cpuImageReader!!.surface.toString(),Toast.LENGTH_SHORT)
             toast.show()
 
-            ba = setOnImageAvailable(cpuImageReader!!)
+            ba = currentImageToBitmap()
             imgView!!.setImageBitmap(ba)
         }
 
-        //surfaceView = findViewById(R.id.surfaceView);
+        surfaceView = findViewById(R.id.surfaceView);
+
 /*
         surfaceView = GLSurfaceView(this)
 
@@ -355,6 +360,7 @@ class MainActivity : AppCompatActivity() {
     private val cameraDeviceCallback: CameraDevice.StateCallback =
         object : CameraDevice.StateCallback() {
 
+            @RequiresApi(Build.VERSION_CODES.P)
             override fun onOpened(cd: CameraDevice) {
                 Log.i("CameraTag", "Camera device ID " + cd.id + " opened.")
                 cameraDevice = cd
@@ -387,6 +393,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun createCameraCaptureSession(){
 
         try {
@@ -409,9 +416,12 @@ class MainActivity : AppCompatActivity() {
 
             }, backgroundHandler)
 
+            //val p = previewView!!.surfaceProvider
 
             //Imposta le superfici create dall'app, per ricevere immagini aggiuntive quando ARCore è attivo.
-            sharedCamera!!.setAppSurfaces(cameraDevice!!.id, listOf(cpuImageReader!!.surface))
+            sharedCamera!!.setAppSurfaces(cameraDevice!!.id,
+                listOf(cpuImageReader!!.surface)
+            )
 
             //previewCaptureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
 
@@ -419,6 +429,7 @@ class MainActivity : AppCompatActivity() {
             surfaceList = sharedCamera!!.arCoreSurfaces
             surfaceList!!.removeAt(1)
             surfaceList!!.add(cpuImageReader!!.surface)
+            //surfaceList!!.add()
 
             //TODO Capire perchè throw questo errore
             //E/SharedConfiguredCameraControlContext(0): Saw invalid request: CameraControlConfigureRequest(outputs=Camera2Outputs{api21Outputs=Api21Outputs{surfaces=[Surface(name=android.graphics.SurfaceTexture@cdfc04f)/@0x582126b, Surface(name=null)/@0x53f7337]}}, captureSessionConfigs=[]) in state: SHARED_CONFIGURED
@@ -438,7 +449,19 @@ class MainActivity : AppCompatActivity() {
             val wrappedCallback = sharedCamera!!.createARSessionStateCallback(cameraSessionStateCallback, backgroundHandler)
 
             //Crea una sessione di acquisizione per l'anteprima della fotocamera usando wrappedCallback
-            cameraDevice!!.createCaptureSession(surfaceList!!, wrappedCallback, backgroundHandler)
+            val c = listOf(OutputConfiguration(0, surfaceList!![0]),OutputConfiguration(0, surfaceList!![1])) as MutableList
+
+            val s = SessionConfiguration(
+                SessionConfiguration.SESSION_REGULAR,
+                c,
+                mainExecutor,
+                wrappedCallback
+
+
+            )
+            cameraDevice!!.createCaptureSession(s)
+
+            //cameraDevice!!.createCaptureSession(surfaceList!!, wrappedCallback, backgroundHandler)
             Log.i(TAG,"Camera Device created Capture Session")
 
         } catch (e: CameraAccessException) {
@@ -510,30 +533,7 @@ class MainActivity : AppCompatActivity() {
             //shouldUpdateSurfaceTexture.set(true);
         }
     }
-    /*val surfaceCallback = object : SurfaceHolder.Callback {
-        override fun surfaceCreated(holder: SurfaceHolder) {
-            mediaPlayer = MediaPlayer()
 
-            val mediaCodec = MediaCodec.createEncoderByType()
-            mediaPlayer!!.setDisplay(surfaceHolder)
-            try{
-                mediaPlayer!!.setDataSource("path")
-            }catch(e:Exception){
-
-            }
-        }
-
-        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            TODO("Not yet implemented")
-        }
-
-        override fun surfaceDestroyed(holder: SurfaceHolder) {
-            TODO("Not yet implemented")
-        }
-
-    }
-
-     */
     fun resumeARCore() {
         sharedSession!!.resume()
         arcoreActive = true
@@ -603,6 +603,22 @@ class MainActivity : AppCompatActivity() {
 
     fun setOnImageAvailable(reader: ImageReader) : Bitmap? {
         val image = cpuImageReader!!.acquireLatestImage()
+        val camera = sharedSession!!.sharedCamera
+        val texture = camera.surfaceTexture
+
+        val preview = Preview.Builder().build()
+         preview.setSurfaceProvider(previewView!!.surfaceProvider)
+
+
+
+        //texture.updateTexImage()
+
+        //texture.attachToGLContext(0)
+        //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture.)
+        //GLES20.glReadPixels(0, 0, image.width, image.height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, ib);
+
+
+
         if(sharedCamera!!.arCoreSurfaces[0].isValid){
             Log.i("Image","Surface Ar0 is valid")
             //MediaPlayer
@@ -615,6 +631,7 @@ class MainActivity : AppCompatActivity() {
         val yImage = ByteArray(yRowStride)
         planes.get(0).getBuffer().get(yImage)
         //TODO Api 31 maledetto
+
         //val cs = ImageDecoder.createSource(yImage)
         val data = yImage
         val offset = 0
@@ -626,13 +643,16 @@ class MainActivity : AppCompatActivity() {
         //val decoder: ImageDecoder = scr.createImageDecoder()
         val inputS = data.inputStream()
 
-        val bm= BitmapFactory.decodeResourceStream(null, value, inputS, rect, null)
+        //val bm= BitmapFactory.decodeResourceStream(null, value, inputS, rect, null)
 
         //val bm = ImageDecoder.decodeBitmap(cs)
-        //val bm = BitmapFactory.decodeByteArray(yImage,0,yImage.size)
+
+        val bm = BitmapFactory.decodeByteArray(yImage,0,yImage.size)
         Log.i("Bitmap", bm.toString())
         return bm
     }
+
+
 
     //-----------------------Classe annidata ImagePreviewRender-----------------------
 /*
