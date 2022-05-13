@@ -2,23 +2,29 @@ package com.example.esp22
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.graphics.ImageFormat
 import android.hardware.camera2.*
+import android.media.Image
 import android.media.ImageReader
+import android.media.MediaCodec
+import android.media.MediaPlayer
 import android.opengl.GLSurfaceView
-import android.opengl.GLUtils
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
+import android.util.TypedValue
 import android.view.KeyCharacterMap
 import android.view.Surface
-import android.view.View
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -27,13 +33,11 @@ import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
-import java.nio.Buffer
+import java.lang.Exception
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.util.*
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
-import javax.microedition.khronos.opengles.GL10
 
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +57,8 @@ class MainActivity : AppCompatActivity() {
 
     //GL Surface utilizzata per l'immagine di anteprima della fotocamera
     private var surfaceView: GLSurfaceView? = null
+    //private var surfaceHolder : SurfaceHolder? = null
+    //private var mediaPlayer : MediaPlayer? = null
 
     // Istanza sharedCamera, ottenuta da una sessione ARCore che supporta lo sharing.
     private var sharedCamera: SharedCamera? = null
@@ -107,6 +113,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //OpenGl Renderer
@@ -130,13 +137,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        imgView = findViewById<ImageView>(R.id.imageView)
+        //imgView = findViewById<ImageView>(R.id.imageView)
+
+
 
         val button = findViewById<Button>(R.id.button)
         button.setOnClickListener {
             var toast = Toast.makeText(this,sharedCamera!!.arCoreSurfaces.toString()+ cpuImageReader!!.surface.toString(),Toast.LENGTH_SHORT)
             toast.show()
 
+            ba = setOnImageAvailable(cpuImageReader!!)
             imgView!!.setImageBitmap(ba)
         }
 
@@ -151,6 +161,9 @@ class MainActivity : AppCompatActivity() {
         surfaceView!!.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY)
 
 */
+        //surfaceView = findViewById(R.id.surfaceView)
+        //surfaceHolder = surfaceView!!.holder
+        //surfaceHolder!!.addCallback(surfaceCallback)
         //Check della disponibilità fotocamera
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
 
@@ -375,32 +388,23 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun createCameraCaptureSession(){
+
         try {
-
-
             if(cameraDevice == null){
                 Log.e("Camera","cameraDevice is null")
             }
 
             cpuImageReader= ImageReader.newInstance(640,480,android.graphics.ImageFormat.YUV_420_888,16)
 
+
             cpuImageReader!!.setOnImageAvailableListener({
                 //val previewSurface = surfaceView.holder.surface
 
                 cpuImageReader!!.setOnImageAvailableListener({
                     Log.d("camera","setOnImageAvailableListener")
-                    cpuImageReader!!.acquireLatestImage()?.let { mImage ->
 
-                        var buffer: ByteBuffer = mImage.getPlanes().get(0).getBuffer()
-                        var bytes = ByteArray(buffer.remaining())
-                        buffer.get(bytes)
-                        mImage.close()
 
-                        //Save pixel values by converting to Bitmap first
-                        ba = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                        //imgView!!.setImageBitmap(ba)
 
-                    }
                 }, backgroundHandler)
 
             }, backgroundHandler)
@@ -506,7 +510,30 @@ class MainActivity : AppCompatActivity() {
             //shouldUpdateSurfaceTexture.set(true);
         }
     }
+    /*val surfaceCallback = object : SurfaceHolder.Callback {
+        override fun surfaceCreated(holder: SurfaceHolder) {
+            mediaPlayer = MediaPlayer()
 
+            val mediaCodec = MediaCodec.createEncoderByType()
+            mediaPlayer!!.setDisplay(surfaceHolder)
+            try{
+                mediaPlayer!!.setDataSource("path")
+            }catch(e:Exception){
+
+            }
+        }
+
+        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            TODO("Not yet implemented")
+        }
+
+        override fun surfaceDestroyed(holder: SurfaceHolder) {
+            TODO("Not yet implemented")
+        }
+
+    }
+
+     */
     fun resumeARCore() {
         sharedSession!!.resume()
         arcoreActive = true
@@ -574,7 +601,38 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun setOnImageAvailable(reader: ImageReader) : Bitmap? {
+        val image = cpuImageReader!!.acquireLatestImage()
+        if(sharedCamera!!.arCoreSurfaces[0].isValid){
+            Log.i("Image","Surface Ar0 is valid")
+            //MediaPlayer
 
+        }
+
+        val planes: Array<Image.Plane> = image.getPlanes()
+        val yRowStride: Int = planes.get(0).getRowStride()
+
+        val yImage = ByteArray(yRowStride)
+        planes.get(0).getBuffer().get(yImage)
+        //TODO Api 31 maledetto
+        //val cs = ImageDecoder.createSource(yImage)
+        val data = yImage
+        val offset = 0
+        val lenght = data.size
+
+        val value = TypedValue()
+        value.density = Bitmap.DENSITY_NONE
+        val rect = image.cropRect
+        //val decoder: ImageDecoder = scr.createImageDecoder()
+        val inputS = data.inputStream()
+
+        val bm= BitmapFactory.decodeResourceStream(null, value, inputS, rect, null)
+
+        //val bm = ImageDecoder.decodeBitmap(cs)
+        //val bm = BitmapFactory.decodeByteArray(yImage,0,yImage.size)
+        Log.i("Bitmap", bm.toString())
+        return bm
+    }
 
     //-----------------------Classe annidata ImagePreviewRender-----------------------
 /*
@@ -684,3 +742,6 @@ class MainActivity : AppCompatActivity() {
     //-----------------------Fine Classe annidata ImagePreviewRender---------------------
 
 }
+
+
+

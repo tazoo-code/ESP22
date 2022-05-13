@@ -38,11 +38,11 @@
             android:layout_width="match_parent"
             android:layout_height="288dp">
 
-            <ImageView
-                android:id="@+id/imageView"
+            <SurfaceView
+                android:id="@+id/surfaceView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:srcCompat="@drawable/ic_launcher_background" />
+                />
         </TableRow>
 
         <TableRow
