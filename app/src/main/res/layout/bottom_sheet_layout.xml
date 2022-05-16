@@ -22,7 +22,7 @@
 
     <!-- RecyclerView per contenere le preview -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/slider_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

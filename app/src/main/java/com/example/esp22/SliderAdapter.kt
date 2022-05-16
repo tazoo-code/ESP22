@@ -5,23 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import javax.xml.datatype.DatatypeConstants
 
-class GalleryAdapter(private val list: Array<String>) :
-    RecyclerView.Adapter<GalleryAdapter.ItemViewHolder>() {
+class SliderAdapter(private val list: Array<String>) :
+    RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
     private val onClickListener = View.OnClickListener { v ->
-
-        val intent = Intent(v.context, CameraActivity::class.java)
-        v.context.startActivity(intent)
+        //TODO cambio oggetto 3D
     }
 
     // Ritorna un nuovo ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.gallery_item, parent, false)
+            .inflate(R.layout.slider_item, parent, false)
         view.setOnClickListener(onClickListener)
         return ItemViewHolder(view)
     }
@@ -38,12 +34,12 @@ class GalleryAdapter(private val list: Array<String>) :
 
     // Descrive un elemento e la sua posizione
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val itemImageView: ImageView = itemView.findViewById(R.id.gallery_img_preview)
+        private val itemImageView: ImageView = itemView.findViewById(R.id.slider_img_preview)
 
+        //TODO Serve str?
         fun bind(str : String) {
             itemImageView.setImageResource(R.drawable.no_image)
         }
     }
-
 
 }

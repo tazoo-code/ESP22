@@ -18,11 +18,11 @@ class CameraActivity : AppCompatActivity() {
         setContentView(R.layout.activity_camera)
 
         //RecyclerView dello slider
-        val recyclerView : RecyclerView = findViewById(R.id.recycler_view)
+        val recyclerView : RecyclerView = findViewById(R.id.slider_recycler_view)
         // TODO prendere/salvare le preview
         val list = arrayOf("1","2","3","4","5")
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = GalleryAdapter(list)
+        recyclerView.adapter = SliderAdapter(list)
 
         val bottomSheet : LinearLayout = findViewById(R.id.bottom_sheet_layout)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)

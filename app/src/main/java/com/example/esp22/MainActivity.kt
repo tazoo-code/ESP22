@@ -11,8 +11,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        // TODO prendere/salvare le preview
+        val recyclerView: RecyclerView = findViewById(R.id.gallery_recycler_view)
+
         val list = arrayOf("1", "2", "3", "4", "5","1", "2", "3", "4", "5","1", "2", "3", "4", "5","1", "2", "3", "4", "5")
         //Applica l'adapter alla recyclerView
         recyclerView.adapter = GalleryAdapter(list)
@@ -21,7 +21,5 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
-
 
 }
