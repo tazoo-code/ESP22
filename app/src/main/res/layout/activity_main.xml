@@ -6,14 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/arFragment"
-        android:name="com.google.ar.sceneform.ux.ArFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <LinearLayout
+        android:layout_width="257dp"
+        android:layout_height="187dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/bu1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cubo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/bu2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/spada" />
+
+        <Button
+            android:id="@+id/bu3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cuboRosso" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
