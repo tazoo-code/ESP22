@@ -9,6 +9,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.RenderableInstance
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 
@@ -56,7 +57,7 @@ class SessionActivity: AppCompatActivity() {
                 addChild(TransformableNode(arFragment.transformationSystem).apply {
 
                     renderable = objRenderable
-
+                    //RenderableInstance(transform provider,renderable)
                     // Add child model relative the a parent model
                     addChild(Node().apply {
                         // Define the relative position
@@ -65,6 +66,7 @@ class SessionActivity: AppCompatActivity() {
                         localScale = Vector3(0.7f, 0.7f, 0.7f)
                         //renderable = modelView
                     })
+                    renderableInstance.animate(true).start()
                 })
             })
         }
@@ -100,6 +102,26 @@ class SessionActivity: AppCompatActivity() {
 
             "cuboRosso"-> ModelRenderable.builder()
                 .setSource(this, Uri.parse("models/cuboRosso.glb") )
+                .setIsFilamentGltf(true)
+                .build()
+                .thenAccept { model: ModelRenderable -> objRenderable = model }
+                .exceptionally {
+                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
+                    t.show()
+                    null
+                }
+            "vinitalyGLB"->ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/vinitalyGLB.glb") )
+                .setIsFilamentGltf(true)
+                .build()
+                .thenAccept { model: ModelRenderable -> objRenderable = model }
+                .exceptionally {
+                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
+                    t.show()
+                    null
+                }
+            "omino"->ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/omino.glb") )
                 .setIsFilamentGltf(true)
                 .build()
                 .thenAccept { model: ModelRenderable -> objRenderable = model }

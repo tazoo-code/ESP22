@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         button3.setOnClickListener {
-            val n1=getString(R.string.cuboRosso)
+            val n1=getString(R.string.vinitalyGLB)
             val myIntent= Intent(it.context,SessionActivity::class.java)
             myIntent.putExtra("nameObject", n1 )
             it.context.startActivity(myIntent)
