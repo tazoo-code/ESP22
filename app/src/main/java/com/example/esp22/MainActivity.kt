@@ -62,9 +62,7 @@ class MainActivity : AppCompatActivity() {
             arFragment.setOnTapArPlaneListener { hitResult,plane, motionEvent ->
 
             arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
-
                 setModel()
-
                 // Create the transformable model and add it to the anchor.
                 addChild(TransformableNode(arFragment.transformationSystem).apply {
                     //val model = createModel(1)
@@ -87,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun setModel() {
+
         //Modo1
         //UriParse("/assets/models/cub.gltf")
 
