@@ -84,12 +84,9 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-
         }
 
     private fun setModel() {
-
-
         //Modo1
         //UriParse("/assets/models/cub.gltf")
 
@@ -98,7 +95,6 @@ class MainActivity : AppCompatActivity() {
 
         //Modo3
         //UriParse("android.resource://"+PACKAGE_NAME+"/" + R.raw.cub")
-
 
         //Modo4
         val resources: Resources = this.getResources()
