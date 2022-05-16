@@ -1,5 +1,6 @@
 package com.example.esp22
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +14,8 @@ class GalleryAdapter(private val list: Array<String>) :
 
     private val onClickListener = View.OnClickListener { v ->
 
-        Toast.makeText(v.context, "Premuto", Toast.LENGTH_SHORT).show()
-        /*val flowerName = v.findViewById<TextView>(R.id.flower_text).text
-        val intent = Intent(v.context, DetailActivity::class.java)
-        intent.putExtra(DetailActivity.ARG_FLOWER_NAME, flowerName)
-        v.context.startActivity(intent)*/
+        val intent = Intent(v.context, CameraActivity::class.java)
+        v.context.startActivity(intent)
     }
 
     // Ritorna un nuovo ViewHolder

@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InitialActivity"
+            android:name=".CameraActivity"
             android:exported="true" >
         </activity>
 
