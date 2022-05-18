@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".CameraActivity">
+    tools:context=".SessionActivity">
 
     <!--Contiene lo slider per visualizzare le preview degli oggetti da posizionare-->
     <androidx.coordinatorlayout.widget.CoordinatorLayout

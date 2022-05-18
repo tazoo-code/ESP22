@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
-class CameraActivity : AppCompatActivity() {
+class SessionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_camera)
+        setContentView(R.layout.activity_session)
 
         //RecyclerView dello slider
         val recyclerView : RecyclerView = findViewById(R.id.slider_recycler_view)
@@ -52,7 +52,7 @@ class CameraActivity : AppCompatActivity() {
     //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
     fun changeArrow(state: Int){
         val iv: ImageView = findViewById(R.id.gallery_arrow)
-        var myDrawable : Drawable?
+        var myDrawable : Drawable? = iv.drawable
         when(state) {
             //Se lo stato è EXPANDED, la freccia diventa verso il basso
             BottomSheetBehavior.STATE_EXPANDED -> {
@@ -70,11 +70,6 @@ class CameraActivity : AppCompatActivity() {
                     null
                 )
             }
-            else -> myDrawable = ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.ic_baseline_keyboard_arrow_down_40,
-                null
-            )
         }
         iv.setImageDrawable(myDrawable)
     }
