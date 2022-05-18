@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">esp22</string>
+    <string name="gallery_arrow">arrow up/down</string>
+    <string name="gallery_item">gallery item</string>
+    <string name="cubo">cubo</string>
+    <string name="spada">spada</string>
+    <string name="cuboRosso">cuboRosso</string>
+    <string name="vinitalyGLB">vinitalyGLB</string>
+    <string name="omino">omino</string>
 </resources>
