@@ -13,6 +13,7 @@ class GalleryAdapter(private val list: Array<String>) :
     private val onClickListener = View.OnClickListener { v ->
 
         val intent = Intent(v.context, SessionActivity::class.java)
+        intent.putExtra("nameObject", "cuboRosso")
         v.context.startActivity(intent)
     }
 

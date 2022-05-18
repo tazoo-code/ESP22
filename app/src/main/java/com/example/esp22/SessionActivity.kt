@@ -11,9 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.net.Uri
-import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
@@ -77,7 +75,7 @@ class SessionActivity : AppCompatActivity() {
                         localScale = Vector3(0.7f, 0.7f, 0.7f)
                         //renderable = modelView
                     })
-                    renderableInstance.animate(true).start()
+                    //renderableInstance.animate(true).start()
                 })
             })
         }
