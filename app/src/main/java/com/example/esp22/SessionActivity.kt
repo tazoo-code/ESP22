@@ -1,12 +1,12 @@
 package com.example.esp22
 
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -39,12 +39,11 @@ class SessionActivity : AppCompatActivity() {
 
     private var model: Renderable? = null
     var objRenderable: ModelRenderable? = null
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    var positionClicked :Int = -1
 
 
-    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,17 +75,7 @@ class SessionActivity : AppCompatActivity() {
 
             arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
 
-                /*
-                setModel()
 
-                val anchor = hitResult.createAnchor()
-                val anchorNode = AnchorNode(anchor)
-                val tn = TransformableNode(arFragment.transformationSystem)
-                tn.parent = anchorNode
-                tn.renderable = cubeRenderable
-                tn.select()
-
-                */
                 arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
 
                     setModel()
@@ -118,8 +107,29 @@ class SessionActivity : AppCompatActivity() {
         //Applica l'adapter alla recyclerView
         recyclerView.adapter = SliderAdapter(this.resources.getStringArray(R.array.object_array))
 
+        //Creo un listener per vedere che oggetto premo
+        recyclerView.addOnItemTouchListener( RecyclerItemClickListener(
+            applicationContext,
+            object : RecyclerItemClickListener.OnItemClickListener {
+
+                override fun onItemClick(view: View?, position: Int) {
+
+                    //In base alla posizione degli oggetti
+                    when(position){
+                        0->obj = "lamp"
+                        1->obj ="spada"
+                        2->obj ="cuboRosso"
+                        3->obj ="cuboWireframe"
+                    }
+
+                }
+            }))
+
+
+
         val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
         //Rileva quando lo slider cambia di stato
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
@@ -282,4 +292,7 @@ class SessionActivity : AppCompatActivity() {
                 }
         }*/
     }
+
+
+
 }

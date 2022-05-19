@@ -1,34 +1,24 @@
 package com.example.esp22
 
-import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.content.Intent.*
-import android.content.res.Resources
-import android.net.Uri
-import android.util.Log.v
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.AdapterView
 import android.widget.ImageView
-import android.widget.TextView
-
 import androidx.recyclerview.widget.RecyclerView
+
 
 class SliderAdapter(private val list: Array<String>) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
+
     private val onClickListener = View.OnClickListener { v ->
-        //TODO cambio oggetto 3D
 
-        val nameObj= v.findViewById<ImageView>(R.id.slider_img_preview)
-        val myIntent= Intent(v.context,SessionActivity::class.java)
-
-        myIntent.setFlags(FLAG_ACTIVITY_REORDER_TO_FRONT)
-        myIntent.putExtra("nameObject", nameObj.contentDescription )
-
-
-        v.context.startActivity(myIntent)
-
+        /*
+            val myIntent = Intent(v.context,SessionActivity::class.java)
+            myIntent.putExtra("itemSelected",list[])
+            startActivityForResult(myIntent,1)
+                */
     }
 
     // Ritorna un nuovo ViewHolder
@@ -49,8 +39,9 @@ class SliderAdapter(private val list: Array<String>) :
         holder.bind(list[position])
     }
 
+
     // Descrive un elemento e la sua posizione
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val itemImageView: ImageView = itemView.findViewById(R.id.slider_img_preview)
 
 
@@ -68,6 +59,47 @@ class SliderAdapter(private val list: Array<String>) :
 
             }
         }
+
     }
 
+
+
+}
+
+
+
+ class RecyclerItemClickListener(context:Context, listener: OnItemClickListener) : RecyclerView.OnItemTouchListener {
+    private var  mListener :OnItemClickListener?
+
+     interface OnItemClickListener {
+         fun onItemClick(view: View?, position: Int)
+     }
+
+     var mGestureDetector: GestureDetector? = null
+
+     init {
+         mListener = listener
+         mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+             override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                 return true
+             }
+         })
+     }
+
+
+     override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
+         val childView = view.findChildViewUnder(e.x, e.y)
+         if (childView != null && mListener != null && mGestureDetector!!.onTouchEvent(e)) {
+             mListener!!.onItemClick(childView, view.getChildAdapterPosition(childView))
+         }
+         return false
+     }
+
+     override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+         //Lasciato vuoto intenzionalmente
+     }
+
+
+
+     override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 }
