@@ -1,25 +1,30 @@
 package com.example.esp22
 
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import android.net.Uri
-import android.widget.Toast
+import com.google.ar.core.Config
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.rendering.RenderableInstance
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
+import com.gorisse.thomas.sceneform.light.LightEstimationConfig
+import com.gorisse.thomas.sceneform.lightEstimationConfig
 
 
 class SessionActivity : AppCompatActivity() {
@@ -35,6 +40,12 @@ class SessionActivity : AppCompatActivity() {
     private var model: Renderable? = null
     var objRenderable: ModelRenderable? = null
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,50 +53,70 @@ class SessionActivity : AppCompatActivity() {
 
         obj = intent.getStringExtra("nameObject").toString()
 
+        //savedInstanceState!!.putString("nameObject",obj)
+
+        Log.d("obj",obj)
+
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
+        arFragment.apply {
+            setOnSessionConfigurationListener { session, config ->
+                if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
+                    config.depthMode = Config.DepthMode.AUTOMATIC
+                }
+            }
+            setOnViewCreatedListener { arSceneView ->
+                // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
+                arSceneView.cameraStream.depthOcclusionMode =
+                    CameraStream.DepthOcclusionMode.DEPTH_OCCLUSION_ENABLED
 
-        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+                // Use this mode if you want your objects to be more like if they where real
+                arSceneView.lightEstimationConfig = LightEstimationConfig.REALISTIC
+            }
 
-            /*
-            setModel()
+            arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
 
-            val anchor = hitResult.createAnchor()
-            val anchorNode = AnchorNode(anchor)
-            val tn = TransformableNode(arFragment.transformationSystem)
-            tn.parent = anchorNode
-            tn.renderable = cubeRenderable
-            tn.select()
-
-            */
-            arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
-
+                /*
                 setModel()
 
-                // Create the transformable model and add it to the anchor.
-                addChild(TransformableNode(arFragment.transformationSystem).apply {
+                val anchor = hitResult.createAnchor()
+                val anchorNode = AnchorNode(anchor)
+                val tn = TransformableNode(arFragment.transformationSystem)
+                tn.parent = anchorNode
+                tn.renderable = cubeRenderable
+                tn.select()
 
-                    renderable = objRenderable
-                    //RenderableInstance(transform provider,renderable)
-                    // Add child model relative the a parent model
-                    addChild(Node().apply {
-                        // Define the relative position
-                        localPosition = Vector3(0.0f, 1f, 0.0f)
-                        // Define the relative scale
-                        localScale = Vector3(0.7f, 0.7f, 0.7f)
-                        //renderable = modelView
+                */
+                arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
+
+                    setModel()
+
+                    // Create the transformable model and add it to the anchor.
+                    addChild(TransformableNode(arFragment.transformationSystem).apply {
+
+                        renderable = objRenderable
+                        //RenderableInstance(transform provider,renderable)
+                        // Add child model relative the a parent model
+                        addChild(Node().apply {
+                            // Define the relative position
+                            localPosition = Vector3(0.0f, 1f, 0.0f)
+                            // Define the relative scale
+                            localScale = Vector3(0.7f, 0.7f, 0.7f)
+                            //renderable = modelView
+                        })
+                        //renderableInstance.animate(true).start()
                     })
-                    //renderableInstance.animate(true).start()
                 })
-            })
+            }
         }
 
         //RecyclerView dello slider
         val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
         // TODO prendere/salvare le preview
-        val list = arrayOf("1", "2", "3", "4", "5")
+        //val list = arrayOf("1", "2", "3", "4", "5")
+
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = SliderAdapter(list)
+        recyclerView.adapter = SliderAdapter(this.resources.getStringArray(R.array.object_array))
 
         val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -140,9 +171,63 @@ class SessionActivity : AppCompatActivity() {
         iv.setImageDrawable(myDrawable)
     }
 
+
+    override fun onResume() {
+        super.onResume()
+
+        obj = intent.getStringExtra("nameObject").toString()
+
+        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+
+            /*
+            setModel()
+
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
+            val tn = TransformableNode(arFragment.transformationSystem)
+            tn.parent = anchorNode
+            tn.renderable = cubeRenderable
+            tn.select()
+
+            */
+            arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
+
+                setModel()
+
+                // Create the transformable model and add it to the anchor.
+                addChild(TransformableNode(arFragment.transformationSystem).apply {
+
+                    renderable = objRenderable
+                    //RenderableInstance(transform provider,renderable)
+                    // Add child model relative the a parent model
+                    addChild(Node().apply {
+                        // Define the relative position
+                        localPosition = Vector3(0.0f, 1f, 0.0f)
+                        // Define the relative scale
+                        localScale = Vector3(0.7f, 0.7f, 0.7f)
+                        //renderable = modelView
+                    })
+                    //renderableInstance.animate(true).start()
+                })
+            })
+        }
+    }
+
+
     private fun setModel() {
 
-        when (obj) {
+        ModelRenderable.builder()
+            .setSource(this, Uri.parse("models/"+obj+".glb"))
+            .setIsFilamentGltf(true)
+            .build()
+            .thenAccept { model: ModelRenderable -> objRenderable = model }
+            .exceptionally {
+                val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
+                t.show()
+                null
+            }
+
+        /*when (obj) {
             "cubo" -> ModelRenderable.builder()
                 .setSource(this, Uri.parse("models/cube3.glb"))
                 .setIsFilamentGltf(true)
@@ -195,6 +280,6 @@ class SessionActivity : AppCompatActivity() {
                     t.show()
                     null
                 }
-        }
+        }*/
     }
 }

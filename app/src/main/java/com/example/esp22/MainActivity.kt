@@ -18,8 +18,5 @@ class MainActivity : AppCompatActivity() {
         //Applica l'adapter alla recyclerView
         recyclerView.adapter = GalleryAdapter(list)
 
-
-
-
     }
 }
