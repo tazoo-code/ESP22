@@ -6,11 +6,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -20,7 +18,6 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
@@ -37,9 +34,8 @@ class SessionActivity : AppCompatActivity() {
     //TODO ricordarsi di cambiarlo se cambia il nome del pacchetto
     val PACKAGE_NAME = "com.example.esp22"
 
-    private var model: Renderable? = null
     var objRenderable: ModelRenderable? = null
-    var positionClicked :Int = -1
+    var isTouched : Boolean = false
 
 
 
@@ -49,10 +45,12 @@ class SessionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_session)
+        //Toglie la barra sopra
+        supportActionBar?.hide();
 
         obj = intent.getStringExtra("nameObject").toString()
 
-        //savedInstanceState!!.putString("nameObject",obj)
+
 
         Log.d("obj",obj)
 
@@ -125,8 +123,26 @@ class SessionActivity : AppCompatActivity() {
         }
 
 
+        val switchButton = findViewById<SwitchCompat>(R.id.switch1)
 
 
+
+
+        switchButton.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
+            isTouched = true
+            false
+        })
+
+        switchButton.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            if (isTouched) {
+                isTouched = false
+                if (isChecked) {
+                    switchButton.text = getString(R.string.delMode)
+                } else {
+                    switchButton.text = getString(R.string.placeMode)
+                }
+            }
+        })
 
         val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
