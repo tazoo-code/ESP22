@@ -95,8 +95,8 @@ class SliderAdapter(private val list: Array<String>) :
          return false
      }
 
-     override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-         //Lasciato vuoto intenzionalmente
+     override fun onTouchEvent(view: RecyclerView, e: MotionEvent) {
+         //intenzionalmente vuoto
      }
 
 

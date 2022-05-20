@@ -58,12 +58,38 @@ class SessionActivity : AppCompatActivity() {
 
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
+        //RecyclerView dello slider
+        val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
+
+        //Applica l'adapter alla recyclerView
+        recyclerView.adapter = SliderAdapter(this.resources.getStringArray(R.array.object_array))
+
+        //Creo un listener per vedere che oggetto premo
+        recyclerView.addOnItemTouchListener( RecyclerItemClickListener(
+            applicationContext,
+            object : RecyclerItemClickListener.OnItemClickListener {
+
+                override fun onItemClick(view: View?, position: Int) {
+
+                    //In base alla posizione degli oggetti
+                    when(position){
+                        0->obj = "lamp"
+                        1->obj = "spada"
+                        2->obj = "cuboRosso"
+                        3->obj = "cuboWireframe"
+                    }
+
+                    setModel()
+                }
+            }))
+
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
                 if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
                     config.depthMode = Config.DepthMode.AUTOMATIC
                 }
             }
+
             setOnViewCreatedListener { arSceneView ->
                 // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
                 arSceneView.cameraStream.depthOcclusionMode =
@@ -75,15 +101,14 @@ class SessionActivity : AppCompatActivity() {
 
             arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
 
-
                 arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
-
-                    setModel()
 
                     // Create the transformable model and add it to the anchor.
                     addChild(TransformableNode(arFragment.transformationSystem).apply {
+                        setModel()
 
                         renderable = objRenderable
+                        select()
                         //RenderableInstance(transform provider,renderable)
                         // Add child model relative the a parent model
                         addChild(Node().apply {
@@ -99,31 +124,7 @@ class SessionActivity : AppCompatActivity() {
             }
         }
 
-        //RecyclerView dello slider
-        val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
-        // TODO prendere/salvare le preview
-        //val list = arrayOf("1", "2", "3", "4", "5")
 
-        //Applica l'adapter alla recyclerView
-        recyclerView.adapter = SliderAdapter(this.resources.getStringArray(R.array.object_array))
-
-        //Creo un listener per vedere che oggetto premo
-        recyclerView.addOnItemTouchListener( RecyclerItemClickListener(
-            applicationContext,
-            object : RecyclerItemClickListener.OnItemClickListener {
-
-                override fun onItemClick(view: View?, position: Int) {
-
-                    //In base alla posizione degli oggetti
-                    when(position){
-                        0->obj = "lamp"
-                        1->obj ="spada"
-                        2->obj ="cuboRosso"
-                        3->obj ="cuboWireframe"
-                    }
-
-                }
-            }))
 
 
 
@@ -151,6 +152,18 @@ class SessionActivity : AppCompatActivity() {
                     BottomSheetBehavior.STATE_COLLAPSED
                 BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
                     BottomSheetBehavior.STATE_EXPANDED
+                BottomSheetBehavior.STATE_DRAGGING -> {
+                    //
+                }
+                BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                    //
+                }
+                BottomSheetBehavior.STATE_HIDDEN -> {
+                    //
+                }
+                BottomSheetBehavior.STATE_SETTLING -> {
+                    //
+                }
             }
         }
 
@@ -185,46 +198,13 @@ class SessionActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        obj = intent.getStringExtra("nameObject").toString()
+        //obj = intent.getStringExtra("nameObject").toString()
 
-        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-
-            /*
-            setModel()
-
-            val anchor = hitResult.createAnchor()
-            val anchorNode = AnchorNode(anchor)
-            val tn = TransformableNode(arFragment.transformationSystem)
-            tn.parent = anchorNode
-            tn.renderable = cubeRenderable
-            tn.select()
-
-            */
-            arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
-
-                setModel()
-
-                // Create the transformable model and add it to the anchor.
-                addChild(TransformableNode(arFragment.transformationSystem).apply {
-
-                    renderable = objRenderable
-                    //RenderableInstance(transform provider,renderable)
-                    // Add child model relative the a parent model
-                    addChild(Node().apply {
-                        // Define the relative position
-                        localPosition = Vector3(0.0f, 1f, 0.0f)
-                        // Define the relative scale
-                        localScale = Vector3(0.7f, 0.7f, 0.7f)
-                        //renderable = modelView
-                    })
-                    //renderableInstance.animate(true).start()
-                })
-            })
-        }
     }
 
-
     private fun setModel() {
+
+        Log.i("OBJ",obj)
 
         ModelRenderable.builder()
             .setSource(this, Uri.parse("models/"+obj+".glb"))
@@ -236,6 +216,7 @@ class SessionActivity : AppCompatActivity() {
                 t.show()
                 null
             }
+        Log.i("OBJ","fine build")
 
         /*when (obj) {
             "cubo" -> ModelRenderable.builder()
