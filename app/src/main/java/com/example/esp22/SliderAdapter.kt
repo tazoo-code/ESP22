@@ -11,21 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 class SliderAdapter(private val list: Array<String>) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
-
-    private val onClickListener = View.OnClickListener { v ->
-
-        /*
-            val myIntent = Intent(v.context,SessionActivity::class.java)
-            myIntent.putExtra("itemSelected",list[])
-            startActivityForResult(myIntent,1)
-                */
-    }
-
     // Ritorna un nuovo ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.slider_item, parent, false)
-        view.setOnClickListener(onClickListener)
+
         return ItemViewHolder(view)
     }
 
@@ -39,13 +29,10 @@ class SliderAdapter(private val list: Array<String>) :
         holder.bind(list[position])
     }
 
-
     // Descrive un elemento e la sua posizione
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val itemImageView: ImageView = itemView.findViewById(R.id.slider_img_preview)
 
-
-        //TODO Serve str?
         fun bind(str : String) {
 
             itemImageView.contentDescription=str
@@ -59,17 +46,13 @@ class SliderAdapter(private val list: Array<String>) :
 
             }
         }
-
     }
-
-
-
 }
 
-
-
+ //Classe per gestire l'evento click su un elemento dello slider
  class RecyclerItemClickListener(context:Context, listener: OnItemClickListener) : RecyclerView.OnItemTouchListener {
-    private var  mListener :OnItemClickListener?
+
+     private var  mListener :OnItemClickListener?
 
      interface OnItemClickListener {
          fun onItemClick(view: View?, position: Int)
@@ -86,7 +69,6 @@ class SliderAdapter(private val list: Array<String>) :
          })
      }
 
-
      override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
          val childView = view.findChildViewUnder(e.x, e.y)
          if (childView != null && mListener != null && mGestureDetector!!.onTouchEvent(e)) {
@@ -98,8 +80,6 @@ class SliderAdapter(private val list: Array<String>) :
      override fun onTouchEvent(view: RecyclerView, e: MotionEvent) {
          //intenzionalmente vuoto
      }
-
-
 
      override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 }
