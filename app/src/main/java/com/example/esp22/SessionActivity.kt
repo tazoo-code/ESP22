@@ -131,7 +131,6 @@ class SessionActivity : AppCompatActivity() {
                     config.depthMode = Config.DepthMode.AUTOMATIC
                 }
             }
-
             setOnViewCreatedListener { arSceneView ->
                 // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
                 arSceneView.cameraStream.depthOcclusionMode =
@@ -149,7 +148,6 @@ class SessionActivity : AppCompatActivity() {
 
                 //Se siamo nella modalità place model
                 if (!switchButton!!.isChecked) {
-
 
                     arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
 
