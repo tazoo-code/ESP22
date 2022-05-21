@@ -248,7 +248,6 @@ class SessionActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         //obj = intent.getStringExtra("nameObject").toString()
     }
 
