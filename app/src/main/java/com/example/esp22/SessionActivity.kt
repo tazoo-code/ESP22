@@ -1,13 +1,16 @@
 package com.example.esp22
 
 
+import android.content.ContentValues.TAG
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
@@ -15,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.ar.core.Config
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.HitTestResult
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.CameraStream
@@ -49,7 +51,7 @@ class SessionActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_session)
         //Toglie la barra sopra
-        supportActionBar?.hide();
+        supportActionBar?.hide()
 
 
         obj = intent.getStringExtra("nameObject").toString()
@@ -57,28 +59,17 @@ class SessionActivity : AppCompatActivity() {
         switchButton = findViewById<SwitchCompat>(R.id.switch1)
 
 
-        switchButton!!.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
 
-            if(!isTouched){
-                isTouched=true
-            }
-            else{
-                isTouched=false
-            }
-
-            false
-        })
-
-        switchButton!!.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+        switchButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
 
             if (isChecked) {
                 switchButton!!.text = getString(R.string.delMode)
-                isTouched=true
+                isTouched = true
             } else {
                 switchButton!!.text = getString(R.string.placeMode)
-                isTouched=false
+                isTouched = false
             }
-        })
+        }
 
 
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
@@ -111,6 +102,31 @@ class SessionActivity : AppCompatActivity() {
                 })
         )
 
+        //Listener per eliminare i nodi
+        val delNode =
+            Node.OnTouchListener { hitTestResult, motionEvent ->
+                Log.d(TAG, "handleOnTouch");
+                // First call ArFragment's listener to handle TransformableNodes.
+                arFragment.onPeekTouch(hitTestResult, motionEvent);
+
+                //We are only interested in the ACTION_UP events - anything else just return
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+
+                    if (hitTestResult.node != null && switchButton!!.isChecked) {
+                        Log.d(TAG, "handleOnTouch hitTestResult.getNode() != null")
+                        val hitNode: Node? = hitTestResult.node
+                        //val nodeToRemove = hitNode as AnchorNode
+
+                        arFragment.arSceneView.scene.removeChild(hitNode)
+
+                        hitNode!!.parent = null
+                        hitNode!!.renderable = null
+                    }
+                }
+                true
+            }
+
+
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
                 if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
@@ -127,83 +143,46 @@ class SessionActivity : AppCompatActivity() {
                 arSceneView.lightEstimationConfig = LightEstimationConfig.REALISTIC
             }
 
-                Log.i("isTouched", obj +"and " + isTouched)
+            Log.i("isTouched", obj +"and " + isTouched)
 
 
-                    arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
 
-                        if (!isTouched) {
+                if (!switchButton!!.isChecked) {
 
-                            arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
+                    arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
 
-                                // Create the transformable model and add it to the anchor.
-                                addChild(TransformableNode(arFragment.transformationSystem).apply {
-                                    setModel()
+                        // Create the transformable model and add it to the anchor.
+                        addChild(TransformableNode(arFragment.transformationSystem).apply {
+                            setModel()
 
-                                    renderable = objRenderable
-                                    select()
-                                    //RenderableInstance(transform provider,renderable)
-                                    // Add child model relative the a parent model
-                                    addChild(Node().apply {
-                                        // Define the relative position
-                                        localPosition = Vector3(0.0f, 1f, 0.0f)
-                                        // Define the relative scale
-                                        localScale = Vector3(0.7f, 0.7f, 0.7f)
-                                        //renderable = modelView
-                                    })
+                            renderable = objRenderable
+                            //Attacco al nodo il listener per poterlo poi eliminare
+                            setOnTouchListener(delNode)
+
+                            select()
+                            //RenderableInstance(transform provider,renderable)
+                            // Add child model relative the a parent model
+                            addChild(Node().apply {
+                                // Define the relative position
+                                localPosition = Vector3(0.0f, 1f, 0.0f)
+                                // Define the relative scale
+                                localScale = Vector3(0.7f, 0.7f, 0.7f)
+                                //renderable = modelView
+                            })
                                     //renderableInstance.animate(true).start()
-                                })
-                            })
-                        }
-                        else{
-
-                            /*PROBLEMI: Bisogna ricavare il nodo con hitTestResult....hitResult crea il nodo associato al anchor...
-                              ma non permette di ricavare un nodo già creato...con l'evento setOnTouchListener è possibile
-                              ricavare un hitTestResult ma crasha l'applicazione quando si è nella modalità delete e si tocca
-                              un piano...
-                             */
-                            arFragment.arSceneView.scene.removeChild(AnchorNode(hitResult.createAnchor()).apply{
-
-                                this.anchor = null
-
-                                this.renderable==null
-
-                                removeChild(TransformableNode(arFragment.transformationSystem).apply {
-
-                                    removeChild(Node().apply {
-
-                                        this.setParent(null)
-                                        this.setEnabled(false)
-                                    })
-
-                                })
-
-                            })
-
-                            /*arFragment.arSceneView.scene.setOnTouchListener { hitTestResult, motionEvent ->
-
-
-                                arFragment.onPeekTouch(hitTestResult, motionEvent)
-
-                                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                                    val hitNode = hitTestResult.node as AnchorNode
-
-                                    hitNode.anchor=null
-
-                                    hitNode.setParent(null)
-
-                                    hitNode.setEnabled(false)
-                                }
-
-
-
-                                false
-
-                            }*/
-
-                    }
-
+                        })
+                    })
+                }
             }
+
+            //Listener per eliminare i nodi toccati
+
+
+
+
+
+            //arFragment.arSceneView.setOnTouchListener(ht)
 
 
             val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
@@ -248,19 +227,7 @@ class SessionActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleOnTouch(hitTestResult:HitTestResult, motionEvent:MotionEvent){
 
-        arFragment.onPeekTouch(hitTestResult, motionEvent)
-
-        val hitNode = hitTestResult.node as AnchorNode
-
-        hitNode.anchor=null
-
-        hitNode.setParent(null)
-
-        hitNode.setEnabled(false)
-
-    }
     //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
     fun changeArrow(state: Int) {
         val iv: ImageView = findViewById(R.id.gallery_arrow)
@@ -369,3 +336,4 @@ class SessionActivity : AppCompatActivity() {
 
 
 }
+
