@@ -253,7 +253,6 @@ class SessionActivity : AppCompatActivity() {
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
-
         Log.i("OBJ",obj)
 
         ModelRenderable.builder()
