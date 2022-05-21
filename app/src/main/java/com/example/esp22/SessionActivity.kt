@@ -255,6 +255,7 @@ class SessionActivity : AppCompatActivity() {
     private fun setModel() {
 
         Log.i("OBJ",obj)
+
         ModelRenderable.builder()
             .setSource(this, Uri.parse("models/"+obj+".glb"))
             .setIsFilamentGltf(true)
