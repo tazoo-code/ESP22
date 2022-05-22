@@ -1,7 +1,7 @@
 \documentclass[a4paper,12pt,final, openany, titlepage, twoside]{book}
 
 %permette di aggiungere altri pacchetti dai file inclusi
-\usepackage[subpreambles]{standalone}
+\usepackage[subpreambles]{standalone} 
 
 %impostazioni lingua
 \usepackage[T1]{fontenc}
@@ -32,6 +32,11 @@
 \titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
 
 
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+\addbibresource{bibliografia.bib}
+
 %collegamenti ipertestuali
 %\usepackage{hyperref}
 
@@ -48,8 +53,8 @@
 	\mainmatter
 	\input{capitoli/capitolo1}
 	\section{d}
-	\lipsum[1-10]
+	\lipsum[1-10] Come si può notare in \cite{bimber2005spatial}
 	\backmatter
-	
+	\input{fine/bibliografia}
 	
 \end{document}

@@ -28,6 +28,12 @@
 \usepackage{titlesec}
 \titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
 
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+%risorsa che contiene la bibliografia
+\addbibresource{./../bibliografia.bib}
 
 \usepackage{lipsum}
 
@@ -38,4 +44,5 @@
 		\lipsum[1-5]
 	\subsection{Sottoparagrafo uno}
 		\lipsum[1-5]
+		\cite{bimber2005spatial}
 \end{document}
