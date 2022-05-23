@@ -31,20 +31,16 @@ import com.gorisse.thomas.sceneform.lightEstimationConfig
 class SessionActivity : AppCompatActivity() {
     //lateinit var object
 
-    lateinit var arFragment: ArFragment
+    private lateinit var arFragment: ArFragment
 
     lateinit var obj: String
 
-    //TODO ricordarsi di cambiarlo se cambia il nome del pacchetto
-    val PACKAGE_NAME = "com.example.esp22"
 
-    var objRenderable: ModelRenderable? = null
-    var isTouched : Boolean = false
+    private var objRenderable: ModelRenderable? = null
+    private var isTouched : Boolean = false
 
-    var switchButton :SwitchCompat?=null
+    private var switchButton :SwitchCompat?=null
 
-
-    var anchorNodeList: MutableList<AnchorNode>?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +52,7 @@ class SessionActivity : AppCompatActivity() {
 
         obj = intent.getStringExtra("nameObject").toString()
 
-        switchButton = findViewById<SwitchCompat>(R.id.switch1)
+        switchButton = findViewById(R.id.switch1)
 
 
 
@@ -105,9 +101,9 @@ class SessionActivity : AppCompatActivity() {
         //Listener per eliminare i nodi
         val delNode =
             Node.OnTouchListener { hitTestResult, motionEvent ->
-                Log.d(TAG, "handleOnTouch");
+                Log.d(TAG, "handleOnTouch")
                 // First call ArFragment's listener to handle TransformableNodes.
-                arFragment.onPeekTouch(hitTestResult, motionEvent);
+                arFragment.onPeekTouch(hitTestResult, motionEvent)
 
                 //We are only interested in the ACTION_UP events - anything else just return
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -120,7 +116,7 @@ class SessionActivity : AppCompatActivity() {
                         arFragment.arSceneView.scene.removeChild(hitNode)
 
                         hitNode!!.parent = null
-                        hitNode!!.renderable = null
+                        hitNode.renderable = null
                     }
                 }
                 true
@@ -266,7 +262,7 @@ class SessionActivity : AppCompatActivity() {
         Log.i("OBJ",obj)
 
         ModelRenderable.builder()
-            .setSource(this, Uri.parse("models/"+obj+".glb"))
+            .setSource(this, Uri.parse("models/$obj.glb"))
             .setIsFilamentGltf(true)
             .build()
             .thenAccept { model: ModelRenderable -> objRenderable = model }
