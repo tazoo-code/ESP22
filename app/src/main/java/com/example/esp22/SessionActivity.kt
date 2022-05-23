@@ -103,7 +103,7 @@ class SessionActivity : AppCompatActivity() {
 
                 Log.d(TAG, "handleOnTouch");
 
-                // Prima chiamata a ArFragment per gestire TrasformableNode
+                // Prima chiamata ad ArFragment per gestire TrasformableNode
                 arFragment.onPeekTouch(hitTestResult, motionEvent);
 
                 //La rimozione si verifica con un evento ACTION_UP

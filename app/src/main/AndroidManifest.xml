@@ -29,6 +29,11 @@
             android:exported="true" >
         </activity>
 
+        <activity
+            android:name=".AugmentedImagesActivity"
+            android:exported="true" >
+        </activity>
+
 
 
         <!-- "AR Required" app, requires "Google Play Services for AR" (ARCore)
