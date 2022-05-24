@@ -5,10 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.ar.core.AugmentedImage
-import com.google.ar.core.AugmentedImageDatabase
-import com.google.ar.core.Config
-import com.google.ar.core.TrackingState
+import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.ux.ArFragment
@@ -34,6 +31,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         tv1= findViewById<TextView>(R.id.tx1)
 
+
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
@@ -46,9 +44,15 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
                 database = AugmentedImageDatabase(session)
 
-                val cuboimg: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.ric_cuborosso)
+                val earthImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.earth)
+                val marteImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.marte)
+                val mercurioImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.mercurio)
+                val rabbitImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.rabbit)
 
-                database!!.addImage("cuboRosso", cuboimg)
+                database!!.addImage("earth", earthImage)
+                database!!.addImage("marte", marteImage)
+                database!!.addImage("mercurio", mercurioImage)
+                database!!.addImage("rabbit", rabbitImage)
 
                 config.setAugmentedImageDatabase(database)
 
@@ -66,12 +70,17 @@ class AugmentedImagesActivity: AppCompatActivity() {
             if(augmentedImage.getTrackingState()==TrackingState.TRACKING
                 && augmentedImage.getTrackingMethod() == AugmentedImage.TrackingMethod.FULL_TRACKING){
 
-                if(!imageDetected && augmentedImage.name.equals("cuboRosso")){
+                    when(augmentedImage.name){
 
-                    imageDetected=true
-                    tv1!!.text="cubo rosso riconosciuto"
+                        "earth"->  tv1!!.text="terra visibile"
 
-                }
+                        "marte"-> tv1!!.text="Marte visibile"
+
+                        "mercurio"->tv1!!.text="Mercurio visibile"
+
+                        "rabbit"->tv1!!.text="Rabbit visibile"
+
+                    }
             }
     }
 
