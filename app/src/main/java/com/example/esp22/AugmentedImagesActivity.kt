@@ -1,27 +1,21 @@
 package com.example.esp22
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.*
-import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
-import com.gorisse.thomas.sceneform.light.LightEstimationConfig
-import com.gorisse.thomas.sceneform.lightEstimationConfig
+
 
 class AugmentedImagesActivity: AppCompatActivity() {
 
-    lateinit var arFragment: ArFragment
+    private lateinit var arFragment: ArFragment
 
-    var tv1:TextView?=null
+    private var tv1:TextView?=null
 
-    private var database: AugmentedImageDatabase? = null
-
-    private var imageDetected=false
+    private lateinit var database:  AugmentedImageDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -40,21 +34,17 @@ class AugmentedImagesActivity: AppCompatActivity() {
             setOnSessionConfigurationListener { session, config ->
 
                 // Disable plane detection
-                config.setPlaneFindingMode(Config.PlaneFindingMode.DISABLED)
+                config.planeFindingMode = Config.PlaneFindingMode.DISABLED
 
-                database = AugmentedImageDatabase(session)
+                //database = AugmentedImageDatabase(session)
 
-                val earthImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.earth)
-                val marteImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.marte)
-                val mercurioImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.mercurio)
-                val rabbitImage: Bitmap= BitmapFactory.decodeResource(resources, R.drawable.rabbit)
+                database = assets.open("myimages.imgdb").use {
+                    AugmentedImageDatabase.deserialize(session, it)
+                }
 
-                database!!.addImage("earth", earthImage)
-                database!!.addImage("marte", marteImage)
-                database!!.addImage("mercurio", mercurioImage)
-                database!!.addImage("rabbit", rabbitImage)
-
-                config.setAugmentedImageDatabase(database)
+                config.augmentedImageDatabase = database
+                config.focusMode = Config.FocusMode.AUTO
+                session.configure(config)
 
                 // Check for image detection
                 arFragment.setOnAugmentedImageUpdateListener(onAugmentedImageTrackingUpdate)
@@ -66,19 +56,19 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private val onAugmentedImageTrackingUpdate=
         BaseArFragment.OnAugmentedImageUpdateListener{ augmentedImage ->
-
-            if(augmentedImage.getTrackingState()==TrackingState.TRACKING
-                && augmentedImage.getTrackingMethod() == AugmentedImage.TrackingMethod.FULL_TRACKING){
-
+            Log.i("AugmentedImage","Image Found")
+            if(augmentedImage.trackingState == TrackingState.TRACKING
+                && augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING){
+                Log.i("AugmentedImage","Image ${augmentedImage.name} tracked")
                     when(augmentedImage.name){
 
-                        "earth"->  tv1!!.text="terra visibile"
+                        "terra.jpeg"->  tv1!!.text="terra visibile"
 
-                        "marte"-> tv1!!.text="Marte visibile"
+                        "marte.jpeg"-> tv1!!.text="Marte visibile"
 
-                        "mercurio"->tv1!!.text="Mercurio visibile"
+                        "mercurio.jpeg"->tv1!!.text="Mercurio visibile"
 
-                        "rabbit"->tv1!!.text="Rabbit visibile"
+                        "rabbit.jpeg"->tv1!!.text="Rabbit visibile"
 
                     }
             }
