@@ -46,6 +46,7 @@
         android:layout_marginStart="8dp"
 
         android:text="@string/placeMode"
+        android:checked="false"
         android:textOff="@string/placeMode"
         android:textOn="@string/delMode"
         android:textColor="?attr/colorOnPrimary"

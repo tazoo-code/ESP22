@@ -1,9 +1,7 @@
 package com.example.esp22
 
 import android.content.Context
-import android.content.Intent.*
 import android.view.*
-import android.widget.AdapterView
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -12,20 +10,11 @@ class SliderAdapter(private val list: Array<String>) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
 
-    private val onClickListener = View.OnClickListener { v ->
-
-        /*
-            val myIntent = Intent(v.context,SessionActivity::class.java)
-            myIntent.putExtra("itemSelected",list[])
-            startActivityForResult(myIntent,1)
-                */
-    }
 
     // Ritorna un nuovo ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.slider_item, parent, false)
-        view.setOnClickListener(onClickListener)
         return ItemViewHolder(view)
     }
 
@@ -59,13 +48,8 @@ class SliderAdapter(private val list: Array<String>) :
 
             }
         }
-
     }
-
-
-
 }
-
 
 
  class RecyclerItemClickListener(context:Context, listener: OnItemClickListener) : RecyclerView.OnItemTouchListener {
@@ -75,7 +59,7 @@ class SliderAdapter(private val list: Array<String>) :
          fun onItemClick(view: View?, position: Int)
      }
 
-     var mGestureDetector: GestureDetector? = null
+     private var mGestureDetector: GestureDetector? = null
 
      init {
          mListener = listener
