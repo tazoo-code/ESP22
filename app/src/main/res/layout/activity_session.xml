@@ -31,20 +31,20 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar2"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch1"
         style="@style/TextAppearance.AppCompat.Widget.Switch"
         android:layout_width="129dp"
-        android:layout_height="53dp"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+
         android:text="@string/placeMode"
         android:textOff="@string/placeMode"
         android:textOn="@string/delMode"
@@ -52,5 +52,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    </com.google.android.material.appbar.MaterialToolbar>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

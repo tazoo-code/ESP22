@@ -26,7 +26,7 @@
             android:color="?attr/colorOnPrimary"
             android:src="@drawable/ic_baseline_settings_24"
             android:layout_marginEnd="20dp"
-            android:contentDescription="@string/settings_button_icon" />
+            android:contentDescription="@string/settings_button_icon"/>
 
     </com.google.android.material.appbar.MaterialToolbar>
 
@@ -37,30 +37,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="25dp">
 
         <ImageView
             android:id="@+id/rendering_3d"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/rendering_3d_preview"
             android:scaleType="centerCrop"
             android:contentDescription="@string/rendering_3d_preview" />
 
         <Space
-            android:layout_width="match_parent"
-            android:layout_height="25dp" />
+            android:layout_width="25dp"
+            android:layout_height="match_parent" />
 
         <ImageView
             android:id="@+id/augmented_images"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/augmented_images_preview"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/augmented_images_preview" />
+            android:contentDescription="@string/augmented_images_preview"/>
 
     </LinearLayout>
 

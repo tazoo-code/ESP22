@@ -12,9 +12,9 @@
     <color name="dark_blue">#005A9F</color>
     <color name="light_blue">#62A3FF</color>
 
-    <color name="yellow">#FFC107</color>
-    <color name="dark_yellow">#FFC107</color>
-    <color name="light_yellow">#FFC107</color>
+    <color name="aquamarine">#00BAAC</color>
+    <color name="dark_aquamarine">#00897D</color>
+    <color name="light_aquamarine">#5DEDDE</color>
 
     <color name="grey">#424242</color>
     <color name="light_grey">#6D6D6D</color>

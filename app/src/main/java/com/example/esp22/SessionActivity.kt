@@ -45,12 +45,8 @@ class SessionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_session)
-        //Toglie la barra sopra
-        supportActionBar?.hide();
 
         obj = intent.getStringExtra("nameObject").toString()
-
-
 
         Log.d("obj",obj)
 

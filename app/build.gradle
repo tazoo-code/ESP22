@@ -43,6 +43,7 @@ dependencies {
     //implementation files('lib/jpct_ae.jar') //Libreria ARCore
 
     implementation "com.gorisse.thomas.sceneform:sceneform:1.21.0"
+    implementation 'androidx.preference:preference:1.1.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

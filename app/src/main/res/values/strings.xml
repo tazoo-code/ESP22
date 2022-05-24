@@ -1,15 +1,29 @@
 <resources>
-    <string name="app_name">esp22</string>
-    <string name="gallery_arrow">arrow up/down</string>
-    <string name="gallery_item">gallery item</string>
+    <!-- app name -->
+    <string name="app_name" translatable="false">esp22</string>
+
+    <!-- imageview descriptions -->
+    <string name="settings_button_icon">Setting icon</string>
+    <string name="rendering_3d_preview">Rendering 3D preview</string>
+    <string name="augmented_images_preview">Augmented images preview</string>
+    <string name="gallery_arrow">Arrow up/down icon</string>
+
+    <!-- SessionActivity strings-->
     <string name="placeMode">Place Mode</string>
     <string name="delMode">Delete Mode</string>
 
-    <string-array name="object_array">
-        <item>lamp</item>
-        <item>spada</item>
-        <item>cuboRosso</item>
-        <item>cuboWireframe</item>
-    </string-array>
+    <!-- SettingActivity strings -->
+    <!-- Theme -->
+    <string name="display_header">Display</string>
+    <string name="theme_title">Theme</string>
+    <string name="default_theme">System default</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
+    <!-- Language -->
+    <string name="language_header">Language</string>
+    <string name="language_title">Language</string>
+    <string name="default_language">System default</string>
+    <string name="italian">Italian</string>
+    <string name="english">English</string>
 
 </resources>

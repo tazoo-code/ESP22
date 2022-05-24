@@ -33,7 +33,7 @@
 
 
 \usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+\usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
 
 \addbibresource{bibliografia.bib}
 
@@ -51,9 +51,10 @@
 	\input{inizio/indice}
 	
 	\mainmatter
+	\input{capitoli/introduzione}
 	\input{capitoli/capitolo1}
 	\section{d}
-	\lipsum[1-10] Come si può notare in \cite{bimber2005spatial}
+	\lipsum[1-10] 
 	\backmatter
 	\input{fine/bibliografia}
 	

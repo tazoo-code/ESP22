@@ -1,18 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Esp22" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Esp22" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryVariant">@color/light_blue</item>
         <item name="colorPrimaryDark">@color/dark_blue</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/yellow</item>
-        <item name="colorSecondaryVariant">@color/light_yellow</item>
-        <item name="colorSecondaryContainer">@color/dark_yellow</item>
+        <!-- Secondary brand color.-->
+        <item name="colorSecondary">@color/aquamarine</item>
+        <item name="colorSecondaryVariant">@color/light_aquamarine</item>
+        <item name="colorSecondaryContainer">@color/dark_aquamarine</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryDark</item>
-        <!-- Customize your theme here. -->
+
     </style>
 </resources>

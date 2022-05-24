@@ -1,9 +1,11 @@
 package com.example.esp22
 
-import android.content.ContentValues.TAG
+
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.ImageView
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -12,11 +14,25 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        val recyclerView: RecyclerView = findViewById(R.id.gallery_recycler_view)
+        val settingsButton : ImageView = findViewById(R.id.settings_button)
+        settingsButton.setOnClickListener{
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
 
-        val list = arrayOf("1", "2", "3", "4", "5","1", "2", "3", "4", "5","1", "2", "3", "4", "5","1", "2", "3", "4", "5")
-        //Applica l'adapter alla recyclerView
-        recyclerView.adapter = GalleryAdapter(list)
+        val rendering3dButton : ImageView = findViewById(R.id.rendering_3d)
+        rendering3dButton.setOnClickListener{
+            val intent = Intent(this, SessionActivity::class.java)
+            startActivity(intent)
+        }
+
+        /*
+        val augmImagesButton : ImageView = findViewById(R.id.augmented_images)
+        rendering3dButton.setOnClickListener{
+            val intent = Intent(this, ::class.java)
+            startActivity(intent)
+        }*/
+
 
     }
 }

@@ -1,0 +1,50 @@
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+%gestione delle testatine
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{Titolo}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+%risorsa che contiene la bibliografia
+\addbibresource{./../bibliografia.bib}
+
+
+\begin{document}
+	\chapter{Introduzione}
+	La Realtà Aumentata (Augmented Reality - \emph{AR}) è una tecnologia che permette di compiere esperienze interattive, in cui l'ambiente reale viene arricchito da contenuti virtuali. Similmente alla Realtà Virtuale, vengono creati elementi grafici sintetici con cui l'utente può interagire attraverso i sensi. Tuttavia, come spiegato in \cite{bimber2005spatial}, nell'AR l'ambiente reale gioca un ruolo fondamentale: lo scopo della Realtà Aumentata è proprio cercare di collegare il mondo reale con quello virtuale.
+	\\
+	L'AR viene definito in \cite{azuma1997survey} come un sistema che incorpora tre caratteristiche principali: la combinazione tra reale e virtuale, l'interazione real time e la rappresentazione 3D. 
+	\section{Storia}
+	Il primo rudimentale sistema di realtà aumentata è stato creato da Ivan Sutherland nel 1968; esso era composto da un display ottico trasparente che veniva montato sulla testa e che poteva mostrare semplici immagini in tempo reale, come spiegato in \cite{sutherland1968head}. Nel 1995 Jun Rekimoto e Katashi Nagao creano \textit{NaviCam}
+	
+	\section{Applicazioni}	
+	
+	
+\end{document}

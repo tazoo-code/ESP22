@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gallery_arrow">Freccia su/giù</string>
+    <string name="placeMode">Posiziona</string>
+    <string name="delMode">Elimina</string>
+    <string name="display_header">Interfaccia</string>
+    <string name="language_header">Lingua</string>
+    <string name="theme_title">Tema</string>
+    <string name="language_title">Lingua</string>
+    <string name="settings_button_icon">Icona impostazioni</string>
+    <string name="rendering_3d_preview">Preview rendering 3D</string>
+    <string name="augmented_images_preview">Preview augmented images</string>
+    <string name="light_theme">Tema chiaro</string>
+    <string name="dark_theme">Tema scuro</string>
+    <string name="default_theme">Predefinito del sistema</string>
+    <string name="default_language">Predefinita del sistema</string>
+    <string name="english">Inglese</string>
+    <string name="italian">Italiano</string>
+</resources>
