@@ -153,18 +153,14 @@ class SessionActivity : AppCompatActivity() {
 
                         // Crea il transformable model e lo aggiunge all'anchor
                         addChild(TransformableNode(arFragment.transformationSystem).apply {
+
                             setModel()
-
                             renderable = objRenderable
-
                             /*Associo al nodo il listener che elimina il nodo quando
                               viene cliccato nella modalita delete model
                             */
                             setOnTouchListener(delNode)
-
                             select()
-
-                            //RenderableInstance(transform provider,renderable)
                             // Add child model relative the a parent model
                             addChild(Node().apply {
 
