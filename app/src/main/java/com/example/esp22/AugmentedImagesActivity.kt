@@ -31,8 +31,17 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private lateinit var database: AugmentedImageDatabase
     private var isRendered = false
+    private var isRendered2 = false
     private var node : TransformableNode? = null
+
+    private val listnode: MutableList<TransformableNode> = arrayListOf()
+
+    private var namesobj: MutableList<String> = arrayListOf()
+    private var renderobj: MutableList<Boolean> = arrayListOf()
+
     private var rot = 0f
+    private var count=0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,9 +50,16 @@ class AugmentedImagesActivity: AppCompatActivity() {
         setContentView(R.layout.activity_augmented_images)
 
         tv1 = findViewById<TextView>(R.id.tx1)
+
+        namesobj.add("terra")
+        namesobj.add("marte")
+        namesobj.add("mercurio")
+
+        renderobj.add(false)
+        renderobj.add(false)
+        renderobj.add(false)
+
         //setModel()
-
-
 
     }
 
@@ -57,10 +73,10 @@ class AugmentedImagesActivity: AppCompatActivity() {
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
 
-
                 //TODO Risolvere se possibile il problema dell'auto facus
-                //config.focusMode = Config.FocusMode.AUTO
+                config.focusMode = Config.FocusMode.AUTO
                 // Disable plane detection
+
                 config.planeFindingMode = Config.PlaneFindingMode.DISABLED
 
                 //database = AugmentedImageDatabase(session)
@@ -83,41 +99,53 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     }
 
-
-
-
-
-
-
-
     private val onUpdateFrame = Scene.OnUpdateListener {
         val frame = arFragment.arSceneView.arFrame
 
-        //Rotazione del nodo e quindi del modello TODO aggiungere la possibilità di ruotare piu nodi(con una lista di nodi?)
-        if(node != null) {
+        if(listnode!=null ){
+            if(!listnode!!.isEmpty()) {
+                for (n in listnode!!) {
+                    //Rotazione del nodo e quindi del modello TODO aggiungere la possibilità di ruotare piu nodi(con una lista di nodi?)
+                    if(n != null) {
+                        if (rot >= 360) {
+                            rot = 0f
+                        }
+                        rot++
+                        n!!.localRotation = Quaternion(Vector3(0f,rot,0f))
+                    }
+                }
+            }
+        }
+
+        /*if(node!= null) {
             if (rot >= 360) {
                 rot = 0f
             }
             rot++
             node!!.localRotation = Quaternion(Vector3(0f,rot,0f))
-        }
+        }*/
 
         val augmentedImages = frame!!.getUpdatedTrackables(
             AugmentedImage::class.java
         )
         for (augmentedImage in augmentedImages) {
-            if (augmentedImage.trackingState == TrackingState.TRACKING) {
-                if (augmentedImage.name.contains("terra") && !isRendered) {
-                    // here we got that image has been detected
-                    // we will render our 3D asset in center of detected image
-                    renderObject(
-                        arFragment,
-                        augmentedImage.createAnchor(augmentedImage.centerPose),
-                        "terra"
-                    )
-                    isRendered = true
-                }
 
+            if (augmentedImage.trackingState == TrackingState.TRACKING) {
+
+                for(i in 0 until namesobj.size){
+
+                    if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
+
+                        // here we got that image has been detected
+                        // we will render our 3D asset in center of detected image
+                        renderObject(
+                            arFragment,
+                            augmentedImage.createAnchor(augmentedImage.centerPose),
+                            namesobj[i]
+                        )
+                        renderobj.set(i,true)
+                    }
+                }
             }
         }
     }
@@ -144,10 +172,28 @@ class AugmentedImagesActivity: AppCompatActivity() {
     }
 
     private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable) {
+
+        /*val anchorNode = AnchorNode(anchor)
+        anchorNode.localScale = Vector3(0.1f,0.1f,0.1f)
+
+        listnode!!.add(TransformableNode(fragment.transformationSystem))
+
+        listnode!!.elementAt(count).renderable = renderable
+        listnode!!.elementAt(count).parent = anchorNode
+        //node.localScale = Vector3(0.05f,0.05f,0.05f)
+        fragment.arSceneView.scene.addChild(anchorNode)
+        //Posizione in riferimento alla foto
+        listnode!!.elementAt(count).localPosition = Vector3(0f,0.5f,0f)
+        listnode!!.elementAt(count).select()
+        count++*/
+
+        //listnode!!.add(node!!)
+
         val anchorNode = AnchorNode(anchor)
         anchorNode.localScale = Vector3(0.1f,0.1f,0.1f)
 
         node = TransformableNode(fragment.transformationSystem)
+
         node!!.renderable = renderable
         node!!.parent = anchorNode
         //node.localScale = Vector3(0.05f,0.05f,0.05f)
@@ -156,6 +202,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
         node!!.localPosition = Vector3(0f,0.5f,0f)
         node!!.select()
 
+        listnode!!.add(node!!)
     }
 }
 
