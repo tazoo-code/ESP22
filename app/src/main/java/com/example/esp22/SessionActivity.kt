@@ -1,6 +1,5 @@
 package com.example.esp22
 
-
 import android.content.ContentValues.TAG
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -19,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.ar.core.Config
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -27,32 +27,39 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
 
-
 class SessionActivity : AppCompatActivity() {
-    //lateinit var object
 
-    private lateinit var arFragment: ArFragment
+    lateinit var arFragment: ArFragment
 
+    var objRenderable: ModelRenderable? = null
+
+    //Nome dell'oggetto dal quale sarà costruito il modello 3d
     lateinit var obj: String
 
+    var isTouched : Boolean = false
 
-    private var objRenderable: ModelRenderable? = null
-    private var isTouched : Boolean = false
-
-    private var switchButton :SwitchCompat?=null
-
+    private var nodeslist: MutableList<Node> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_session)
 
+        //Toglie la barra sopra
+        supportActionBar?.hide()
+
+        //Riferimento a switchbutton per il cambio di modalità (Place model-->Delete model)
+        val switchButton = findViewById<SwitchCompat>(R.id.switch1)
+
+        val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
+        //Viene passato il nome dell'oggetto da renderizzare la prima volta che viene eseguita questa Activity
         obj = intent.getStringExtra("nameObject").toString()
 
-        switchButton = findViewById(R.id.switch1)
-
-
-
+        //Evento per cambio modalità
         switchButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
 
             if (isChecked) {
@@ -64,7 +71,7 @@ class SessionActivity : AppCompatActivity() {
             }
         }
 
-
+        //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
         //RecyclerView dello slider
@@ -73,8 +80,7 @@ class SessionActivity : AppCompatActivity() {
         //Applica l'adapter alla recyclerView
         recyclerView.adapter = SliderAdapter(this.resources.getStringArray(R.array.object_array))
 
-
-        //Creo un listener per vedere che oggetto premo
+        //Listener per vedere quale oggetto da posizionare seleziono
         recyclerView.addOnItemTouchListener(
             RecyclerItemClickListener(
                 applicationContext,
@@ -89,7 +95,6 @@ class SessionActivity : AppCompatActivity() {
                             2 -> obj = "cuboRosso"
                             3 -> obj = "cuboWireframe"
                         }
-
                         setModel()
                     }
                 })
@@ -98,35 +103,39 @@ class SessionActivity : AppCompatActivity() {
         //Listener per eliminare i nodi
         val delNode =
             Node.OnTouchListener { hitTestResult, motionEvent ->
-                Log.d(TAG, "handleOnTouch")
-                // First call ArFragment's listener to handle TransformableNodes.
-                arFragment.onPeekTouch(hitTestResult, motionEvent)
 
-                //We are only interested in the ACTION_UP events - anything else just return
+                Log.d(TAG, "handleOnTouch");
+
+                // Prima chiamata ad ArFragment per gestire TrasformableNode
+                arFragment.onPeekTouch(hitTestResult, motionEvent);
+
+                //La rimozione si verifica con un evento ACTION_UP
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
 
                     if (hitTestResult.node != null && switchButton!!.isChecked) {
+
                         Log.d(TAG, "handleOnTouch hitTestResult.getNode() != null")
+
                         val hitNode: Node? = hitTestResult.node
-                        //val nodeToRemove = hitNode as AnchorNode
 
                         arFragment.arSceneView.scene.removeChild(hitNode)
 
                         hitNode!!.parent = null
-                        hitNode.renderable = null
+                        hitNode!!.renderable = null
                     }
                 }
                 true
             }
 
-
+        //Configurazione sessione ArCore
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
                 if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
                     config.depthMode = Config.DepthMode.AUTOMATIC
                 }
-            }
 
+                arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
+            }
             setOnViewCreatedListener { arSceneView ->
                 // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
                 arSceneView.cameraStream.depthOcclusionMode =
@@ -134,52 +143,57 @@ class SessionActivity : AppCompatActivity() {
 
                 // Use this mode if you want your objects to be more like if they where real
                 arSceneView.lightEstimationConfig = LightEstimationConfig.REALISTIC
+
+                // Use this mode if you want your objects to be more spectacular
+                //arSceneView.lightEstimationConfig = LightEstimationConfig.SPECTACULAR
             }
 
-            Log.i("isTouched", obj +"and " + isTouched)
-
-
+            //Evento che si verifica quando viene toccato un piano
             arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
 
+                //Se siamo nella modalità place model
                 if (!switchButton!!.isChecked) {
 
                     arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
 
-                        // Create the transformable model and add it to the anchor.
+                        // Crea il transformable model e lo aggiunge all'anchor
                         addChild(TransformableNode(arFragment.transformationSystem).apply {
+
                             setModel()
-
                             renderable = objRenderable
-                            //Attacco al nodo il listener per poterlo poi eliminare
-                            setOnTouchListener(delNode)
 
+                            /*Associo al nodo il listener che elimina il nodo quando
+                              viene cliccato nella modalita delete model
+                            */
+                            setOnTouchListener(delNode)
                             select()
-                            //RenderableInstance(transform provider,renderable)
+
+                            if(obj.equals("cuboRosso")){
+                                renderableInstance.animate(true).start()
+                            }
+
                             // Add child model relative the a parent model
                             addChild(Node().apply {
-                                // Define the relative position
+
+                                // Definizione posizione relativa
                                 localPosition = Vector3(0.0f, 1f, 0.0f)
-                                // Define the relative scale
+
+                                // Definizione scala relativa
                                 localScale = Vector3(0.7f, 0.7f, 0.7f)
                                 //renderable = modelView
+                                if(obj.equals("cuboRosso")){
+                                    localScale= Vector3(0.03f,0.03f,0.03f)
+                                }
+                                //collisionShape
+                                nodeslist.add(this)
                             })
-                                    //renderableInstance.animate(true).start()
+                            //renderableInstance.animate(true).start()
                         })
                     })
                 }
             }
 
-            //Listener per eliminare i nodi toccati
 
-
-
-
-
-            //arFragment.arSceneView.setOnTouchListener(ht)
-
-
-            val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
             //Rileva quando lo slider cambia di stato
             bottomSheetBehavior.addBottomSheetCallback(object :
@@ -216,10 +230,25 @@ class SessionActivity : AppCompatActivity() {
                     }
                 }
             }
-
         }
     }
 
+
+    private val onUpdateFrame = Scene.OnUpdateListener {
+
+        if(nodeslist!=null){
+            if(!nodeslist.isEmpty()){
+                for(n in nodeslist){
+                    if(arFragment.arSceneView.scene.overlapTestAll(n).size >0){
+                        Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
+                    }
+                    /*if(arFragment.arSceneView.scene.overlapTest(n)!=null){
+                        Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
+                    }*/
+                }
+            }
+        }
+    }
 
     //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
     fun changeArrow(state: Int) {
@@ -246,33 +275,20 @@ class SessionActivity : AppCompatActivity() {
         iv.setImageDrawable(myDrawable)
     }
 
-
     override fun onResume() {
         super.onResume()
-
         //obj = intent.getStringExtra("nameObject").toString()
-
     }
 
+    //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
-
         Log.i("OBJ",obj)
 
-        ModelRenderable.builder()
-            .setSource(this, Uri.parse("models/$obj.glb"))
-            .setIsFilamentGltf(true)
-            .build()
-            .thenAccept { model: ModelRenderable -> objRenderable = model }
-            .exceptionally {
-                val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
-                t.show()
-                null
-            }
-        Log.i("OBJ","fine build")
+        //TODO cambiare
+        if(!obj.equals("cuboRosso")){
 
-        /*when (obj) {
-            "cubo" -> ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/cube3.glb"))
+            ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/"+obj+".glb"))
                 .setIsFilamentGltf(true)
                 .build()
                 .thenAccept { model: ModelRenderable -> objRenderable = model }
@@ -281,9 +297,11 @@ class SessionActivity : AppCompatActivity() {
                     t.show()
                     null
                 }
+            Log.i("OBJ","fine build")
 
-            "spada" -> ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/spada.glb"))
+        } else{
+            ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/rhino.glb"))
                 .setIsFilamentGltf(true)
                 .build()
                 .thenAccept { model: ModelRenderable -> objRenderable = model }
@@ -292,41 +310,7 @@ class SessionActivity : AppCompatActivity() {
                     t.show()
                     null
                 }
+        }
 
-            "cuboRosso" -> ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/cuboRosso.glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
-                    t.show()
-                    null
-                }
-            "vinitalyGLB" -> ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/vinitalyGLB.glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
-                    t.show()
-                    null
-                }
-            "omino" -> ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/omino.glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
-                    t.show()
-                    null
-                }
-        }*/
     }
-
-
-
 }
-
