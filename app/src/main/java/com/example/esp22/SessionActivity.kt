@@ -39,6 +39,7 @@ class SessionActivity : AppCompatActivity() {
     var isTouched : Boolean = false
 
     private var nodeslist: MutableList<Node> = arrayListOf()
+    private lateinit var stringArray : Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -46,8 +47,8 @@ class SessionActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_session)
 
-        //Toglie la barra sopra
-        supportActionBar?.hide()
+        stringArray = this.resources.getStringArray(R.array.object_array)
+        obj = ""
 
         //Riferimento a switchbutton per il cambio di modalità (Place model-->Delete model)
         val switchButton = findViewById<SwitchCompat>(R.id.switch1)
@@ -56,17 +57,15 @@ class SessionActivity : AppCompatActivity() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
-        //Viene passato il nome dell'oggetto da renderizzare la prima volta che viene eseguita questa Activity
-        obj = intent.getStringExtra("nameObject").toString()
 
         //Evento per cambio modalità
         switchButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
 
             if (isChecked) {
-                switchButton!!.text = getString(R.string.delMode)
+                switchButton.text = getString(R.string.delMode)
                 isTouched = true
             } else {
-                switchButton!!.text = getString(R.string.placeMode)
+                switchButton.text = getString(R.string.placeMode)
                 isTouched = false
             }
         }
@@ -78,7 +77,7 @@ class SessionActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
 
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = SliderAdapter(this.resources.getStringArray(R.array.object_array))
+        recyclerView.adapter = SliderAdapter(stringArray)
 
         //Listener per vedere quale oggetto da posizionare seleziono
         recyclerView.addOnItemTouchListener(
@@ -88,13 +87,9 @@ class SessionActivity : AppCompatActivity() {
 
                     override fun onItemClick(view: View?, position: Int) {
 
+                        obj = stringArray[position]
+                        Log.i("Modello",obj)
                         //In base alla posizione degli oggetti
-                        when (position) {
-                            0 -> obj = "lamp"
-                            1 -> obj = "spada"
-                            2 -> obj = "cuboRosso"
-                            3 -> obj = "cuboWireframe"
-                        }
                         setModel()
                     }
                 })
@@ -103,25 +98,26 @@ class SessionActivity : AppCompatActivity() {
         //Listener per eliminare i nodi
         val delNode =
             Node.OnTouchListener { hitTestResult, motionEvent ->
+                if(switchButton.isChecked){
+                    Log.d(TAG, "handleOnTouch")
 
-                Log.d(TAG, "handleOnTouch");
+                    // Prima chiamata ad ArFragment per gestire TrasformableNode
+                    arFragment.onPeekTouch(hitTestResult, motionEvent)
 
-                // Prima chiamata ad ArFragment per gestire TrasformableNode
-                arFragment.onPeekTouch(hitTestResult, motionEvent);
+                    //La rimozione si verifica con un evento ACTION_UP
+                    if (motionEvent.action == MotionEvent.ACTION_UP) {
 
-                //La rimozione si verifica con un evento ACTION_UP
-                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                        if (hitTestResult.node != null && switchButton.isChecked) {
 
-                    if (hitTestResult.node != null && switchButton!!.isChecked) {
+                            Log.d(TAG, "handleOnTouch hitTestResult.getNode() != null")
 
-                        Log.d(TAG, "handleOnTouch hitTestResult.getNode() != null")
+                            val hitNode: Node? = hitTestResult.node
 
-                        val hitNode: Node? = hitTestResult.node
+                            arFragment.arSceneView.scene.removeChild(hitNode)
 
-                        arFragment.arSceneView.scene.removeChild(hitNode)
-
-                        hitNode!!.parent = null
-                        hitNode!!.renderable = null
+                            hitNode!!.parent = null
+                            hitNode.renderable = null
+                        }
                     }
                 }
                 true
@@ -152,12 +148,14 @@ class SessionActivity : AppCompatActivity() {
             arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
 
                 //Se siamo nella modalità place model
-                if (!switchButton!!.isChecked) {
+                if (!switchButton.isChecked) {
 
                     arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
 
                         // Crea il transformable model e lo aggiunge all'anchor
                         addChild(TransformableNode(arFragment.transformationSystem).apply {
+
+                            //if (obj== "default"){   obj = "cuborosso"}
 
                             setModel()
                             renderable = objRenderable
@@ -168,7 +166,9 @@ class SessionActivity : AppCompatActivity() {
                             setOnTouchListener(delNode)
                             select()
 
-                            if(obj.equals("cuboRosso")){
+                            //TODO fare una funzione che mette le animazioni
+                            //Se ha l'animazione la fa partire
+                            if(obj == "rhino"){
                                 renderableInstance.animate(true).start()
                             }
 
@@ -181,13 +181,12 @@ class SessionActivity : AppCompatActivity() {
                                 // Definizione scala relativa
                                 localScale = Vector3(0.7f, 0.7f, 0.7f)
                                 //renderable = modelView
-                                if(obj.equals("cuboRosso")){
+                                if(obj == "rhino"){
                                     localScale= Vector3(0.03f,0.03f,0.03f)
                                 }
                                 //collisionShape
                                 nodeslist.add(this)
                             })
-                            //renderableInstance.animate(true).start()
                         })
                     })
                 }
@@ -216,18 +215,13 @@ class SessionActivity : AppCompatActivity() {
                         BottomSheetBehavior.STATE_COLLAPSED
                     BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
                         BottomSheetBehavior.STATE_EXPANDED
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-                        //
-                    }
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        //
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        //
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> {
-                        //
-                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {}
+
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {}
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {}
+
+                    BottomSheetBehavior.STATE_SETTLING -> {}
                 }
             }
         }
@@ -236,16 +230,14 @@ class SessionActivity : AppCompatActivity() {
 
     private val onUpdateFrame = Scene.OnUpdateListener {
 
-        if(nodeslist!=null){
-            if(!nodeslist.isEmpty()){
-                for(n in nodeslist){
-                    if(arFragment.arSceneView.scene.overlapTestAll(n).size >0){
-                        Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
-                    }
-                    /*if(arFragment.arSceneView.scene.overlapTest(n)!=null){
-                        Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
-                    }*/
+        if(nodeslist.isNotEmpty()){
+            for(n in nodeslist){
+                if(arFragment.arSceneView.scene.overlapTestAll(n).size >0){
+                    Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
                 }
+                /*if(arFragment.arSceneView.scene.overlapTest(n)!=null){
+                    Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
+                }*/
             }
         }
     }
@@ -277,40 +269,25 @@ class SessionActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        //obj = intent.getStringExtra("nameObject").toString()
     }
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
         Log.i("OBJ",obj)
 
-        //TODO cambiare
-        if(!obj.equals("cuboRosso")){
-
-            ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/"+obj+".glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
+        ModelRenderable.builder()
+            .setSource(this, Uri.parse("models/$obj.glb"))
+            .setIsFilamentGltf(true)
+            .build()
+            .thenAccept { model: ModelRenderable -> objRenderable = model }
+            .exceptionally {
+                    val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
                     t.show()
                     null
                 }
             Log.i("OBJ","fine build")
 
-        } else{
-            ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/rhino.glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
-                    t.show()
-                    null
-                }
         }
 
     }
-}
+

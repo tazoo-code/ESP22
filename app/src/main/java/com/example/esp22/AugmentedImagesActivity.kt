@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.*
@@ -25,24 +26,20 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private lateinit var arFragment: ArFragment
 
-    private var tv1: TextView? = null
-    private var model: CompletableFuture<ModelRenderable>? = null
-    private var centerNode: Node? = null
-    var modelSelected = false
-
     private lateinit var database: AugmentedImageDatabase
-    private var isRendered = false
-    private var isRendered2 = false
+
     private var node : TransformableNode? = null
 
     private val listnode: MutableList<TransformableNode> = arrayListOf()
 
     private var namesobj: MutableList<String> = arrayListOf()
     private var renderobj: MutableList<Boolean> = arrayListOf()
+    var clearPressed = false
 
     private var rot = 0f
     private var count=0
 
+//TODO aggiungere bottone clear
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -50,7 +47,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         setContentView(R.layout.activity_augmented_images)
 
-        tv1 = findViewById<TextView>(R.id.tx1)
+        //tv1 = findViewById<TextView>(R.id.tx1)
 
         namesobj.add("terra")
         namesobj.add("marte")
@@ -59,6 +56,28 @@ class AugmentedImagesActivity: AppCompatActivity() {
         renderobj.add(false)
         renderobj.add(false)
         renderobj.add(false)
+
+        val clearButton = findViewById<Button>(R.id.clear)
+
+        clearButton.setOnClickListener { v ->
+            clearPressed = true
+
+            /*else if (augmentedImage.trackingState == TrackingState.PAUSED) {
+                for (i in 0 until namesobj.size) {
+
+                    if (augmentedImage.name.contains(namesobj[i]) && renderobj[i]) {
+                        val an = AnchorNode(augmentedImage.anchors.first())
+                        val nodes = an.children
+                        for (j in nodes){
+                            j.renderable = null
+                        }
+                        renderobj[i] = false
+
+                    }
+
+                }
+            }*/
+        }
 
 
         //Riferimento al ArFragment
@@ -87,23 +106,14 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
                 // Check for image detection
                 //arFragment.setOnAugmentedImageUpdateListener(onAugmentedImageTrackingUpdate)
-                arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame);
+                arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
 
                 val a = session.config
                 val b = a.focusMode.name
                 Log.i("Camera","Camerafocus -> $b")
 
             }
-
         }
-
-
-
-
-
-
-        //setModel()
-
     }
 
     override fun onResume() {
@@ -156,21 +166,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
                         renderobj[i] = true
                     }
                 }
-            } /*else if (augmentedImage.trackingState == TrackingState.PAUSED) {
-                for (i in 0 until namesobj.size) {
-
-                    if (augmentedImage.name.contains(namesobj[i]) && renderobj[i]) {
-                        val an = AnchorNode(augmentedImage.anchors.first())
-                        val nodes = an.children
-                        for (j in nodes){
-                            j.renderable = null
-                        }
-                        renderobj[i] = false
-
-                    }
-
-                }
-            }*/
+            }
         }
     }
     private fun renderObject(fragment: ArFragment, anchor: Anchor, name: String) {
@@ -222,7 +218,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
         //node.localScale = Vector3(0.05f,0.05f,0.05f)
         fragment.arSceneView.scene.addChild(anchorNode)
         //Posizione in riferimento alla foto
-        node!!.localPosition = Vector3(0f,0.5f,0f)
+        node!!.localPosition = Vector3(0f,0.8f,0f)
         node!!.select()
 
         listnode.add(node!!)

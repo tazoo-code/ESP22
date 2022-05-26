@@ -17,4 +17,5 @@
     <string name="english">Inglese</string>
     <string name="italian">Italiano</string>
     <string name="back_arrow_icon">Freccia indietro</string>
+    <string name="clear">Pulisci</string>
 </resources>

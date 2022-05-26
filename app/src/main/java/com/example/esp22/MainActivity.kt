@@ -37,12 +37,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        /*
+
         val augmImagesButton : ImageView = findViewById(R.id.augmented_images)
-        rendering3dButton.setOnClickListener{
-            val intent = Intent(this, ::class.java)
+        augmImagesButton.setOnClickListener{
+            val intent = Intent(this, AugmentedImagesActivity::class.java)
             startActivity(intent)
-        }*/
+        }
 
 
     }

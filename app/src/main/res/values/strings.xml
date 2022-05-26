@@ -12,6 +12,7 @@
     <!-- SessionActivity strings-->
     <string name="placeMode">Place Mode</string>
     <string name="delMode">Delete Mode</string>
+    <string name="clear">Clear</string>
 
     <!-- SettingActivity strings -->
     <!-- Theme -->

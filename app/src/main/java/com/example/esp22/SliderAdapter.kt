@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.Exception
 
 
 class SliderAdapter(private val list: Array<String>) :
@@ -39,6 +40,21 @@ class SliderAdapter(private val list: Array<String>) :
 
             itemImageView.contentDescription=str
 
+            var id = itemImageView.context.resources.getIdentifier(str,"drawable",itemImageView.context.packageName)
+            if(id == 0) {
+                id = itemImageView.context.resources.getIdentifier(
+                    "no_image",
+                    "drawable",
+                    itemImageView.context.packageName
+                )
+            }
+
+            itemImageView.setImageResource(id)
+
+
+
+
+            /*
             when(str){
 
                 "cuboRosso"->itemImageView.setImageResource(R.drawable.cuborosso)
@@ -47,6 +63,8 @@ class SliderAdapter(private val list: Array<String>) :
                 "lamp"->itemImageView.setImageResource(R.drawable.lamp)
 
             }
+            */
+
         }
     }
 }

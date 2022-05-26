@@ -26,9 +26,9 @@
 
     <!-- 3D objects -->
     <string-array name="object_array">
-        <item>lamp</item>
-        <item>spada</item>
-        <item>cuboRosso</item>
-        <item>cuboWireframe</item>
+        <item>cubo_rosso</item>
+        <item>rhino</item>
+
+
     </string-array>
 </resources>
