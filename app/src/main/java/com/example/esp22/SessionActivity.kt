@@ -171,6 +171,7 @@ class SessionActivity : AppCompatActivity() {
                             if(obj.equals("cuboRosso")){
                                 renderableInstance.animate(true).start()
                             }
+                            
                             // Add child model relative the a parent model
                             addChild(Node().apply {
 
@@ -283,6 +284,7 @@ class SessionActivity : AppCompatActivity() {
     private fun setModel() {
         Log.i("OBJ",obj)
 
+        //TODO cambiare
         if(!obj.equals("cuboRosso")){
 
             ModelRenderable.builder()

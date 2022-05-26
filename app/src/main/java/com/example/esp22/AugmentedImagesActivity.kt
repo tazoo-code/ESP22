@@ -3,6 +3,7 @@ package com.example.esp22
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -59,22 +60,17 @@ class AugmentedImagesActivity: AppCompatActivity() {
         renderobj.add(false)
         renderobj.add(false)
 
-        //setModel()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
+
 
         //Configurazione sessione ArCore
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
 
                 //TODO Risolvere se possibile il problema dell'auto facus
-                config.focusMode = Config.FocusMode.AUTO
+                //config.focusMode = Config.FocusMode.AUTO
                 // Disable plane detection
 
                 config.planeFindingMode = Config.PlaneFindingMode.DISABLED
@@ -93,27 +89,41 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 //arFragment.setOnAugmentedImageUpdateListener(onAugmentedImageTrackingUpdate)
                 arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame);
 
+                val a = session.config
+                val b = a.focusMode.name
+                Log.i("Camera","Camerafocus -> $b")
+
             }
 
         }
+
+
+
+
+
+
+        //setModel()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+
 
     }
 
     private val onUpdateFrame = Scene.OnUpdateListener {
         val frame = arFragment.arSceneView.arFrame
 
-        if(listnode!=null ){
-            if(!listnode!!.isEmpty()) {
-                for (n in listnode!!) {
-                    //Rotazione del nodo e quindi del modello TODO aggiungere la possibilità di ruotare piu nodi(con una lista di nodi?)
-                    if(n != null) {
-                        if (rot >= 360) {
-                            rot = 0f
-                        }
-                        rot++
-                        n!!.localRotation = Quaternion(Vector3(0f,rot,0f))
-                    }
+        if (!listnode.isEmpty()) {
+            for (n in listnode) {
+                //Rotazione del nodo e quindi del modello
+                if (rot >= 360) {
+                    rot = 0f
                 }
+                rot++
+                n.localRotation = Quaternion(Vector3(0f, rot, 0f))
             }
         }
 
@@ -132,7 +142,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
             if (augmentedImage.trackingState == TrackingState.TRACKING) {
 
-                for(i in 0 until namesobj.size){
+                for (i in 0 until namesobj.size) {
 
                     if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
 
@@ -143,13 +153,26 @@ class AugmentedImagesActivity: AppCompatActivity() {
                             augmentedImage.createAnchor(augmentedImage.centerPose),
                             namesobj[i]
                         )
-                        renderobj.set(i,true)
+                        renderobj[i] = true
                     }
                 }
-            }
+            } /*else if (augmentedImage.trackingState == TrackingState.PAUSED) {
+                for (i in 0 until namesobj.size) {
+
+                    if (augmentedImage.name.contains(namesobj[i]) && renderobj[i]) {
+                        val an = AnchorNode(augmentedImage.anchors.first())
+                        val nodes = an.children
+                        for (j in nodes){
+                            j.renderable = null
+                        }
+                        renderobj[i] = false
+
+                    }
+
+                }
+            }*/
         }
     }
-
     private fun renderObject(fragment: ArFragment, anchor: Anchor, name: String) {
         ModelRenderable.builder()
             .setSource(this, Uri.parse("models/$name.glb"))
@@ -202,7 +225,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
         node!!.localPosition = Vector3(0f,0.5f,0f)
         node!!.select()
 
-        listnode!!.add(node!!)
+        listnode.add(node!!)
     }
 }
 
