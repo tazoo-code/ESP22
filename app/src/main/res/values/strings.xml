@@ -7,6 +7,7 @@
     <string name="rendering_3d_preview">Rendering 3D preview</string>
     <string name="augmented_images_preview">Augmented images preview</string>
     <string name="gallery_arrow">Arrow up/down icon</string>
+    <string name="back_arrow_icon">Back arrow</string>
 
     <!-- SessionActivity strings-->
     <string name="placeMode">Place Mode</string>

@@ -2,6 +2,7 @@ package com.example.esp22
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.preference.Preference
@@ -18,6 +19,10 @@ class SettingsActivity : AppCompatActivity() {
                 .beginTransaction()
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
+        }
+        val back : ImageView = findViewById(R.id.settings_back_button)
+        back.setOnClickListener{
+            finish()
         }
     }
 
@@ -39,8 +44,8 @@ class SettingsActivity : AppCompatActivity() {
                 }
 
             findPreference<Preference>("theme")!!.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { preference: Preference, value: Any ->
-                    when (value) {
+                Preference.OnPreferenceChangeListener { preference: Preference, theme: Any ->
+                    when (theme) {
                         "dark_theme" -> setDefaultNightMode(MODE_NIGHT_YES)
                         "light_theme" -> setDefaultNightMode(MODE_NIGHT_NO)
                         "system_default" -> setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)

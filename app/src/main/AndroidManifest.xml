@@ -15,24 +15,27 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Esp22">
+        android:theme="@style/Theme.Esp22" >
+
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:configChanges="uiMode" />
+            android:configChanges="uiMode|locale|layoutDirection" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:configChanges="uiMode" >
+            android:configChanges="uiMode|locale|layoutDirection" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SessionActivity"
             android:exported="true" />
+
         <!--
  "AR Required" app, requires "Google Play Services for AR" (ARCore)
          to be installed, as the app does not include any non-AR features.

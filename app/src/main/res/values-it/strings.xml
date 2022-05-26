@@ -16,4 +16,5 @@
     <string name="default_language">Predefinita del sistema</string>
     <string name="english">Inglese</string>
     <string name="italian">Italiano</string>
+    <string name="back_arrow_icon">Freccia indietro</string>
 </resources>
