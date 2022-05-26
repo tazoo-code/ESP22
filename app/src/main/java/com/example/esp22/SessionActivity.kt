@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.ar.core.Config
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -36,6 +37,8 @@ class SessionActivity : AppCompatActivity() {
     lateinit var obj: String
 
     var isTouched : Boolean = false
+
+    private var nodeslist: MutableList<Node> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -130,6 +133,8 @@ class SessionActivity : AppCompatActivity() {
                 if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
                     config.depthMode = Config.DepthMode.AUTOMATIC
                 }
+
+                arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
             }
             setOnViewCreatedListener { arSceneView ->
                 // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
@@ -156,11 +161,16 @@ class SessionActivity : AppCompatActivity() {
 
                             setModel()
                             renderable = objRenderable
+
                             /*Associo al nodo il listener che elimina il nodo quando
                               viene cliccato nella modalita delete model
                             */
                             setOnTouchListener(delNode)
                             select()
+
+                            if(obj.equals("cuboRosso")){
+                                renderableInstance.animate(true).start()
+                            }
                             // Add child model relative the a parent model
                             addChild(Node().apply {
 
@@ -170,12 +180,19 @@ class SessionActivity : AppCompatActivity() {
                                 // Definizione scala relativa
                                 localScale = Vector3(0.7f, 0.7f, 0.7f)
                                 //renderable = modelView
+                                if(obj.equals("cuboRosso")){
+                                    localScale= Vector3(0.03f,0.03f,0.03f)
+                                }
+                                //collisionShape
+                                nodeslist.add(this)
                             })
                             //renderableInstance.animate(true).start()
                         })
                     })
                 }
             }
+
+
 
             //Rileva quando lo slider cambia di stato
             bottomSheetBehavior.addBottomSheetCallback(object :
@@ -215,6 +232,23 @@ class SessionActivity : AppCompatActivity() {
         }
     }
 
+
+    private val onUpdateFrame = Scene.OnUpdateListener {
+
+        if(nodeslist!=null){
+            if(!nodeslist.isEmpty()){
+                for(n in nodeslist){
+                    if(arFragment.arSceneView.scene.overlapTestAll(n).size >0){
+                        Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
+                    }
+                    /*if(arFragment.arSceneView.scene.overlapTest(n)!=null){
+                        Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
+                    }*/
+                }
+            }
+        }
+    }
+
     //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
     fun changeArrow(state: Int) {
         val iv: ImageView = findViewById(R.id.gallery_arrow)
@@ -249,16 +283,32 @@ class SessionActivity : AppCompatActivity() {
     private fun setModel() {
         Log.i("OBJ",obj)
 
-        ModelRenderable.builder()
-            .setSource(this, Uri.parse("models/"+obj+".glb"))
-            .setIsFilamentGltf(true)
-            .build()
-            .thenAccept { model: ModelRenderable -> objRenderable = model }
-            .exceptionally {
-                val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
-                t.show()
-                null
-            }
-        Log.i("OBJ","fine build")
+        if(!obj.equals("cuboRosso")){
+
+            ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/"+obj+".glb"))
+                .setIsFilamentGltf(true)
+                .build()
+                .thenAccept { model: ModelRenderable -> objRenderable = model }
+                .exceptionally {
+                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
+                    t.show()
+                    null
+                }
+            Log.i("OBJ","fine build")
+
+        } else{
+            ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/rhino.glb"))
+                .setIsFilamentGltf(true)
+                .build()
+                .thenAccept { model: ModelRenderable -> objRenderable = model }
+                .exceptionally {
+                    val t = Toast.makeText(this, "Unable to load Cube model", Toast.LENGTH_SHORT)
+                    t.show()
+                    null
+                }
+        }
+
     }
 }
