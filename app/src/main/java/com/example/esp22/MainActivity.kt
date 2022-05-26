@@ -8,14 +8,14 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
-import androidx.preference.PreferenceManager
+
 
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val preferences : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences : SharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
 
         when (preferences.getString("theme", "system_default")) {
             "light_theme" -> setDefaultNightMode(MODE_NIGHT_NO)

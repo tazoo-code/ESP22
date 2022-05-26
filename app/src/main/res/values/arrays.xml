@@ -28,7 +28,13 @@
     <string-array name="object_array">
         <item>cubo_rosso</item>
         <item>rhino</item>
-
+        <item>elefante</item>
+        <item>Bee</item>
+        <item>Giraffe</item>
+        <item>Bengal</item>
+        <item>hornet_flying</item>
+        <item>tigre</item>
 
     </string-array>
+
 </resources>

@@ -168,7 +168,7 @@ class SessionActivity : AppCompatActivity() {
 
                             //TODO fare una funzione che mette le animazioni
                             //Se ha l'animazione la fa partire
-                            if(obj == "rhino"){
+                            if(renderableInstance.hasAnimations()){
                                 renderableInstance.animate(true).start()
                             }
 
@@ -181,9 +181,9 @@ class SessionActivity : AppCompatActivity() {
                                 // Definizione scala relativa
                                 localScale = Vector3(0.7f, 0.7f, 0.7f)
                                 //renderable = modelView
-                                if(obj == "rhino"){
-                                    localScale= Vector3(0.03f,0.03f,0.03f)
-                                }
+
+                                localScale= Vector3(0.03f,0.03f,0.03f)
+
                                 //collisionShape
                                 nodeslist.add(this)
                             })
@@ -270,6 +270,7 @@ class SessionActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
     }
+
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {

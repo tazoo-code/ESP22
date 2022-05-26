@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -34,6 +35,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private var namesobj: MutableList<String> = arrayListOf()
     private var renderobj: MutableList<Boolean> = arrayListOf()
+    private var augimages: MutableList<AugmentedImage> = arrayListOf()
     var clearPressed = false
 
     private var rot = 0f
@@ -59,8 +61,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         val clearButton = findViewById<Button>(R.id.clear)
 
-        clearButton.setOnClickListener { v ->
-            clearPressed = true
+        clearButton!!.setOnClickListener(setOnClickListener)
 
             /*else if (augmentedImage.trackingState == TrackingState.PAUSED) {
                 for (i in 0 until namesobj.size) {
@@ -77,7 +78,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
                 }
             }*/
-        }
+
 
 
         //Riferimento al ArFragment
@@ -116,10 +117,32 @@ class AugmentedImagesActivity: AppCompatActivity() {
         }
     }
 
+    private val setOnClickListener = View.OnClickListener { v->
+
+        if(!listnode.isEmpty() && !clearPressed){
+            clearPressed=true
+            val sz=listnode.size
+            for(i in 0 until sz){
+
+                arFragment.arSceneView.scene.removeChild(listnode[i])
+
+                listnode[i].parent = null
+                listnode[i].renderable = null
+            }
+            //Svuoto lista
+            /*for (j in 0 until sz){
+                listnode.removeAt(j)
+            }*/
+
+            //TODO QUANDO GLI OGGETTI VENGONO ELIMINATI NON VENGONO PIù TRACCIATI
+            /*for(j in 0 until renderobj.size){
+                renderobj[j]=false
+            }*/
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-
-
 
     }
 
@@ -222,6 +245,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
         node!!.select()
 
         listnode.add(node!!)
+        clearPressed=false
     }
 }
 
