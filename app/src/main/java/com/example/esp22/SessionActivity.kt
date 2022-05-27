@@ -57,6 +57,12 @@ class SessionActivity : AppCompatActivity() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
+        val homeButton: ImageView = findViewById(R.id.home_button_session)
+
+        homeButton.setOnClickListener {
+            finish()
+        }
+
 
         //Evento per cambio modalità
         switchButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -69,6 +75,8 @@ class SessionActivity : AppCompatActivity() {
                 isTouched = false
             }
         }
+
+
 
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)

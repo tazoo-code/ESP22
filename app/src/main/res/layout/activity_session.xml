@@ -38,20 +38,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch1"
-        style="@style/TextAppearance.AppCompat.Widget.Switch"
-        android:layout_width="129dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch1"
+            style="@style/TextAppearance.AppCompat.Widget.Switch"
+            android:layout_width="129dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
 
-        android:text="@string/placeMode"
-        android:checked="false"
-        android:textOff="@string/placeMode"
-        android:textOn="@string/delMode"
+            android:text="@string/placeMode"
+            android:checked="false"
+            android:textOff="@string/placeMode"
+            android:textOn="@string/delMode"
+            android:textColor="?attr/colorOnPrimary"
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="start" />
+
+        <ImageView
+            android:id="@+id/home_button_session"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_baseline_home_24"
+            android:layout_marginEnd="20dp"
+            android:scaleType="centerCrop"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@string/home_button"
+            android:tooltipText="@string/home_button"/>
 
     </com.google.android.material.appbar.MaterialToolbar>
 

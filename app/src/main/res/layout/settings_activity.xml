@@ -22,7 +22,8 @@
             android:color="?attr/colorOnPrimary"
             android:src="@drawable/ic_baseline_arrow_back_24"
             android:layout_marginEnd="20dp"
-            android:contentDescription="@string/back_arrow_icon" />
+            android:contentDescription="@string/back_arrow_icon"
+            android:tooltipText="@string/back_arrow_icon"/>
 
     </com.google.android.material.appbar.MaterialToolbar>
 

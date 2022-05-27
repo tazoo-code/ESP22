@@ -20,20 +20,38 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
 
-    <Button
-        android:id="@+id/clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/clear"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="?attr/colorSecondaryVariant"
+            android:textColor="?attr/colorOnSecondary"/>
+
+        <ImageView
+            android:id="@+id/home_button_augm"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_baseline_home_24"
+            android:layout_marginEnd="20dp"
+            android:scaleType="centerCrop"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@string/home_button"
+            android:tooltipText="@string/home_button"/>
+
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.*
@@ -58,6 +59,13 @@ class AugmentedImagesActivity: AppCompatActivity() {
         renderobj.add(false)
         renderobj.add(false)
         renderobj.add(false)
+
+        val homeButton : ImageView = findViewById(R.id.home_button_augm)
+
+        homeButton.setOnClickListener {
+            finish()
+        }
+
 
         val clearButton = findViewById<Button>(R.id.clear)
 

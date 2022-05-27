@@ -3,11 +3,11 @@
     <string name="app_name" translatable="false">esp22</string>
 
     <!-- imageview descriptions -->
-    <string name="settings_button_icon">Setting icon</string>
+    <string name="settings_button_icon">Settings</string>
     <string name="rendering_3d_preview">Rendering 3D preview</string>
     <string name="augmented_images_preview">Augmented images preview</string>
     <string name="gallery_arrow">Arrow up/down icon</string>
-    <string name="back_arrow_icon">Back arrow</string>
+    <string name="back_arrow_icon">Back</string>
 
     <!-- SessionActivity strings-->
     <string name="placeMode">Place Mode</string>
@@ -27,5 +27,6 @@
     <string name="default_language">System default</string>
     <string name="italian">Italian</string>
     <string name="english">English</string>
+    <string name="home_button">Home</string>
 
 </resources>

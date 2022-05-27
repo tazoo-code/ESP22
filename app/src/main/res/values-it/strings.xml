@@ -7,7 +7,7 @@
     <string name="language_header">Lingua</string>
     <string name="theme_title">Tema</string>
     <string name="language_title">Lingua</string>
-    <string name="settings_button_icon">Icona impostazioni</string>
+    <string name="settings_button_icon">Impostazioni</string>
     <string name="rendering_3d_preview">Preview rendering 3D</string>
     <string name="augmented_images_preview">Preview augmented images</string>
     <string name="light_theme">Tema chiaro</string>
@@ -16,6 +16,7 @@
     <string name="default_language">Predefinita del sistema</string>
     <string name="english">Inglese</string>
     <string name="italian">Italiano</string>
-    <string name="back_arrow_icon">Freccia indietro</string>
+    <string name="back_arrow_icon">Indietro</string>
     <string name="clear">Pulisci</string>
+    <string name="home_button">Home</string>
 </resources>
