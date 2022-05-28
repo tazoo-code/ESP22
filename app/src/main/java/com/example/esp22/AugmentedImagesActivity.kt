@@ -4,16 +4,14 @@ package com.example.esp22
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -21,7 +19,6 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
-import java.util.concurrent.CompletableFuture
 
 
 class AugmentedImagesActivity: AppCompatActivity() {
@@ -149,10 +146,18 @@ class AugmentedImagesActivity: AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onPause() {
+        super.onPause()
+        arFragment.onPause()
 
     }
+    override fun onResume() {
+        super.onResume()
+        arFragment.onResume()
+
+
+    }
+
 
     private val onUpdateFrame = Scene.OnUpdateListener {
         val frame = arFragment.arSceneView.arFrame
@@ -197,6 +202,9 @@ class AugmentedImagesActivity: AppCompatActivity() {
                         renderobj[i] = true
                     }
                 }
+            }
+            if (augmentedImage.trackingState == TrackingState.PAUSED) {
+                //--
             }
         }
     }

@@ -26,6 +26,8 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
+import java.lang.Exception
+import java.util.*
 
 class SessionActivity : AppCompatActivity() {
 
@@ -98,7 +100,7 @@ class SessionActivity : AppCompatActivity() {
                         obj = stringArray[position]
                         Log.i("Modello",obj)
                         //In base alla posizione degli oggetti
-                        setModel()
+                        setModel(0)
                     }
                 })
         )
@@ -165,7 +167,7 @@ class SessionActivity : AppCompatActivity() {
 
                             //if (obj== "default"){   obj = "cuborosso"}
 
-                            setModel()
+                            setModel(0)
                             renderable = objRenderable
 
                             /*Associo al nodo il listener che elimina il nodo quando
@@ -174,11 +176,32 @@ class SessionActivity : AppCompatActivity() {
                             setOnTouchListener(delNode)
                             select()
 
+                            renderableInstance.hasAnimations()
+                            renderableInstance.animate(true).start()
+
                             //TODO fare una funzione che mette le animazioni
                             //Se ha l'animazione la fa partire
-                            if(renderableInstance.hasAnimations()){
-                                renderableInstance.animate(true).start()
+                            /*
+                            try {
+                                if(renderableInstance.hasAnimations()){
+                                    renderableInstance.animate(true).start()
+                                }
+                            }catch (e :Exception){
+                                renderable=null
+
+                                setModel(1)
+
+                                renderable = objRenderable
+                                setOnTouchListener(delNode)
+                                select()
+
+                                if(renderableInstance.hasAnimations()){
+                                    renderableInstance.animate(true).start()
+
                             }
+
+                        }*/
+
 
                             // Add child model relative the a parent model
                             addChild(Node().apply {
@@ -281,22 +304,40 @@ class SessionActivity : AppCompatActivity() {
 
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
-    private fun setModel() {
+    private fun setModel(n : Int) {
         Log.i("OBJ",obj)
 
-        ModelRenderable.builder()
-            .setSource(this, Uri.parse("models/$obj.glb"))
-            .setIsFilamentGltf(true)
-            .build()
-            .thenAccept { model: ModelRenderable -> objRenderable = model }
-            .exceptionally {
+        if (n==0) {
+            ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/$obj.glb"))
+                .setIsFilamentGltf(true)
+                .build()
+                .thenAccept { model: ModelRenderable -> objRenderable = model }
+                .exceptionally {
+                    val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
+                    t.show()
+                    null
+                }
+            Log.i("OBJ", "fine build")
+        }
+
+        else{
+
+            obj = obj.capitalize(Locale.ROOT)
+
+            ModelRenderable.builder()
+                .setSource(this, Uri.parse("models/$obj.glb"))
+                .setIsFilamentGltf(true)
+                .build()
+                .thenAccept { model: ModelRenderable -> objRenderable = model }
+                .exceptionally {
                     val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
                     t.show()
                     null
                 }
             Log.i("OBJ","fine build")
-
         }
-
     }
+}
+
 
