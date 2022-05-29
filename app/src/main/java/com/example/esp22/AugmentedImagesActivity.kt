@@ -7,9 +7,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
@@ -39,6 +38,8 @@ class AugmentedImagesActivity: AppCompatActivity() {
     private var rot = 0f
     private var count=0
 
+    private var s: Session?=null
+
 //TODO aggiungere bottone clear
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +53,21 @@ class AugmentedImagesActivity: AppCompatActivity() {
         namesobj.add("terra")
         namesobj.add("marte")
         namesobj.add("mercurio")
+        namesobj.add("venere")
+        namesobj.add("sole")
+        namesobj.add("nettuno")
+        namesobj.add("urano")
+        namesobj.add("sistemasolare")
+        namesobj.add("giove")
+        namesobj.add("saturno")
 
+        renderobj.add(false)
+        renderobj.add(false)
+        renderobj.add(false)
+        renderobj.add(false)
+        renderobj.add(false)
+        renderobj.add(false)
+        renderobj.add(false)
         renderobj.add(false)
         renderobj.add(false)
         renderobj.add(false)
@@ -110,6 +125,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 config.lightEstimationMode = Config.LightEstimationMode.DISABLED
                 session.configure(config)
 
+                //s=session
                 // Check for image detection
                 //arFragment.setOnAugmentedImageUpdateListener(onAugmentedImageTrackingUpdate)
                 arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
@@ -124,7 +140,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private val setOnClickListener = View.OnClickListener { v->
 
-        if(!listnode.isEmpty() && !clearPressed){
+        /*if(!listnode.isEmpty() && !clearPressed){
             clearPressed=true
             val sz=listnode.size
             for(i in 0 until sz){
@@ -135,15 +151,29 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 listnode[i].renderable = null
             }
             //Svuoto lista
-            /*for (j in 0 until sz){
+            for (j in 0 until sz){
                 listnode.removeAt(j)
-            }*/
+            }
 
             //TODO QUANDO GLI OGGETTI VENGONO ELIMINATI NON VENGONO PIù TRACCIATI
-            /*for(j in 0 until renderobj.size){
+            for(j in 0 until renderobj.size){
                 renderobj[j]=false
             }*/
-        }
+
+        /*if(s!=null){
+            s!!.pause()
+
+            s!!.close()
+
+            s!!.resume()
+
+        }*/
+
+        //Restart Activity
+        val intent = intent
+        finish()
+        startActivity(intent)
+
     }
 
     override fun onPause() {
@@ -192,6 +222,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
                     if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
 
+                        Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
                         // here we got that image has been detected
                         // we will render our 3D asset in center of detected image
                         renderObject(
