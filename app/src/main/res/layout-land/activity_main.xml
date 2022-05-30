@@ -45,7 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/rendering_3d_preview"
+            android:src="@drawable/rendering_3d"
             android:scaleType="centerCrop"
             android:contentDescription="@string/rendering_3d_preview" />
 
@@ -58,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/augmented_images_preview"
+            android:src="@drawable/augmented_images"
             android:scaleType="centerCrop"
             android:contentDescription="@string/augmented_images_preview"/>
 

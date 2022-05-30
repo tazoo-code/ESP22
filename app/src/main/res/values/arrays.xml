@@ -28,7 +28,7 @@
     <string-array name="object_array">
         <item>cubo_rosso</item>
         <item>rhino</item>
-        <item>Bengal</item>
+        <item>bengal</item>
         <item>hornet_flying</item>
         <item>tiger</item>
         <item>penguin</item>
@@ -37,6 +37,7 @@
         <item>emu</item>
         <!--
         <item>dog</item>
+        <item>bear</item>
         -->
     </string-array>
 
@@ -53,7 +54,5 @@
         <item>uranus</item>
         <item>systemsolar</item>
     </string-array>
-
-
 
 </resources>
