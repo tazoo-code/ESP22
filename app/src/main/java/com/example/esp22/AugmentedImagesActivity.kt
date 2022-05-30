@@ -30,7 +30,9 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private val listnode: MutableList<TransformableNode> = arrayListOf()
 
-    private var namesobj: MutableList<String> = arrayListOf()
+
+    private lateinit var namesobj : Array<String>
+
     private var renderobj: MutableList<Boolean> = arrayListOf()
     private var augimages: MutableList<AugmentedImage> = arrayListOf()
     var clearPressed = false
@@ -50,27 +52,11 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         //tv1 = findViewById<TextView>(R.id.tx1)
 
-        namesobj.add("terra")
-        namesobj.add("marte")
-        namesobj.add("mercurio")
-        namesobj.add("venere")
-        namesobj.add("sole")
-        namesobj.add("nettuno")
-        namesobj.add("urano")
-        namesobj.add("sistemasolare")
-        namesobj.add("giove")
-        namesobj.add("saturno")
+        namesobj= this.resources.getStringArray(R.array.planet_array)
 
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
-        renderobj.add(false)
+        for( i in 0 until namesobj.size){
+            renderobj.add(false)
+        }
 
         val homeButton : ImageView = findViewById(R.id.home_button_augm)
 
@@ -99,11 +85,8 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 }
             }*/
 
-
-
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
-
 
         //Configurazione sessione ArCore
         arFragment.apply {
