@@ -42,7 +42,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private var s: Session?=null
 
-//TODO aggiungere bottone clear
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -60,32 +59,23 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         val homeButton : ImageView = findViewById(R.id.home_button_augm)
 
+        val infoButton :ImageView = findViewById(R.id.info_button_augmented)
+
+        val clearButton = findViewById<Button>(R.id.clear)
+
         homeButton.setOnClickListener {
             finish()
         }
 
+        infoButton.setOnClickListener{
+            InfoDialogFragment().show(supportFragmentManager,"AugmentedImagesActivity")
+        }
 
-        val clearButton = findViewById<Button>(R.id.clear)
+
 
         clearButton!!.setOnClickListener(setOnClickListener)
 
-            /*else if (augmentedImage.trackingState == TrackingState.PAUSED) {
-                for (i in 0 until namesobj.size) {
 
-                    if (augmentedImage.name.contains(namesobj[i]) && renderobj[i]) {
-                        val an = AnchorNode(augmentedImage.anchors.first())
-                        val nodes = an.children
-                        for (j in nodes){
-                            j.renderable = null
-                        }
-                        renderobj[i] = false
-
-                    }
-
-                }
-            }*/
-
-        //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
         //Configurazione sessione ArCore
@@ -123,35 +113,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private val setOnClickListener = View.OnClickListener { v->
 
-        /*if(!listnode.isEmpty() && !clearPressed){
-            clearPressed=true
-            val sz=listnode.size
-            for(i in 0 until sz){
-
-                arFragment.arSceneView.scene.removeChild(listnode[i])
-
-                listnode[i].parent = null
-                listnode[i].renderable = null
-            }
-            //Svuoto lista
-            for (j in 0 until sz){
-                listnode.removeAt(j)
-            }
-
-            //TODO QUANDO GLI OGGETTI VENGONO ELIMINATI NON VENGONO PIù TRACCIATI
-            for(j in 0 until renderobj.size){
-                renderobj[j]=false
-            }*/
-
-        /*if(s!=null){
-            s!!.pause()
-
-            s!!.close()
-
-            s!!.resume()
-
-        }*/
-
         //Restart Activity
         val intent = intent
         finish()
@@ -186,13 +147,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
             }
         }
 
-        /*if(node!= null) {
-            if (rot >= 360) {
-                rot = 0f
-            }
-            rot++
-            node!!.localRotation = Quaternion(Vector3(0f,rot,0f))
-        }*/
 
         val augmentedImages = frame!!.getUpdatedTrackables(
             AugmentedImage::class.java

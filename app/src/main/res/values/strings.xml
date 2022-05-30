@@ -28,5 +28,10 @@
     <string name="italian">Italian</string>
     <string name="english">English</string>
     <string name="home_button">Home</string>
+    <string name="info_button">Info</string>
+    <string name="info_session"> Info text for plane detection</string>
+    <string name="info_augmented"> Info text for augmented images</string>
+    <string name="ok" translatable="false">OK</string>
+
 
 </resources>

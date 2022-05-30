@@ -19,4 +19,7 @@
     <string name="back_arrow_icon">Indietro</string>
     <string name="clear">Pulisci</string>
     <string name="home_button">Home</string>
+    <string name="info_button">Info</string>
+    <string name="info_session"> Testo di info per la sessione di plane detection</string>
+    <string name="info_augmented"> Testo di info per la sessione di plane detection</string>
 </resources>

@@ -15,6 +15,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.Config
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
@@ -51,6 +52,8 @@ class SessionActivity : AppCompatActivity() {
 
         stringArray = this.resources.getStringArray(R.array.object_array)
         obj = ""
+        //Riferimento al ArFragment
+        arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
         //Riferimento a switchbutton per il cambio di modalità (Place model-->Delete model)
         val switchButton = findViewById<SwitchCompat>(R.id.switch1)
@@ -61,10 +64,15 @@ class SessionActivity : AppCompatActivity() {
 
         val homeButton: ImageView = findViewById(R.id.home_button_session)
 
+        val infoButton : ImageView = findViewById(R.id.info_button_session)
+
         homeButton.setOnClickListener {
             finish()
         }
 
+        infoButton.setOnClickListener{v->
+            InfoDialogFragment().show(supportFragmentManager,"SessionActivity")
+        }
 
         //Evento per cambio modalità
         switchButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -80,8 +88,7 @@ class SessionActivity : AppCompatActivity() {
 
 
 
-        //Riferimento al ArFragment
-        arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
+
 
         //RecyclerView dello slider
         val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
