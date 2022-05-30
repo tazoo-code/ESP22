@@ -30,7 +30,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private val listnode: MutableList<TransformableNode> = arrayListOf()
 
-
     private lateinit var namesobj : Array<String>
 
     private var renderobj: MutableList<Boolean> = arrayListOf()
@@ -128,10 +127,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         arFragment.onResume()
-
-
     }
-
 
     private val onUpdateFrame = Scene.OnUpdateListener {
         val frame = arFragment.arSceneView.arFrame
@@ -160,6 +156,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
                     if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
 
                         Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
+
                         if(namesobj[i]=="systemsolar"){
                             Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
                             // here we got that image has been detected
@@ -167,7 +164,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
                             renderObject(
                                 arFragment,
                                 augmentedImage.createAnchor(augmentedImage.centerPose),
-                                "orrery"
+                                "solar_system"
                             )
 
                             renderobj[i] = true

@@ -326,20 +326,33 @@ class SessionActivity : AppCompatActivity() {
         Log.i("OBJ",obj)
 
         if (n==0) {
-            ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/$obj.glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
-                    t.show()
-                    null
-                }
-            Log.i("OBJ", "fine build")
-        }
 
-        else{
+            if(obj=="bengal"){
+                ModelRenderable.builder()
+                    .setSource(this, Uri.parse("models/Bengal.glb"))
+                    .setIsFilamentGltf(true)
+                    .build()
+                    .thenAccept { model: ModelRenderable -> objRenderable = model }
+                    .exceptionally {
+                        val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
+                        t.show()
+                        null
+                    }
+
+            }else {
+                ModelRenderable.builder()
+                    .setSource(this, Uri.parse("models/$obj.glb"))
+                    .setIsFilamentGltf(true)
+                    .build()
+                    .thenAccept { model: ModelRenderable -> objRenderable = model }
+                    .exceptionally {
+                        val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
+                        t.show()
+                        null
+                    }
+            }
+            Log.i("OBJ", "fine build")
+        }else{
 
             obj = obj.capitalize(Locale.ROOT)
 
