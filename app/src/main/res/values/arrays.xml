@@ -34,6 +34,8 @@
         <item>penguin</item>
         <item>turtle</item>
         <item>dog</item>
+        <item>lion</item>
+        <item>emu</item>
     </string-array>
 
     <!-- 3D planets -->
@@ -43,11 +45,11 @@
         <item>venus</item>
         <item>earth</item>
         <item>mars</item>
-        <item>saturno</item>
+        <item>saturn</item>
         <item>jupiter</item>
         <item>neptune</item>
         <item>uranus</item>
-        <item>sistemsolar</item>
+        <item>systemsolar</item>
     </string-array>
 
 

@@ -206,14 +206,27 @@ class AugmentedImagesActivity: AppCompatActivity() {
                     if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
 
                         Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
-                        // here we got that image has been detected
-                        // we will render our 3D asset in center of detected image
-                        renderObject(
-                            arFragment,
-                            augmentedImage.createAnchor(augmentedImage.centerPose),
-                            namesobj[i]
-                        )
-                        renderobj[i] = true
+                        if(namesobj[i]=="systemsolar"){
+                            Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
+                            // here we got that image has been detected
+                            // we will render our 3D asset in center of detected image
+                            renderObject(
+                                arFragment,
+                                augmentedImage.createAnchor(augmentedImage.centerPose),
+                                "orrery"
+                            )
+
+                            renderobj[i] = true
+                        }else {
+                            // here we got that image has been detected
+                            // we will render our 3D asset in center of detected image
+                            renderObject(
+                                arFragment,
+                                augmentedImage.createAnchor(augmentedImage.centerPose),
+                                namesobj[i]
+                            )
+                            renderobj[i] = true
+                        }
                     }
                 }
             }
@@ -266,8 +279,13 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         node = TransformableNode(fragment.transformationSystem)
 
+
         node!!.renderable = renderable
         node!!.parent = anchorNode
+
+        if(node!!.renderableInstance.hasAnimations()){
+            node!!.renderableInstance.animate(true).start()
+        }
         //node.localScale = Vector3(0.05f,0.05f,0.05f)
         fragment.arSceneView.scene.addChild(anchorNode)
         //Posizione in riferimento alla foto
