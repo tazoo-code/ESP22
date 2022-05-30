@@ -123,10 +123,21 @@ class SessionActivity : AppCompatActivity() {
 
                             val hitNode: Node? = hitTestResult.node
 
+                            hitNode!!.renderable = null
+                            hitNode.parent = null
+
+                            val children =hitNode!!.children
+                            if(children.isNotEmpty() && children != null){
+                                for (i in 0 until children.size){
+                                    children[i].renderable = null
+                                }
+                            }
+
+
+
                             arFragment.arSceneView.scene.removeChild(hitNode)
 
-                            hitNode!!.parent = null
-                            hitNode.renderable = null
+
                         }
                     }
                 }

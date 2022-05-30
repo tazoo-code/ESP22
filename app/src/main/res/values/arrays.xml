@@ -33,7 +33,11 @@
         <item>tiger</item>
         <item>penguin</item>
         <item>turtle</item>
+        <item>lion</item>
+        <item>emu</item>
+        <!--
         <item>dog</item>
+        -->
     </string-array>
 
     <!-- 3D planets -->
