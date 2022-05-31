@@ -36,21 +36,18 @@ class SessionActivity : AppCompatActivity() {
 
     var objRenderable: ModelRenderable? = null
 
-    private var nodeslist: MutableList<Node> = arrayListOf()
-
     private lateinit var stringArray : Array<String>
 
     //Nome dell'oggetto dal quale sarà costruito il modello 3d
     lateinit var obj: String
 
-    var isTouched : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_session)
 
         stringArray = this.resources.getStringArray(R.array.object_array)
-        obj = ""
+
 
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
@@ -69,10 +66,12 @@ class SessionActivity : AppCompatActivity() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
+        //Pulsante per tornare alla home
         homeButton.setOnClickListener {
             finish()
         }
 
+        //Pulsante che invoca il fragment con il messaggio di info
         infoButton.setOnClickListener{v->
             InfoDialogFragment().show(supportFragmentManager,"SessionActivity")
         }
@@ -82,10 +81,10 @@ class SessionActivity : AppCompatActivity() {
 
             if (isChecked) {
                 switchButton.text = getString(R.string.delMode)
-                isTouched = true
+
             } else {
                 switchButton.text = getString(R.string.placeMode)
-                isTouched = false
+
             }
         }
 
@@ -103,7 +102,7 @@ class SessionActivity : AppCompatActivity() {
                         obj = stringArray[position]
                         Log.i("Modello",obj)
                         //In base alla posizione degli oggetti
-                        setModel(0)
+                        setModel()
                     }
                 })
         )
@@ -172,7 +171,7 @@ class SessionActivity : AppCompatActivity() {
                         // Crea il transformable model e lo aggiunge all'anchor
                         addChild(TransformableNode(arFragment.transformationSystem).apply {
 
-                            setModel(0)
+                            setModel()
                             renderable = objRenderable
 
                             /*Associo al nodo il listener che elimina il nodo quando
@@ -180,8 +179,10 @@ class SessionActivity : AppCompatActivity() {
                             setOnTouchListener(delNode)
                             select()
 
-                            renderableInstance.hasAnimations()
-                            renderableInstance.animate(true).start()
+                            if (renderableInstance!=null && renderableInstance.hasAnimations()){
+                                renderableInstance.animate(true).start()
+                            }
+
 
                             // Add child model relative the a parent model
                             addChild(Node().apply {
@@ -195,7 +196,6 @@ class SessionActivity : AppCompatActivity() {
 
                                 localScale= Vector3(0.03f,0.03f,0.03f)
 
-                                nodeslist.add(this)
                             })
                         })
                     })
@@ -234,6 +234,8 @@ class SessionActivity : AppCompatActivity() {
                 }
             }
         }
+        obj = "cubo_rosso"
+        setModel()
     }
 
     //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
@@ -274,51 +276,28 @@ class SessionActivity : AppCompatActivity() {
     }
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
-    private fun setModel(n : Int) {
+    private fun setModel() {
         Log.i("OBJ",obj)
+        var uri = Uri.parse("")
 
-        if (n==0) {
-
-            //Per risolvere problema della lettera maiuscola in Bengal.glb
-            if(obj=="bengal"){
-                ModelRenderable.builder()
-                    .setSource(this, Uri.parse("models/Bengal.glb"))
-                    .setIsFilamentGltf(true)
-                    .build()
-                    .thenAccept { model: ModelRenderable -> objRenderable = model }
-                    .exceptionally {
-                        val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
-                        t.show()
-                        null
-                    }
-            }else{
-                ModelRenderable.builder()
-                    .setSource(this, Uri.parse("models/$obj.glb"))
-                    .setIsFilamentGltf(true)
-                    .build()
-                    .thenAccept { model: ModelRenderable -> objRenderable = model }
-                    .exceptionally {
-                        val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
-                        t.show()
-                        null
-                    }
-            }
-            Log.i("OBJ", "fine build")
+        //Per risolvere problema della lettera maiuscola in Bengal.glb
+        if(obj=="bengal"){
+            uri = Uri.parse("models/Bengal.glb")
         }else{
-            obj = obj.capitalize(Locale.ROOT)
-
-            ModelRenderable.builder()
-                .setSource(this, Uri.parse("models/$obj.glb"))
-                .setIsFilamentGltf(true)
-                .build()
-                .thenAccept { model: ModelRenderable -> objRenderable = model }
-                .exceptionally {
-                    val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
-                    t.show()
-                    null
-                }
-            Log.i("OBJ","fine build")
+            uri = Uri.parse("models/$obj.glb")
         }
+
+        ModelRenderable.builder()
+            .setSource(this, uri)
+            .setIsFilamentGltf(true)
+            .build()
+            .thenAccept { model: ModelRenderable -> objRenderable = model }
+            .exceptionally {
+                val t = Toast.makeText(this, "Unable to load model", Toast.LENGTH_SHORT)
+                t.show()
+                null
+            }
+        Log.i("OBJ", "fine build")
     }
 }
 
