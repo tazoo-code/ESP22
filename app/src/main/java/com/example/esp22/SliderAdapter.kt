@@ -1,18 +1,13 @@
 package com.example.esp22
 
 import android.content.Context
-import android.content.Intent.*
 import android.view.*
-import android.widget.AdapterView
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.Exception
 
 
 class SliderAdapter(private val list: Array<String>) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
-
-
 
     // Ritorna un nuovo ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -51,32 +46,14 @@ class SliderAdapter(private val list: Array<String>) :
 
             itemImageView.setImageResource(id)
 
-
-
-
-            /*
-            when(str){
-
-                "cuboRosso"->itemImageView.setImageResource(R.drawable.cuborosso)
-                "spada"->itemImageView.setImageResource(R.drawable.spada)
-                "cuboWireframe"->itemImageView.setImageResource(R.drawable.cubowireframe)
-                "lamp"->itemImageView.setImageResource(R.drawable.lamp)
-
-            }
-            */
-
         }
     }
 }
 
  //Classe per gestire l'evento click su un elemento dello slider
  class RecyclerItemClickListener(context:Context, listener: OnItemClickListener) : RecyclerView.OnItemTouchListener {
-    private var  mListener :OnItemClickListener?
 
-     interface OnItemClickListener {
-         fun onItemClick(view: View?, position: Int)
-     }
-
+     private var  mListener :OnItemClickListener?
      private var mGestureDetector: GestureDetector? = null
 
      init {
@@ -87,6 +64,11 @@ class SliderAdapter(private val list: Array<String>) :
              }
          })
      }
+
+     interface OnItemClickListener {
+         fun onItemClick(view: View?, position: Int)
+     }
+
 
      override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
          val childView = view.findChildViewUnder(e.x, e.y)
@@ -100,5 +82,7 @@ class SliderAdapter(private val list: Array<String>) :
          //intenzionalmente vuoto
      }
 
-     override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+     override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+         //intenzionalmente vuoto
+     }
 }

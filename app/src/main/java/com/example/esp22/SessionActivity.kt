@@ -15,11 +15,9 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.Config
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.CameraStream
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -27,15 +25,16 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
-import java.lang.Exception
-import java.util.*
+
+
 
 class SessionActivity : AppCompatActivity() {
 
-    lateinit var arFragment: ArFragment
+    private lateinit var arFragment: ArFragment
 
-    var objRenderable: ModelRenderable? = null
+    private var objRenderable: ModelRenderable? = null
 
+    //Array contenente il nome dei modelli
     private lateinit var stringArray : Array<String>
 
     //Nome dell'oggetto dal quale sarà costruito il modello 3d
@@ -66,13 +65,13 @@ class SessionActivity : AppCompatActivity() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
-        //Pulsante per tornare alla home
+        //Se il pulsante home viene premuto ritorna alla home
         homeButton.setOnClickListener {
             finish()
         }
 
-        //Pulsante che invoca il fragment con il messaggio di info
-        infoButton.setOnClickListener{v->
+        //Se il pulsante info viene premuto allora invoca il fragment con il messaggio di info
+        infoButton.setOnClickListener{
             InfoDialogFragment().show(supportFragmentManager,"SessionActivity")
         }
 
@@ -278,13 +277,11 @@ class SessionActivity : AppCompatActivity() {
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
         Log.i("OBJ",obj)
-        var uri = Uri.parse("")
+        var uri = Uri.parse("models/$obj.glb")
 
         //Per risolvere problema della lettera maiuscola in Bengal.glb
         if(obj=="bengal"){
             uri = Uri.parse("models/Bengal.glb")
-        }else{
-            uri = Uri.parse("models/$obj.glb")
         }
 
         ModelRenderable.builder()

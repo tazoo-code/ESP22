@@ -8,11 +8,13 @@ import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 
+
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
+
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
@@ -38,7 +40,6 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<Preference>("language")?.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference, any: Any ->
-
                     true
                 }
 

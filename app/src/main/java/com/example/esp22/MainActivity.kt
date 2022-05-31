@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         val preferences : SharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
 
+        //Imposta il tema dell'applicazione in base alla configurazione del sistema
         when (preferences.getString("theme", "system_default")) {
             "light_theme" -> setDefaultNightMode(MODE_NIGHT_NO)
             "dark_theme" -> setDefaultNightMode(MODE_NIGHT_YES)
@@ -24,19 +25,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //In caso della pressione del tasto setting viene avviata l'activity delle impostazioni
         val settingsButton : ImageView = findViewById(R.id.settings_button)
         settingsButton.setOnClickListener{
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
-        val rendering3dButton : ImageView = findViewById(R.id.rendering_3d)
-        rendering3dButton.setOnClickListener{
+        //In caso della pressione del tasto planeDetect viene avviata l'activity del plane detection
+        val planeDetectButton : ImageView = findViewById(R.id.rendering_3d)
+        planeDetectButton.setOnClickListener{
             val intent = Intent(this, SessionActivity::class.java)
             startActivity(intent)
         }
 
-
+        //In caso della pressione del tasto augmImage viene avviata l'activity dell' augmented images
         val augmImagesButton : ImageView = findViewById(R.id.augmented_images)
         augmImagesButton.setOnClickListener{
             val intent = Intent(this, AugmentedImagesActivity::class.java)
@@ -46,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+    //In caso di configurazioni cambiate viene aggiornata l'activity
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         recreate()

@@ -30,8 +30,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private var renderobj: MutableList<Boolean> = arrayListOf()
 
-    private var augimages: MutableList<AugmentedImage> = arrayListOf()
-
     private lateinit var namesobj : Array<String>
 
     private var node : TransformableNode? = null
@@ -88,20 +86,13 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 config.lightEstimationMode = Config.LightEstimationMode.DISABLED
                 session.configure(config)
 
-                arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
+                arFragment.arSceneView.scene.addOnUpdateListener(onUpdateFrame)
 
                 val a = session.config
                 val b = a.focusMode.name
                 Log.i("Camera","Camerafocus -> $b")
             }
         }
-    }
-
-    private val setOnClickListener = View.OnClickListener { v->
-        //Restart Activity
-        val intent = intent
-        finish()
-        startActivity(intent)
     }
 
     override fun onPause() {
@@ -113,12 +104,22 @@ class AugmentedImagesActivity: AppCompatActivity() {
         arFragment.onResume()
     }
 
+    //Listener per resettare il tracking delle immagini
+    private val setOnClickListener = View.OnClickListener {
+        //Restart Activity
+        val intent = intent
+        finish()
+        startActivity(intent)
+    }
+
+    //listener che viene invocato ad ogni aggiornamento della scena di ARCore
     private val onUpdateFrame = Scene.OnUpdateListener {
         val frame = arFragment.arSceneView.arFrame
 
-        if (!listnode.isEmpty()) {
+        //Ruoto di 1 grado ogni frame ogni nodo per far ruotare i pianeti su se stessi
+        if (listnode.isNotEmpty()) {
             for (n in listnode) {
-                //Rotazione del nodo e quindi del modello
+
                 if (rot >= 360) {
                     rot = 0f
                 }
@@ -127,10 +128,12 @@ class AugmentedImagesActivity: AppCompatActivity() {
             }
         }
 
+        //Update di tutte le immagini individuate
         val augmentedImages = frame!!.getUpdatedTrackables(
             AugmentedImage::class.java
         )
 
+        //Per ogni immagine tracciata  se non è presente il modello allora viene immediatamente costruito e instanziato
         for (augmentedImage in augmentedImages) {
 
             if (augmentedImage.trackingState == TrackingState.TRACKING) {
@@ -142,16 +145,12 @@ class AugmentedImagesActivity: AppCompatActivity() {
                         Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
 
                         if(namesobj[i]=="systemsolar"){
-                            // here we got that image has been detected
-                            // we will render our 3D asset in center of detected image
                             renderObject(
                                 arFragment,
                                 augmentedImage.createAnchor(augmentedImage.centerPose),
                                 "solar_system"
                             )
                         }else {
-                            // here we got that image has been detected
-                            // we will render our 3D asset in center of detected image
                             renderObject(
                                 arFragment,
                                 augmentedImage.createAnchor(augmentedImage.centerPose),
@@ -162,12 +161,10 @@ class AugmentedImagesActivity: AppCompatActivity() {
                     }
                 }
             }
-            if (augmentedImage.trackingState == TrackingState.PAUSED) {
-                //--
-            }
         }
     }
 
+    //Funzione chiamata per costruire i modelli 3d dei pianeti
     private fun renderObject(fragment: ArFragment, anchor: Anchor, name: String) {
         ModelRenderable.builder()
             .setSource(this, Uri.parse("models/$name.glb"))
@@ -189,6 +186,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
             }
     }
 
+    //Funzione usata per piazzare i nodi nella scena di ARCore
     private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable) {
 
         val anchorNode = AnchorNode(anchor)
@@ -210,8 +208,3 @@ class AugmentedImagesActivity: AppCompatActivity() {
         listnode.add(node!!)
     }
 }
-
-/* Credit per i modelli
-"Earth" (https://skfb.ly/6TwGG) by Akshat is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-
- */
