@@ -26,29 +26,23 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private lateinit var database: AugmentedImageDatabase
 
-    private var node : TransformableNode? = null
-
     private val listnode: MutableList<TransformableNode> = arrayListOf()
+
+    private var renderobj: MutableList<Boolean> = arrayListOf()
+
+    private var augimages: MutableList<AugmentedImage> = arrayListOf()
 
     private lateinit var namesobj : Array<String>
 
-    private var renderobj: MutableList<Boolean> = arrayListOf()
-    private var augimages: MutableList<AugmentedImage> = arrayListOf()
-    var clearPressed = false
+    private var node : TransformableNode? = null
 
     private var rot = 0f
-    private var count=0
-
-    private var s: Session?=null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_augmented_images)
-
-        //tv1 = findViewById<TextView>(R.id.tx1)
 
         namesobj= this.resources.getStringArray(R.array.planet_array)
 
@@ -70,10 +64,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
             InfoDialogFragment().show(supportFragmentManager,"AugmentedImagesActivity")
         }
 
-
-
         clearButton!!.setOnClickListener(setOnClickListener)
-
 
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
@@ -97,32 +88,25 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 config.lightEstimationMode = Config.LightEstimationMode.DISABLED
                 session.configure(config)
 
-                //s=session
-                // Check for image detection
-                //arFragment.setOnAugmentedImageUpdateListener(onAugmentedImageTrackingUpdate)
                 arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
 
                 val a = session.config
                 val b = a.focusMode.name
                 Log.i("Camera","Camerafocus -> $b")
-
             }
         }
     }
 
     private val setOnClickListener = View.OnClickListener { v->
-
         //Restart Activity
         val intent = intent
         finish()
         startActivity(intent)
-
     }
 
     override fun onPause() {
         super.onPause()
         arFragment.onPause()
-
     }
     override fun onResume() {
         super.onResume()
@@ -143,10 +127,10 @@ class AugmentedImagesActivity: AppCompatActivity() {
             }
         }
 
-
         val augmentedImages = frame!!.getUpdatedTrackables(
             AugmentedImage::class.java
         )
+
         for (augmentedImage in augmentedImages) {
 
             if (augmentedImage.trackingState == TrackingState.TRACKING) {
@@ -158,7 +142,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
                         Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
 
                         if(namesobj[i]=="systemsolar"){
-                            Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
                             // here we got that image has been detected
                             // we will render our 3D asset in center of detected image
                             renderObject(
@@ -166,8 +149,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
                                 augmentedImage.createAnchor(augmentedImage.centerPose),
                                 "solar_system"
                             )
-
-                            renderobj[i] = true
                         }else {
                             // here we got that image has been detected
                             // we will render our 3D asset in center of detected image
@@ -176,8 +157,8 @@ class AugmentedImagesActivity: AppCompatActivity() {
                                 augmentedImage.createAnchor(augmentedImage.centerPose),
                                 namesobj[i]
                             )
-                            renderobj[i] = true
                         }
+                        renderobj[i] = true
                     }
                 }
             }
@@ -186,6 +167,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
             }
         }
     }
+
     private fun renderObject(fragment: ArFragment, anchor: Anchor, name: String) {
         ModelRenderable.builder()
             .setSource(this, Uri.parse("models/$name.glb"))
@@ -209,42 +191,23 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable) {
 
-        /*val anchorNode = AnchorNode(anchor)
-        anchorNode.localScale = Vector3(0.1f,0.1f,0.1f)
-
-        listnode!!.add(TransformableNode(fragment.transformationSystem))
-
-        listnode!!.elementAt(count).renderable = renderable
-        listnode!!.elementAt(count).parent = anchorNode
-        //node.localScale = Vector3(0.05f,0.05f,0.05f)
-        fragment.arSceneView.scene.addChild(anchorNode)
-        //Posizione in riferimento alla foto
-        listnode!!.elementAt(count).localPosition = Vector3(0f,0.5f,0f)
-        listnode!!.elementAt(count).select()
-        count++*/
-
-        //listnode!!.add(node!!)
-
         val anchorNode = AnchorNode(anchor)
         anchorNode.localScale = Vector3(0.1f,0.1f,0.1f)
 
         node = TransformableNode(fragment.transformationSystem)
-
-
         node!!.renderable = renderable
         node!!.parent = anchorNode
 
         if(node!!.renderableInstance.hasAnimations()){
             node!!.renderableInstance.animate(true).start()
         }
-        //node.localScale = Vector3(0.05f,0.05f,0.05f)
+
         fragment.arSceneView.scene.addChild(anchorNode)
         //Posizione in riferimento alla foto
         node!!.localPosition = Vector3(0f,0.8f,0f)
         node!!.select()
 
         listnode.add(node!!)
-        clearPressed=false
     }
 }
 

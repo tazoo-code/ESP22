@@ -36,35 +36,38 @@ class SessionActivity : AppCompatActivity() {
 
     var objRenderable: ModelRenderable? = null
 
+    private var nodeslist: MutableList<Node> = arrayListOf()
+
+    private lateinit var stringArray : Array<String>
+
     //Nome dell'oggetto dal quale sarà costruito il modello 3d
     lateinit var obj: String
 
     var isTouched : Boolean = false
 
-    private var nodeslist: MutableList<Node> = arrayListOf()
-    private lateinit var stringArray : Array<String>
-
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_session)
 
         stringArray = this.resources.getStringArray(R.array.object_array)
         obj = ""
+
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
+
+        //RecyclerView dello slider
+        val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
 
         //Riferimento a switchbutton per il cambio di modalità (Place model-->Delete model)
         val switchButton = findViewById<SwitchCompat>(R.id.switch1)
 
         val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-
         val homeButton: ImageView = findViewById(R.id.home_button_session)
 
         val infoButton : ImageView = findViewById(R.id.info_button_session)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
         homeButton.setOnClickListener {
             finish()
@@ -85,13 +88,6 @@ class SessionActivity : AppCompatActivity() {
                 isTouched = false
             }
         }
-
-
-
-
-
-        //RecyclerView dello slider
-        val recyclerView: RecyclerView = findViewById(R.id.slider_recycler_view)
 
         //Applica l'adapter alla recyclerView
         recyclerView.adapter = SliderAdapter(stringArray)
@@ -133,17 +129,14 @@ class SessionActivity : AppCompatActivity() {
                             hitNode!!.renderable = null
                             hitNode.parent = null
 
-                            val children =hitNode!!.children
+                            val children =hitNode.children
                             if(children.isNotEmpty() && children != null){
                                 for (i in 0 until children.size){
                                     children[i].renderable = null
                                 }
                             }
 
-
-
                             arFragment.arSceneView.scene.removeChild(hitNode)
-
 
                         }
                     }
@@ -157,8 +150,6 @@ class SessionActivity : AppCompatActivity() {
                 if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
                     config.depthMode = Config.DepthMode.AUTOMATIC
                 }
-
-                arFragment.getArSceneView().getScene().addOnUpdateListener(onUpdateFrame)
             }
             setOnViewCreatedListener { arSceneView ->
                 // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
@@ -168,8 +159,6 @@ class SessionActivity : AppCompatActivity() {
                 // Use this mode if you want your objects to be more like if they where real
                 arSceneView.lightEstimationConfig = LightEstimationConfig.REALISTIC
 
-                // Use this mode if you want your objects to be more spectacular
-                //arSceneView.lightEstimationConfig = LightEstimationConfig.SPECTACULAR
             }
 
             //Evento che si verifica quando viene toccato un piano
@@ -183,43 +172,16 @@ class SessionActivity : AppCompatActivity() {
                         // Crea il transformable model e lo aggiunge all'anchor
                         addChild(TransformableNode(arFragment.transformationSystem).apply {
 
-                            //if (obj== "default"){   obj = "cuborosso"}
-
                             setModel(0)
                             renderable = objRenderable
 
                             /*Associo al nodo il listener che elimina il nodo quando
-                              viene cliccato nella modalita delete model
-                            */
+                              viene cliccato nella modalita delete model*/
                             setOnTouchListener(delNode)
                             select()
 
                             renderableInstance.hasAnimations()
                             renderableInstance.animate(true).start()
-
-                            //TODO fare una funzione che mette le animazioni
-                            //Se ha l'animazione la fa partire
-                            /*
-                            try {
-                                if(renderableInstance.hasAnimations()){
-                                    renderableInstance.animate(true).start()
-                                }
-                            }catch (e :Exception){
-                                renderable=null
-
-                                setModel(1)
-
-                                renderable = objRenderable
-                                setOnTouchListener(delNode)
-                                select()
-
-                                if(renderableInstance.hasAnimations()){
-                                    renderableInstance.animate(true).start()
-
-                            }
-
-                        }*/
-
 
                             // Add child model relative the a parent model
                             addChild(Node().apply {
@@ -233,7 +195,6 @@ class SessionActivity : AppCompatActivity() {
 
                                 localScale= Vector3(0.03f,0.03f,0.03f)
 
-                                //collisionShape
                                 nodeslist.add(this)
                             })
                         })
@@ -241,11 +202,10 @@ class SessionActivity : AppCompatActivity() {
                 }
             }
 
-
-
             //Rileva quando lo slider cambia di stato
             bottomSheetBehavior.addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
+
                 override fun onStateChanged(bottomSheet: View, i: Int) {
                     //cambia immagine alla freccia
                     changeArrow(i)
@@ -276,25 +236,11 @@ class SessionActivity : AppCompatActivity() {
         }
     }
 
-
-    private val onUpdateFrame = Scene.OnUpdateListener {
-
-        if(nodeslist.isNotEmpty()){
-            for(n in nodeslist){
-                if(arFragment.arSceneView.scene.overlapTestAll(n).size >0){
-                    Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
-                }
-                /*if(arFragment.arSceneView.scene.overlapTest(n)!=null){
-                    Toast.makeText(applicationContext,"Oggetti scontrati",Toast.LENGTH_SHORT)
-                }*/
-            }
-        }
-    }
-
     //Cambia la freccia del bottom sheet verso l'alto o verso il basso quando lo stato cambia
     fun changeArrow(state: Int) {
         val iv: ImageView = findViewById(R.id.gallery_arrow)
         var myDrawable: Drawable? = iv.drawable
+
         when (state) {
             //Se lo stato è EXPANDED, la freccia diventa verso il basso
             BottomSheetBehavior.STATE_EXPANDED -> {
@@ -304,6 +250,7 @@ class SessionActivity : AppCompatActivity() {
                     null
                 )
             }
+
             //Se lo stato è COLLAPSED, la freccia diventa verso l'alto
             BottomSheetBehavior.STATE_COLLAPSED -> {
                 myDrawable = ResourcesCompat.getDrawable(
@@ -318,8 +265,13 @@ class SessionActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        arFragment.onResume()
     }
 
+    override fun onPause() {
+        super.onPause()
+        arFragment.onPause()
+    }
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel(n : Int) {
@@ -327,6 +279,7 @@ class SessionActivity : AppCompatActivity() {
 
         if (n==0) {
 
+            //Per risolvere problema della lettera maiuscola in Bengal.glb
             if(obj=="bengal"){
                 ModelRenderable.builder()
                     .setSource(this, Uri.parse("models/Bengal.glb"))
@@ -338,8 +291,7 @@ class SessionActivity : AppCompatActivity() {
                         t.show()
                         null
                     }
-
-            }else {
+            }else{
                 ModelRenderable.builder()
                     .setSource(this, Uri.parse("models/$obj.glb"))
                     .setIsFilamentGltf(true)
@@ -353,7 +305,6 @@ class SessionActivity : AppCompatActivity() {
             }
             Log.i("OBJ", "fine build")
         }else{
-
             obj = obj.capitalize(Locale.ROOT)
 
             ModelRenderable.builder()

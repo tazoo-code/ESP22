@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 
-
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
