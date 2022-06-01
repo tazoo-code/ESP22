@@ -20,4 +20,6 @@
     <color name="light_grey">#6D6D6D</color>
     <color name="dark_grey">#1B1B1B</color>
 
+    <color name="grey_surface">#EBEBEB</color>
+
 </resources>

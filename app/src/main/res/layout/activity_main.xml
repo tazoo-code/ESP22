@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="60dp"
+        android:padding="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,12 +46,12 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:contentDescription="@string/rendering_3d_preview"
-            android:scaleType="centerCrop"
+            android:background="@color/grey_surface"
             android:src="@drawable/rendering_3d" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="60dp" />
+            android:layout_height="40dp" />
 
         <ImageView
             android:id="@+id/augmented_images"
@@ -59,7 +59,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:contentDescription="@string/augmented_images_preview"
-            android:scaleType="centerCrop"
+            android:background="@color/grey_surface"
             android:src="@drawable/augmented_images" />
 
     </LinearLayout>

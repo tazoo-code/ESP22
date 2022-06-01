@@ -38,19 +38,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="horizontal"
-        android:padding="25dp">
+        android:padding="40dp">
 
         <ImageView
             android:id="@+id/rendering_3d"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/grey_surface"
             android:src="@drawable/rendering_3d"
-            android:scaleType="centerCrop"
             android:contentDescription="@string/rendering_3d_preview" />
 
         <Space
-            android:layout_width="25dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent" />
 
         <ImageView
@@ -59,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/augmented_images"
-            android:scaleType="centerCrop"
+            android:background="@color/grey_surface"
             android:contentDescription="@string/augmented_images_preview"/>
 
     </LinearLayout>
