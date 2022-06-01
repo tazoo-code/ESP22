@@ -26,8 +26,6 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
 
-
-
 class SessionActivity : AppCompatActivity() {
 
     private lateinit var arFragment: ArFragment
