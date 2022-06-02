@@ -53,20 +53,30 @@
 	\end{itemize}
 	
 	\begin{flushleft}
-	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dello spazio e aggiorna gli oggetti 			ancorati ad essa.\\
-	Nella sezione \emph{Plane Detection} della nostra applicazione abbiamo utilizzato l'ancoraggio; in particolare quando viene 	premuto lo schermo viene creato un oggetto Anchor sul quale verrà renderizzato il modello 3D dell'animale selezionato.\\
-	(Esempio\vref{fig: Anchor})\\
+	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli 	oggetti legati ad essa.\\
+	Nella nostra applicazione abbiamo utilizzato l'ancoraggio per due modalità: 
+		\begin{itemize}
+		\item[•] \emph{Plane Detection}: quando viene premuto lo schermo viene creato un oggetto Anchor sul punto corrispondente dove verrà renderizzato il modello 3D dell'animale selezionato. (Esempio\vref{fig: Definizione Anchor in Plane Detection})
+		\item[•] \emph{Augmented Images}: se l'immagine di un pianeta viene riconosciuta viene definito un Anchor nel suo centro nel quale verrà renderizzato il modello 3D del pianeta. (Esempio\vref{fig: Definizione Anchor in Augmented Images})
+	\end{itemize}
 	\end{flushleft}
 	
 	\begin{figure}
 			\centering
 			\copyrightbox[0.5]{\includegraphics[width=0.9\textwidth]{../../resources/images/UserInteraction/UserInteraction1.PNG}}%
 			{Fonte: \url{nostra  applicazione}}
-			\caption{Anchor}
-			\label{fig: Anchor}
-		\end{figure}
+			\caption{Definizione Anchor in Plane Detection}
+			\label{fig: Definizione Anchor in Plane Detection}
+	\end{figure}
+	\vspace{0.2cm}
+	\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.9\textwidth]{../../resources/images/UserInteraction/UserInteraction2.PNG}}%
+			{Fonte: \url{nostra  applicazione}}
+			\caption{Definizione Anchor in Augmented Images}
+			\label{fig: Definizione Anchor in Augmented Images}
+	\end{figure}
 		
-		\clearpage
 		Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
 		\begin{itemize}
 		\item[•] \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
@@ -76,7 +86,7 @@
 	\end{itemize}
 	
 	\begin{flushleft}
-		Il risultato restituito da hitTest nella nostra applicazione è di tipo Aereo; il rilevamento di un piano consente di 			disporre un animale in un punto preciso. Questo evento è stato gestito dal metodo 									\textit{setOnTapArPlaneListener} riportato nell'esempio \vref{fig: Anchor}.\\
+		Il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo Aereo; il rilevamento di un piano 			consente di disporre un animale in un punto preciso. Questo evento è stato gestito dal metodo 									\textit{setOnTapArPlaneListener} riportato nell'esempio \vref{fig: Definizione Anchor in Plane Detection}.\\
 	\end{flushleft}
 		
 	

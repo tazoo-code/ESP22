@@ -45,24 +45,47 @@
 	\chapter{Depth understanding}
 	
 		ARCore Depth API  permette agli sviluppatori di generare mappe di profondità attraverso l'uso di algoritmi di 					profondità del movimento. Una mappa di profondità offre una visualizzazione in 3D del mondo reale, ogni pixel è 				associato alla distanza dalla scena e attraverso l'uso di colori differenti è possibile riconoscere quali aree dello 			spazio sono più vicine al dispositivo. Quando viene avviata una nuova sessione ARCore il display dello smartphone è 			nero, ma non appena si effettua un piccolo movimento la profondità viene rilevata. La stima della profondità è ricavata 		attraverso il movimento dello smartphone. Quando si progettano delle applicazioni che si concentrano sulla profondità 			bisogna considerare che la profondità viene calcolata meglio quando la scena rimane la stessa con piccoli spostamenti. 			Il dispositivo ha bisogno di muoversi un pò per generare la profondità. Un altro fattore da prendere in considerazione 			è quando l'utente compie lunghi spostamenti; in questo caso la stima della profondità arriva fino a 8 metri ma la 				migliore accuratezza si ha tra 0 e 5 metri.\\
+		Per ottimizzare ulteriormente le funzionalità offerte da depth API è stato effettuato un uso selettivo del machine 				learning
 		 Le principale funzionalità offerte da depth API sono tre:
-		
 		\begin{itemize}
 			\item[•] \textbf{Copertura dei contenuti}: permette di posizionare accuratamente dei contenuti virtuali di fronte o dietro degli oggetti reali.
 			\item[•] \textbf{Immersione}: permette di decorare una scena con oggetti virtuali che interagiscono tra di loro.
 			\item[•] \textbf{Interazione}: i contenuti virtuali sono in grado di interagire con il mondo reale attraverso cambiamenti fisici e collisioni.
 		\end{itemize}
 		
+		
 		\section{Sessione ARCore con depth API}
 		
-		Prima di iniziare una nuova sessione ARCore è necessario controllare se il dispositivo supporta depth API. A volte 				questa opzione può essere disattivata oppure non supportata nonostante il dispositivo supporti ARCore. Dopo aver 				definito la sessione con le opportune configurazioni è possibile controllare se il dispositivo e la fotocamera 					supportano una determinata modalità di profondità invocando il metodo \textit{isDepthModeSupported(Config.DepthMode 			mode)} sull'istanza della sessione. Se la modalità è supportata viene configurata la sessione e sarà possibile 					sfruttare depth API.\\ \vref{fig: Controllo supporto depth API}\\
-		\clearpage
+		Prima di iniziare una nuova sessione ARCore è necessario controllare se il dispositivo supporta depth API. A volte 				questa opzione può essere disattivata oppure non supportata nonostante il dispositivo supporti ARCore. Dopo aver 				definito la sessione con le opportune configurazioni è possibile controllare se il dispositivo e la fotocamera 					supportano una determinata modalità di profondità invocando il metodo \textit{isDepthModeSupported(Config.DepthMode 			mode)} sull'istanza della sessione. Se la modalità è supportata viene configurata la sessione e sarà possibile 					sfruttare depth API. (Esempio\vref{fig: Controllo supporto depth API})\\
+		
 		\begin{figure}
 			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI1.PNG}}%
+			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/depthAPI1.PNG}}%
 			{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
 			\caption{Controllo supporto depth API}
 			\label{fig: Controllo supporto depth API}
 		\end{figure}
 		
+		\begin{flushleft}
+		Per ottenere l'immagine di profondità relativa al frame corrente viene invocato il metodo 										\textit{acquireDepthImage16Bits()}. (Esempio \vref{fig: Immagine di profondità})\\
+		\end{flushleft}
+		\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/depthAPI2.PNG}}%
+			{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
+			\caption{Immagine di profondità}
+			\label{fig: Immagine di profondità}
+		\end{figure}
+		
+		\section{Depth Hit Test}
+		
+		Hit Test sono sono stati una fondamentale interazione per le applicazioni di realtà aumentata e permettono agli utenti 			di posizionare oggetti 3d in una posizione precisa in una scena. Solitamente queste azioni potevano essere eseguite su 			superfici piane. Integrando la profondità sono stati ottenuti degli hit test più precisi grazie ai quali è possibile  			posizionare contenuti virtuali anche su superfici non piane in aree con bassa texture. (Esempio \vref{fig: Depth Hit Test})\\
+
+		\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/depthAPI3.PNG}}%
+			{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
+			\caption{Depth Hit Test}
+			\label{fig: Depth Hit Test}
+		\end{figure}
 \end{document}
