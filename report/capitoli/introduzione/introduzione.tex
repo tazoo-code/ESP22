@@ -1,0 +1,42 @@
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+%risorsa che contiene la bibliografia
+\addbibresource{./../../bibliografia.bib}
+
+
+
+\begin{document}
+	\chapter{Introduzione}
+	\textit{ARCore} è un kit di sviluppo lanciato da Google nel mese di marzo 2018, utilizzabile nella maggior parte degli smartphone con Android Nougat o superiore (API level 24+). Tramite esso è possibile sviluppare applicazioni con funzionalità in realtà aumentata, permettendo all'utente di interagire con l'ambiente che lo circonda.
+	In questo documento, dopo una breve panoramica sulla realtà aumentata, verranno analizzate le principali funzionalità e caratteristiche dell'SDK.
+	\\
+	Nei primi capitoli vengono presentate le tre funzioni fondamentali del framework ARCore, che permettono al dispositivo di integrare contenuti virtuali al mondo reale:
+	\begin{itemize}
+		\item Il rilevamento del movimento, che consente ad esso di tracciare la propria posizione nel mondo.
+		\item La comprensione ambientale, che permette la rilevazione della posizione e della dimensione delle superfici.
+		\item La stima della luce, che consente di valutare le condizioni di illuminazione dell'ambiente.
+	\end{itemize}
+	Nei capitoli successivi sono invece presentate le funzionalità aggiuntive del framework, che consentono di migliorare l'integrazione tra virtuale e reale, come ad esempio il rilevamento della profondità, il posizionamento istantaneo, le API \textit{Augmented Images} e \textit{Augmented Faces} e altre importanti funzioni aggiuntive.
+\end{document}
