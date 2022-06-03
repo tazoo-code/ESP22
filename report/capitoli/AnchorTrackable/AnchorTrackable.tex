@@ -1,0 +1,107 @@
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+\input{./../../resources/kotlin.tex}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+%gestione delle testatine
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{Titolo}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+%risorsa che contiene la bibliografia
+\addbibresource{./../bibliografia.bib}
+
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage[italian]{varioref}
+\usepackage{copyrightbox}
+
+\begin{document}
+		
+	\chapter{Anchor Trackable}
+	
+		ARCore definisce gli Anchor per assicurare che gli oggetti virtuali rimangano nella stessa posizione e vengano 					tracciati nel tempo. L'ambiente circostante può cambiare ed è necessario che la posizione dell'oggetto virtuale 				relativa alla mappa rimanga stabile. Gli Anchor sono disposti in insieme di punti o piani rappresentati da oggetti di 			tipo Trackable. \\
+		Su questi oggetti possono essere invocati 3 metodi:
+		\begin{itemize}
+			\item[•] \textbf{createAnchor(Pose pose)} crea un anchor in una posa che è definita nel Trackable corrente. Il tipo di oggetto Trackable definirà il modo con cui l'anchor verrà disposto e la modalità di aggiornamento della sua posa mentre ARCore cambia il suo modello del mondo.
+			\item[•] \textbf{ getAnchors()} restituisce tutti gli anchor presenti nel dato Trackable.
+			\item[•] \textbf{getTrackingState()} restituisce un oggetto TrackingState che rappresenta lo stato del Trackable. Questo stato può essere: PAUSED quando il rilevamento viene perso ma potrebbe riprendere in futuro; STOPPED quando viene fermato e non verrà più ripreso; TRACKING se viene tracciato il determinato Trackable.
+		\end{itemize}
+
+	\begin{flushleft}
+		Un esempio di tracciamento si può trovare nella sezione \emph{AugmentedImages} della nostra applicazione in cui è stato 		usato il metodo TrackingState per controllare se l'immagine di un pianeta veniva tracciata. 		 			(Esempio\vref{lst:Definizione Anchor in Augmented Images})\\
+		Nella modalità \emph{Plane Detection} gli anchor vengono disposti in Trackable che rappresentano i piani. Quando un animale viene posizionato in punto mantiene invariata la sua posa (posizione e orientamento) anche se l'ambiente circostante cambia. Ad esempio, se posizioniamo un animale nel nostro salotto, andiamo in cucina e ritorniamo in salotto, dobbiamo trovare l'animale nello stesso punto di prima.\\
+		
+		Di seguito sono riportati degli esempi in cui si può notare che la posizione del pinguino resta invariata da qualsiasi 			prospettiva (frontale,posteriore,laterale) e dit.
+	\end{flushleft}
+	
+	
+	\clearpage
+	\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pingvicino.jpg}}%
+			{Fonte: \url{nostra applicazione}}
+			\caption{Pinguino da un'inquadratura vicina}
+			\label{fig: pinguino vicino}
+	\end{figure}
+	
+	\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pinglontano1.jpg}}%
+			{Fonte: \url{nostra applicazione}}
+			\caption{Pinguino da un'inquadratura lontana frontale}
+			\label{fig: pinguino lontano1}
+	\end{figure}
+	
+	\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pinglontano2.jpg}}%
+			{Fonte: \url{nostra applicazione}}
+			\caption{Pinguino da un'inquadratura lontana posteriore}
+			\label{fig: pinguino lontano2}
+	\end{figure}
+	
+	\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pingangolo1.jpg}}%
+			{Fonte: \url{nostra applicazione}}
+			\caption{Pinguino da una prima inquadratura laterale}
+			\label{fig: pinguino angolo1}
+	\end{figure}
+	
+	\begin{figure}
+			\centering
+			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pingangolo2.jpg}}%
+			{Fonte: \url{nostra applicazione}}
+			\caption{Pinguino da una seconda inquadratura laterale}
+			\label{fig: pinguino angolo1}
+	\end{figure}
+		
+
+\end{document}
