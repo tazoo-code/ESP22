@@ -5,6 +5,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english,italian]{babel}
 
+
 %sistema i margini
 \usepackage{geometry}
 \geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
@@ -42,6 +43,7 @@
 \usepackage{copyrightbox}
 \usepackage{url}
 
+
 \usepackage{lipsum}
 
 \begin{document}
@@ -58,12 +60,36 @@
 	
 	\begin{figure}
 		\centering
-		\copyrightbox[l]{\includegraphics[width=0.5\textwidth]{./../../resources/images/light_effects}}%
+		\copyrightbox[l]{\includegraphics[width=0.5\textwidth]{./resources/images/light_effects}}%
 			{Fonte: \url{https://developers.google.com}}
 		\caption{Esempio degli effetti prodotti dagli oggetti quando sono illuminati.}
 		\label{fig:light_effects}
 	\end{figure}
-	Le modalità per la gestione della stima della luce sono due, l'\textit{Environmental HDR mode} e l'\textit{Ambient intensity mode}. Durante la configurazione della sessione ARCore può essere scelta una delle due modalità, oppure disabilitare la stima della luce.
+	Le modalità per la gestione della stima della luce sono due, l'\textit{Environmental HDR mode} e l'\textit{Ambient intensity mode}. Durante la configurazione della sessione ARCore può essere scelta una delle due modalità, oppure disabilitare la stima della luce, come mostra il listing~\vref{lst:le_session}.
+	\\
+	
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Configurazione della modalità di stima della luce.}, label={lst:le_session}, language=Kotlin]
+			// Configura la sessione in modalità \verb|ENVIRONMENTAL_HDR|
+			val config : Config = session.config
+			config.lightEstimationMode = LightEstimationMode.ENVIRONMENTAL_HDR
+			session.configure(config)
+			
+			// Configura la sessione in modalità \verb|AMBIENT_INTENSITY|
+			val config : Config = session.config
+			config.lightEstimationMode = LightEstimationMode.AMBIENT_INTENSITY
+			session.configure(config)
+				
+			// Configura la sessione disabilitando la Light Estimation API
+			val config : Config = session.config
+			config.lightEstimationMode = LightEstimationMode.DISABLED
+			session.configure(config)
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+
+
 	
 
 	\subsection*{Environmental HDR mode}
@@ -81,9 +107,9 @@
 	
 		\begin{figure}
 			\centering
-			\copyrightbox[l]{\includegraphics[width=0.8\textwidth]{./../../resources/images/env_HDR}}%
+			\copyrightbox[l]{\includegraphics[width=0.8\textwidth]{./resources/images/env_HDR}}%
 			{Fonte: \url{https://developers.googleblog.com}}
-			\caption{Composizione della modalità Environmental HDR}
+			\caption{Composizione della modalità Environmental HDR.}
 			\label{fig:env_HDR}
 		\end{figure}
 	
