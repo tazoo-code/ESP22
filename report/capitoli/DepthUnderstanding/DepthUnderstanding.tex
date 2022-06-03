@@ -5,6 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english,italian]{babel}
 
+\input{./../../resources/kotlin.tex}
+
 %sistema i margini
 \usepackage{geometry}
 \geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
@@ -56,36 +58,73 @@
 		
 		\section{Sessione ARCore con depth API}
 		
-		Prima di iniziare una nuova sessione ARCore è necessario controllare se il dispositivo supporta depth API. A volte 				questa opzione può essere disattivata oppure non supportata nonostante il dispositivo supporti ARCore. Dopo aver 				definito la sessione con le opportune configurazioni è possibile controllare se il dispositivo e la fotocamera 					supportano una determinata modalità di profondità invocando il metodo \textit{isDepthModeSupported(Config.DepthMode 			mode)} sull'istanza della sessione. Se la modalità è supportata viene configurata la sessione e sarà possibile 					sfruttare depth API. (Esempio\vref{fig: Controllo supporto depth API})\\
+			Prima di iniziare una nuova sessione ARCore è necessario controllare se il dispositivo supporta depth API. A volte 				questa opzione può essere disattivata oppure non supportata nonostante il dispositivo supporti ARCore. Dopo aver 				definito la sessione con le opportune configurazioni è possibile controllare se il dispositivo e la fotocamera 					supportano una determinata modalità di profondità invocando il metodo \textit{isDepthModeSupported(Config.DepthMode 			mode)} sull'istanza della sessione. Se la modalità è supportata viene configurata la sessione e sarà possibile 					sfruttare depth API. (Esempio\vref{fig: Controllo supporto depth API})\\
 		
-		\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/depthAPI1.PNG}}%
-			{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
-			\caption{Controllo supporto depth API}
-			\label{fig: Controllo supporto depth API}
-		\end{figure}
+			\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={ Controllo supporto depth API}, label={lst: Controllo supporto depth API}, 		language=Kotlin]
+				
+					val config = session.config
+
+					// Check whether the user's device supports the Depth API.
+					val isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
+					if (isDepthSupported) {
+  						config.depthMode = Config.DepthMode.AUTOMATIC
+					}
+					session.configure(config)
+				
+					\end{lstlisting}
+			\end{minipage}
+		\end{center}
 		
 		\begin{flushleft}
 		Per ottenere l'immagine di profondità relativa al frame corrente viene invocato il metodo 										\textit{acquireDepthImage16Bits()}. (Esempio \vref{fig: Immagine di profondità})\\
 		\end{flushleft}
-		\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/depthAPI2.PNG}}%
-			{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
-			\caption{Immagine di profondità}
-			\label{fig: Immagine di profondità}
-		\end{figure}
+		
+		
+		\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={ Controllo supporto depth API}, label={lst: Controllo supporto depth API}, 		language=Kotlin]
+					val frame = arFragment.arSceneView.frame
+
+					// Retrieve the depth image for te current frame, if available
+					try{
+						frame.acquireDepthImage16Bits().use{ depthImage ->
+							//Use the depth image here
+						}
+					} catch(e: NotYetAvailableException){
+						// This means that depth data is not available yet.
+  						// Depth data will not be available if there are no tracked
+  						// feature points. This can happen when there is no motion, or when the
+  						// camera loses its ability to track objects in the surrounding
+  						// environment. 
+					}
+					
+					\end{lstlisting}
+			\end{minipage}
+		\end{center}
 		
 		\section{Depth Hit Test}
 		
 		Hit Test sono sono stati una fondamentale interazione per le applicazioni di realtà aumentata e permettono agli utenti 			di posizionare oggetti 3d in una posizione precisa in una scena. Solitamente queste azioni potevano essere eseguite su 			superfici piane. Integrando la profondità sono stati ottenuti degli hit test più precisi grazie ai quali è possibile  			posizionare contenuti virtuali anche su superfici non piane in aree con bassa texture. (Esempio \vref{fig: Depth Hit Test})\\
 
-		\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/depthAPI3.PNG}}%
-			{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
-			\caption{Depth Hit Test}
-			\label{fig: Depth Hit Test}
-		\end{figure}
+		\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={Depth Hit Test}, label={lst: Depth Hit Test}, language=Kotlin]
+					 val frame = arFragment.arSceneView.frame
+					
+					 val hitResultList: List<hitResult> = frame.hitTest(tap)
+					
+					 for(hit in hitResultList){
+						 val trackable: Trackable=hit.trackable
+						
+						 if(trackable id Plane || trackable is Point || trackable is DepthPoint){
+							 val anchor=hit.createAnchor()
+							 //Use anchor here
+						 }
+					}
+					
+				\end{lstlisting}
+			\end{minipage}
+		\end{center}
 \end{document}
