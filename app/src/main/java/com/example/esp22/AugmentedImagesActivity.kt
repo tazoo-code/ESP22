@@ -91,6 +91,8 @@ class AugmentedImagesActivity: AppCompatActivity() {
                 val a = session.config
                 val b = a.focusMode.name
                 Log.i("Camera","Camerafocus -> $b")
+                //Necessario per abilitare le modifiche
+                session.resume()
             }
         }
     }
