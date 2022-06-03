@@ -1,7 +1,10 @@
-\documentclass[a4paper,12pt,final, openany, titlepage, twoside]{book}
+\documentclass[a4paper,12pt,final, openany, titlepage, oneside]{book}
 
 %permette di aggiungere altri pacchetti dai file inclusi
 \usepackage[subpreambles]{standalone} 
+
+\input{./resources/kotlin.tex}
+
 
 %impostazioni lingua
 \usepackage[T1]{fontenc}
@@ -31,6 +34,8 @@
 \usepackage{titlesec}
 \titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
 
+\usepackage{caption}
+
 
 \usepackage[autostyle,italian=guillemets]{csquotes}
 \usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
@@ -53,9 +58,13 @@
 	\mainmatter
 	\input{capitoli/introduzione/introduzione}
 	\input{capitoli/AR/AR}
-	
+	\input{capitoli/fondamentali/fondamentali}
+	\input{capitoli/MotionTracking/MotionTracking}
 	\input{capitoli/light_estimation/light_estimation}
 	
+	
+	
+	\input{capitoli/augmented_faces/augmented_faces}
 	
 	\backmatter
 	\input{fine/bibliografia}
