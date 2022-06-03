@@ -1,0 +1,58 @@
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+\usepackage[pdftex]{graphicx} 
+
+%risorsa che contiene la bibliografia
+\addbibresource{./../../bibliografia.bib}
+
+
+
+\begin{document}
+	\chapter{Comprensione Ambientale}
+	
+	
+	
+ARCore ha a disposizione funzione di comprensione dell’ambiente che gli consente di capire cosa circonda il dispositivo. Questa funzione è basata sulla ricerca di piani e vari punti caratteristici dell’ambiente.
+
+ARCore si concentra nel trovare dei punti caratteristici posati lungo piani verticali e orizzontali così da riuscire a calcolare la posizione dei piani attraverso dei calcoli tra i sensori del dispositivo uniti al tracciamento dei punti caratteristici nell’immagine. 
+
+Inoltre, questa libreria è in grado di rilevare i bordi dei piani e utilizzare tutte queste informazioni per poter posizionare degli oggetti virtuali su di essi.
+
+Poiché ARCore basa la sua comprensione dell’ambiente su dei punti caratteristici, le superfici senza texture come un pavimento o un muro bianco potrebbero non essere rilevate facilmente.
+
+\begin{center}
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=\textwidth]{Immagine1.png}
+\end{figure}
+
+
+
+\end{center}
+
+
+
+	 
+
+
+\end{document}

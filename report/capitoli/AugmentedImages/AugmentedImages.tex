@@ -1,0 +1,155 @@
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+%gestione delle testatine
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{Titolo}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+%risorsa che contiene la bibliografia
+\addbibresource{./bibliografia.bib}
+
+%pacchetto per immagini
+\usepackage{graphicx}
+\usepackage{subfig}
+
+\usepackage[italian]{varioref}
+\usepackage{copyrightbox}
+\usepackage{url}
+\usepackage{lipsum}
+
+
+
+
+\begin{document}
+	\chapter{Augmented Images}
+	
+	
+	Le API Augmented Images in ARCore consentono di rilevare e poi manipolare le immagini presenti nel mondo reale e integrarle con elementi del mondo virtuale.
+	
+Dopo aver fornito delle immagini, ARCore con un algoritmo che estrae dei punti caratteristici in scala di grigi dall’immagine, ripone tutti questi dettagli in uno o più database.
+
+Durante l’esecuzione, ARCore cerca questi punti nell’ambiente consentendo di rilevare la posizione, l’orientamento e la dimensione dell’immagine nello spazio.
+
+	\section{Capacità}
+	ARCore riesce a individuare fino a 20 immagini in contemporanea e non individua due istanze della stessa immagine.
+	
+Il suo database riesce a contenere fino a 1000 immagini ed inoltre, non c’è limite al numero di database che possono essere caricati. L’unico vincolo è che si può attivare ed usare un singolo database alla volta.
+
+Quando si aggiunge un’immagine è possibile indicargli la sua grandezza nell’ambiente così da velocizzare il processo di tracciamento.
+
+Se non viene fornita la dimensione dell’immagine, ARCore stimerà la sua grandezza e la migliorerà durante l’esecuzione. Se viene fornita la sua dimensione ARCore ignorerà la discrepanza tra la dimensione attuale e quella segnalata e scalerà tutto secondo la dimensione dell’immagine dichiarata.
+
+ARCore è in grado di rilevare e tracciare sia immagini fisse, come ad esempio un poster nel muro, oppure immagini in movimento, come ad esempio un utente che ha l’immagine nella sua mano.
+
+Una volta che l’immagine viene rilevata ARCore continua ad ottenere informazioni ed a rifinire la sua stima dell’immagine nell’ambiente (FULL\_TRACKING).
+
+Se l’immagine si muove fuori dall’inquadratura ARCore continua a stimare la sua posizione assumendo che l’immagine sia statica e non si muova nell’ambiente (LAST\_KNOWN\_POSE).
+
+	
+\section{Requisiti}
+
+L’immagine deve:
+
+•	Essere visibile almeno al 25\% nell'inquadratura
+
+•	Essere piatta e non accartocciata
+
+•	Essere libera da ogni oggetto tra la fotocamera e l'immagine. Non deve essere oscurata, vista troppo angolata oppure vista quando la fotocamera si muove troppo velocemente
+
+\section{Utilizzo della CPU e considerazioni sulle performance}
+
+In base alle funzionalità di ARCore abilitate, la batteria potrebbe scaricarsi più velocemente e può aumentare l’utilizzo della CPU. E’ consigliato disabilitare le funzionalità non utilizzate per preservare la batteria e rendere più leggero il carico della CPU.
+
+\section{Creazione del database}
+
+Esistono due metodi per creare un database di immagini che verranno successivamente usate da ARCore.
+
+Il primo metodo è importare un database creato in precedenza con il tool arcoreimg.
+Per importarlo si usano le seguenti righe di codice:
+
+\begin{center}
+	\begin{minipage}{0.95\textwidth}
+	
+	Codice...
+
+val imageDatabase = this.assets.open("example.imgdb").use {
+
+  AugmentedImageDatabase.deserialize(session, it)
+  
+}
+	
+	\end{minipage}
+\end{center}
+
+Il secondo metodo consiste nel crearlo a runtime partendo con delle immagini contenuti nella cartella assets dell’applicazione. Lo si può fare per esempio con le seguenti righe di codice:
+
+\begin{center}
+	\begin{minipage}{0.95\textwidth}
+	
+	Codice...
+
+val imageDatabase = AugmentedImageDatabase(session)
+
+val bitmap = assets.open("dog.jpg").use { BitmapFactory.decodeStream(it) }
+
+// If the physical size of the image is not known, use addImage(String, Bitmap) instead, at the
+
+// expense of an increased image detection time.
+
+val imageWidthInMeters = 0.10f // 10 cm
+
+val dogIndex = imageDatabase.addImage("dog", bitmap, imageWidthInMeters)
+
+  
+\}
+	
+	\end{minipage}
+\end{center}
+
+\section{Come abilitare il tracciamento delle immagini}
+Per abilitare il tracciamento delle immagini bisogna modificare la configurazione della sessione per impostare il database da utilizzare. Lo si può fare così:
+
+\begin{center}
+	\begin{minipage}{0.95\textwidth}
+	
+	val config = Config(session)
+	
+config.augmentedImageDatabase = imageDatabase
+
+session.configure(config)
+
+	
+	
+	\end{minipage}
+\end{center}
+
+
+
+\end{document}
