@@ -1,0 +1,130 @@
+\documentclass[crop=false, class=book]{standalone}
+
+%impostazioni lingua
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,italian]{babel}
+
+\input{./../../resources/kotlin.tex}
+
+%sistema i margini
+\usepackage{geometry}
+\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
+
+%interlinea 1.5
+\usepackage{setspace}
+\onehalfspacing
+
+%gestione delle testatine
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{Titolo}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%formattazione titoli paragrafo
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
+
+%pacchetti per i riferimenti in bibliografia
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
+
+%risorsa che contiene la bibliografia
+\addbibresource{./../bibliografia.bib}
+
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage[italian]{varioref}
+\usepackage{copyrightbox}
+
+
+
+\begin{document}
+
+	\chapter{HitTest}
+	
+	Un hitTest è il risultato che viene restituito quando viene toccato un determinato Trackable.
+	Ogni risultato è costituito da:
+	\begin{itemize}
+		\item[•] Lunghezza in metri dall'origine del raggio che può essere ricavata dall'invocazione del metodo getDistance().
+		\item[•] Posa (posizione e orientamento) del punto toccato con getHitPose().
+		\item[•] Istanza Trackable che contiene la geometria 3d che è stata toccata con getTrackable()
+	\end{itemize}
+	
+	\begin{flushleft}
+	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli 	oggetti legati ad essa come descritto nel capitolo (Anchor and Trackanle).\\
+	\end{flushleft}	
+		Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
+		\begin{itemize}
+		\item[•] \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
+		\item[•]\textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
+		\item[•] \textbf{Punto caratteristico}: permette di disporre oggetti in superfici arbitrarie basandosi su caratteristiche visive attorno al punto sul quale l'utente tocca. 
+		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
+	\end{itemize}
+	\clearpage
+	E' possibile ricevere un hitTest di tipo diverso nel seguente modo:
+	\begin{center}
+		\begin{minipage}{1.1\textwidth}
+			\begin{lstlisting}[caption={Filtraggio hitTest in base al tipo}, label={lst: hitTest-filter}, language=Kotlin]
+			
+			//Retrieve hit-test results are sorted by increasing distance from the camera or virtual ray's
+			// origin.
+			val hitResultList =
+  				if (usingInstantPlacement) {
+    				// When using Instant Placement, the value in APPROXIMATE DISTANCE METERS will determine
+    				// how far away the anchor will be placed, relative to the camera's view.
+    				frame.hitTestInstantPlacement(tap.x, tap.y, APPROXIMATE_DISTANCE_METERS)
+    				// Hit-test results using Instant Placement will only have one result of type
+    				// InstantPlacementResult.
+  				} else {
+    				frame.hitTest(tap)
+  				}
+  				
+			// The first hit result is often the most relevant when responding to user input.
+			val firstHitResult =
+  				hitResultList.firstOrNull { hit ->
+  					val trackable = hit.trackable!!
+  					
+  					if(trackable is DepthPoint){
+  						// Replace with any type of trackable type
+  						true
+  					}else{
+  						false
+  					}
+
+  				}
+  				
+			if (firstHitResult != null) {
+  				// Do something with this hit result. For example, create an anchor at this point of interest.
+  				val anchor = firstHitResult.createAnchor()
+  				//Use this anchor in your AR experience...
+			}
+  								
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+	
+	
+	Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo Frame.hitTest(origin3: Array<float>, originOffset: int, direction3: Array<float>, originOffset: int) dove i quattro parametri specificano:
+	
+	\begin{itemize}
+		\item[•] origin3: array che contiene le 3 coordinate del punto di partenza del raggio.
+		\item[•] originOffset: offset sommato alle coordinate dell'array di partenza.
+		\item[•] director3: array che contiene le 3 coordinate del punto di arrivo del raggio.
+		\item[•] directorOffset: offset sommato alle coordinate dell'array di arrivo.
+	\end{itemize}
+	
+	\begin{flushleft}
+		Per creare un anchor sul risultato del tocco viene usato hitResult.createAnchor() che restituirà un anchor disposto sul 		Trackable sottostantesu cui è venuto il tocco.\\
+		Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo 			Aereo; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato 					gestito dal metodo \textit{setOnTapArPlaneListener} riportato nell'esempio di codice \vref{lst: Definizione Anchor in 			Plane Detection}.\\
+	\end{flushleft}
+	
+	
+			
+	
+\end{document}

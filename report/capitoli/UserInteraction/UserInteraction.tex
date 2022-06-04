@@ -48,30 +48,6 @@
 
 	\chapter{User Interaction}
 	ARCore utilizza la tecnologia \textit{ray casting} per permettere all'utente di posizionare un oggetto nella scena corrente 	in un punto fissato. Quando lo schermo del telefono viene toccato o viene compiuta qualche altra interazione, 					viene proiettato un raggio nella visuale del mondo della fotocamera che può intersecare un preciso punto o piani geometrici. ARCore permette di ricavare un elenco dei risultati delle intersezioni con la geometria della scena rilevata attraverso gli hitTest. Solitamente il primo risultato è quello più significativo perchè si riferisce all'intersezione più vicina al dispositivo.\\
-	Ogni risultato è costituito da:
-	
-	\begin{itemize}
-		\item[•] Lunghezza in metri dall'origine del raggio.
-		\item[•] Posa (posizione e orientamento) del punto toccato.
-		\item[•] Istanza Trackable che contiene la geometria 3d che è stata toccata.
-	\end{itemize}
-	
-	\begin{flushleft}
-	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli 	oggetti legati ad essa come descritto in capitolo (Anchor and Trackanle).\\
-	\end{flushleft}	
-		Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
-		\begin{itemize}
-		\item[•] \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
-		\item[•]\textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
-		\item[•] \textbf{Punto caratteristico}: permette di disporre oggetti in superfici arbitrarie basandosi su caratteristiche visive attorno al punto sul quale l'utente tocca. 
-		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
-	\end{itemize}
-	
-	\begin{flushleft}
-		Il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo Aereo; il rilevamento di un piano 			consente di disporre un animale in un punto preciso. Questo evento è stato gestito dal metodo 									\textit{setOnTapArPlaneListener} riportato nell'esempio \vref{lst: Definizione Anchor in Plane Detection}.\\
-	\end{flushleft}
-	
-	
 			
 	
 \end{document}
