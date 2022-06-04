@@ -1,32 +1,5 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../../bibliografia.bib}
-
-
-
 \begin{document}
 	\chapter{Introduzione}
 	\textit{ARCore} è un kit di sviluppo lanciato da Google nel mese di marzo 2018, utilizzabile nella maggior parte degli smartphone con Android Nougat o superiore (API level 24+). Tramite esso è possibile sviluppare applicazioni con funzionalità in realtà aumentata, permettendo all'utente di interagire con l'ambiente che lo circonda.
