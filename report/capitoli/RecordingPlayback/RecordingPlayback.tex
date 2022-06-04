@@ -5,6 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english,italian]{babel}
 
+\input{./../../resources/kotlin.tex}
+
 %sistema i margini
 \usepackage{geometry}
 \geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
@@ -25,6 +27,7 @@
 %risorsa che contiene la bibliografia
 \addbibresource{./../../bibliografia.bib}
 
+\usepackage[italian]{varioref}
 
 
 \begin{document}
@@ -32,67 +35,53 @@
 	
 	Solitamente quando si utilizza un’applicazione AR ci si trova ad essere in prima persona nell’ambiente il cui deve essere utilizzata.
 	
-L'API Recording and Playback consente di utilizzare i servizi di ARCore anche su un feed video non in tempo reale. Più precisamente si può fornire un video e ARCore lo tratterà come se fosse un video registrato in tempo reale.
-
- L'API Recording archivia il video stream, i dati IMU o qualsiasi altri metadati personalizzati che scegli di salvare in un file MP4. Successivamente l’utente potrà sceglie se usare un video dal vivo oppure un video preregistrato.
+	L'API Recording and Playback consente di utilizzare i servizi di ARCore anche su un feed video non in tempo reale. Più precisamente si può fornire un video e ARCore lo tratterà come se fosse un video registrato in tempo reale.
+	
+	L'API Recording archivia il video stream, i dati IMU o qualsiasi altri metadati personalizzati che scegli di salvare in un file MP4. Successivamente l’utente potrà sceglie se usare un video dal vivo oppure un video preregistrato.
  
- \section{Compatibilità}
- 
- ARCore è necessario per utilizzare API Recording and Playback perché serve per registrare i dati nel file MP4. I file MP4 registrati, utilizzando questa funzionalità, sono essenzialmente file video con dati aggiuntivi  e possono essere visualizzati utilizzando qualsiasi video player. Per ispezionare i seguenti file è possibile usare, per esempio, il player Exoplayer di Android.
- 
- \section{Come vengono registrati i dati video e AR per la riproduzione}
- 
- ARCore salva le registrazioni in formato MP4. All’interno di questo file sono contenuti più tracciati video registrati con la codifica H.264 e dati vari.
- 
-La prima traccia video viene solitamente registrata ad una risoluzione di 640 x 480(VGA) e questa traccia verrà usata per il motion tracking come fonte di video primaria.
+	\section{Compatibilità}
+	ARCore è necessario per utilizzare API Recording and Playback perché serve per registrare i dati nel file MP4. I file MP4 registrati, utilizzando questa funzionalità, sono essenzialmente file video con dati aggiuntivi  e possono essere visualizzati utilizzando qualsiasi video player. Per ispezionare i seguenti file è possibile usare, per esempio, il player Exoplayer di Android.
+	 
+	\section{Come vengono registrati i dati video e AR per la riproduzione}
+	ARCore salva le registrazioni in formato MP4. All’interno di questo file sono contenuti più tracciati video registrati con la codifica H.264 e dati vari.
+	
+	La prima traccia video viene solitamente registrata ad una risoluzione di 640x480 (VGA) e questa traccia verrà usata per il motion tracking come fonte di video primaria.
+	
+	Nel caso si voglia una risoluzione migliore, bisogna configurare una nuova fotocamera che abbia la risoluzione desiderata.
+	
+	In questo caso ARCore richiederà un feed in qualità 640x480 e un feed in alta risoluzione. Questo potrebbe rallentare la propria applicazione a causa di un maggiore utilizzo della CPU. Verrà inoltre selezionata la risoluzione personalizzata come fonte primaria del video che verrà salvato nel file MP4.
+	
+	La seconda traccia del file MP4 è una visualizzazione della mappa della profondità della fotocamera. Si tratta di un video ricavato dal sensore di profondità del proprio dispositivo e successivamente convertito in valori dei canali RGB.
+	
+	\section{Ulteriori dati salvati}
+	ARCore registra anche le misurazioni del giroscopio e dell’accelerometro del dispositivo. Inoltre, vengono salvati anche altri dati, tra cui alcuni considerati sensibili. Questi dati sono la versione SDK di Android, il fingerprint del dispositivo, informazioni addizionali sui sensori usati e, se il ARCore Geospatial API è attivo , la posizione stimata, i dati del magnetometro e della bussola.
+	 
+	\section{Come registrare}
+	Per iniziare una sessione di registrazione inizialmente creo una sessione di ARCore, imposto il file di output e alcune configurazioni sulla registrazione. Infine inizio a registrare. Per concludere la registrazione è necessario invocare il metodo \verb|stopRecording()| sull'istanza \verb|session|. Si veda il listing~\vref{lst:pr_session} tratto dalla documentazione ufficiale Google.
+	
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:pr_session}, language=Kotlin]
+			// Configure the ARCore session.
+			val session = Session(context)
+			
+			val destination = Uri.fromFile(File(context.getFilesDir(),"recording.mp4"))
+			
+			val recordingConfig = RecordingConfig(session)
+							.setMp4DatasetUri(destination)
+							.setAutoStopOnPause(true)
+			
+			session.startRecording(recordingConfig)
+			
+			// Resume the ARCore session to start recording.
+			session.resume()
+			
+			// Stop recording
+			session.stopRecording()
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}	
 
-Nel caso si voglia una risoluzione migliore, bisogna configurare una nuova fotocamera che abbia la risoluzione desiderata.
-
-In questo caso ARCore richiederà un feed in qualità 640x480 e un feed in alta risoluzione. Questo potrebbe rallentare la propria applicazione a causa di un maggiore utilizzo della CPU. Verrà inoltre selezionata la risoluzione personalizzata come fonte primaria del video che verrà salvato nel file MP4.
-
-La seconda traccia del file MP4 è una visualizzazione della mappa della profondità della fotocamera. Si tratta di un video ricavato dal sensore di profondità del proprio dispositivo e successivamente convertito in valori dei canali RGB.
-
-\section{Ulteriori dati salvati}
- ARCore registra anche le misurazioni del giroscopio e dell’accelerometro del dispositivo. Inoltre, vengono salvati anche altri dati, tra cui alcuni considerati sensibili. Questi dati sono la versione SDK di Android, il fingerprint del dispositivo, informazioni addizionali sui sensori usati e, se il ARCore Geospatial API è attivo , la posizione stimata, i dati del magnetometro e della bussola.
- 
- \section{Come registrare}
- 
- Per iniziare una sessione di registrazione inizialmente creo una sessione di ARCore, imposto il file di output e alcune configurazioni sulla registrazione. Infine inizio a registrare.
- 
- \begin{center}
-	\begin{minipage}{0.95\textwidth}
- 
-// Configure the ARCore session.
-
-val session = Session(context)
-
-val destination = Uri.fromFile(File(context.getFilesDir(),"recording.mp4"))
-
-val recordingConfig = RecordingConfig(session)
-
-  .setMp4DatasetUri(destination)
-  
-  .setAutoStopOnPause(true)
-  
-session.startRecording(recordingConfig)
-
-
-// Resume the ARCore session to start recording.
-
-session.resume()
-
-\end{minipage}
-\end{center}
-
-
-Per conclude la registrazione basta chiamare
-
- \begin{center}
-	\begin{minipage}{0.95\textwidth}
-session.stopRecording()
-
-\end{minipage}
-\end{center}
 
 \end{document}
 

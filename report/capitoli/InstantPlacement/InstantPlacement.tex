@@ -5,6 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english,italian]{babel}
 
+\input{./../../resources/kotlin.tex}
+
 %sistema i margini
 \usepackage{geometry}
 \geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
@@ -25,42 +27,37 @@
 %risorsa che contiene la bibliografia
 \addbibresource{./../../bibliografia.bib}
 
+\usepackage[italian]{varioref}
 
 
 \begin{document}
 	\chapter{Instant Placement}
 	L'API di posizionamento istantaneo consente di posizionare gli oggetti nell’ambiente prima ancora che venga spostato il dispositivo e che vengano individuati i piani.
 	
-Dopo che l’utente ha posizionato l’oggetto, la sua posizione viene perfezionata in tempo reale mentre l’utente si muove nell’ambiente.
-
-Successivamente, quando ARCore è in grado di identificare con precisione l’ubicazione dell’oggetto nello spazio, viene cambiata la sua posizione e dimensione per rispettare la scala dell’ambiente.
-
-\section{Abilitare Instant Placement}
-Per abilitare l’instant placement bisogna creare una sessione configurata per supportare l’instant placement:
-
-\begin{center}
-	\begin{minipage}{0.95\textwidth}
+	Dopo che l’utente ha posizionato l’oggetto, la sua posizione viene perfezionata in tempo reale mentre l’utente si muove nell’ambiente.
 	
-	fun createSession() \{
+	Successivamente, quando ARCore è in grado di identificare con precisione l’ubicazione dell’oggetto nello spazio, viene cambiata la sua posizione e dimensione per rispettare la scala dell’ambiente.
 	
-  session = Session(applicationContext);
-  
-  val config = Config(session)
-  
-  // Set the Instant Placement mode.
-  
-  config.instantPlacementMode = Config.InstantPlacementMode.LOCAL\_Y\_UP
-  
-  session.configure(config)
-  
-\}
-
-	
-	\end{minipage}
-\end{center}
-
-
-
-
+	\section{Abilitare Instant Placement}
+	Per abilitare l’instant placement bisogna creare una sessione configurata per supportare l’instant placement, come descritto dal listing~\vref{lst:ip_session}
+		
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+		\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ip_session}, language=Kotlin]
+		fun createSession() {
+		
+			val session = Session(applicationContext);
+			
+			val config = Config(session)
+			
+			// Set the Instant Placement mode.
+			
+			config.instantPlacementMode = Config.InstantPlacementMode.LOCAL_Y_UP
+			
+			session.configure(config)
+		}
+		\end{lstlisting}
+		\end{minipage}
+	\end{center}
 
 \end{document}
