@@ -41,67 +41,135 @@
 \usepackage{graphicx}
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
+\usepackage{subfig}
 
 \begin{document}
 		
-	\chapter{Anchor Trackable}
+	\chapter{Anchor and Trackable}
 	
-		ARCore definisce gli Anchor per assicurare che gli oggetti virtuali rimangano nella stessa posizione e vengano 					tracciati nel tempo. L'ambiente circostante può cambiare ed è necessario che la posizione dell'oggetto virtuale 				relativa alla mappa rimanga stabile. Gli Anchor sono disposti in insieme di punti o piani rappresentati da oggetti di 			tipo Trackable. \\
+		ARCore definisce gli Anchor per assicurare che gli oggetti virtuali rimangano nella stessa posizione e vengano 					tracciati nel tempo. L'ambiente circostante può cambiare, ed è necessario che la posizione di questi oggetti
+		rimanga stabile. Gli Anchor sono disposti in insieme di punti o piani rappresentati da oggetti di tipo Trackable.\\
+		Gli oggetti Trackable rappresentano la forma geometrica sulla quale verranno definiti gli anchor.
 		Su questi oggetti possono essere invocati 3 metodi:
 		\begin{itemize}
-			\item[•] \textbf{createAnchor(Pose pose)} crea un anchor in una posa che è definita nel Trackable corrente. Il tipo di oggetto Trackable definirà il modo con cui l'anchor verrà disposto e la modalità di aggiornamento della sua posa mentre ARCore cambia il suo modello del mondo.
-			\item[•] \textbf{ getAnchors()} restituisce tutti gli anchor presenti nel dato Trackable.
-			\item[•] \textbf{getTrackingState()} restituisce un oggetto TrackingState che rappresenta lo stato del Trackable. Questo stato può essere: PAUSED quando il rilevamento viene perso ma potrebbe riprendere in futuro; STOPPED quando viene fermato e non verrà più ripreso; TRACKING se viene tracciato il determinato Trackable.
+			\item[•] \emph{createAnchor(pose: Pose)} crea un anchor in una posa che è definita nel Trackable corrente. Il tipo di oggetto Trackable definirà il modo con cui l'anchor verrà disposto e la modalità di aggiornamento della sua posa mentre il modello del mondo varia.
+			\item[•] \emph{ getAnchors()} restituisce tutti gli anchor presenti nel dato Trackable.
+			\item[•] \emph{getTrackingState()} restituisce un oggetto TrackingState che rappresenta lo stato del Trackable. Questo stato può essere: PAUSED quando il rilevamento viene perso ma potrebbe riprendere in futuro; STOPPED quando viene fermato e non verrà più ripreso; TRACKING se viene tracciato il determinato Trackable.
 		\end{itemize}
+		\begin{flushleft}
+			La definizione di anchor e lo stato di tracciamento sono stati molto importanti per la definizione delle 						funzionalità principali della nostra applicazione.\\
+	 		In base alla modalità l'applicazione offre funzionalità differenti:
+		\end{flushleft}
+	 	\begin{itemize}
+	 		\item \emph{Plane Detection}: ARCore rileva dei piani (Trackable) sui quali è possibile posizionare degli animali virtuali. In particolare, quando l'utente tocca un punto preciso del piano viene definito un anchor sul quale verrà renderizzato il modello 3d dell'animale. (Codice in \vref{lst: Definizione Anchor in Plane Detection})
+	 	
+	 		\item \emph{Augmented Images}: in ciascun frame viene controllato se lo stato di un'immagine aumentata è TRACKING; in questo caso l'immagine viene riconosciuta e viene definito un anchor nel suo centro nel quale verrà renderizzato il modello del pianeta corrispondente. (Codice in \vref{lst: Definizione Anchor in Augmented Images})
+	 	\end{itemize}
+		
+		\clearpage
+		\begin{center}
+				\begin{minipage}{1.1\textwidth}
+					\begin{lstlisting}[caption={Definizione Anchor in Plane Detection}, label={lst: Definizione Anchor in Plane Detection}, language=Kotlin]
+					 //Evento che si verifica quando viene toccato un piano
+            		 arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+
+                	 //Se siamo nella modalità place model
+                	 if (!switchButton.isChecked) {
+
+                     arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
+ 
+                        // Crea il transformable model e lo aggiunge all'anchor
+                        addChild(TransformableNode(arFragment.transformationSystem).apply {
+
+                            setModel()
+                            renderable = objRenderable
+                            
+                            //...
+					
+						\end{lstlisting}
+					\end{minipage}
+				\end{center}
+			\vspace{0.2cm}
+		\begin{center}
+			\begin{minipage}{1.1\textwidth}
+				\begin{lstlisting}[caption={Definizione Anchor in Augmented Images}, label={lst: Definizione Anchor in Augmented Images}, 	language=Kotlin]
+				//Per ogni immagine tracciata  se non è presente il  modello allora viene immediatamente costruito e instanziato
+        		for (augmentedImage in augmentedImages) {
+
+            		if (augmentedImage.trackingState == TrackingState.TRACKING) {
+
+                		for (i in 0 until namesobj.size) {
+
+                    		if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
+
+                        		Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
+
+                        		if(namesobj[i]=="systemsolar"){
+                            		renderObject(
+                                		arFragment,
+                                		augmentedImage.createAnchor(augmentedImage.centerPose),
+                                		"solar_system"
+                            		)
+                        		}else {
+                            		renderObject(
+                                		arFragment,
+                                		augmentedImage.createAnchor(augmentedImage.centerPose),
+                                		namesobj[i]
+                            		)
+                        		}	
+                        		renderobj[i] = true
+                    		}
+                		}
+            		}
+        		}
+					\end{lstlisting}
+			\end{minipage}
+		\end{center}
+	
+		\clearpage
+		
+		\begin{flushleft}
+			Di seguito è riportata una rappresentazione di come un oggetto virtuale viene disposto in un piano.
+		\end{flushleft}
+		\begin{figure}
+				\centering
+				\copyrightbox[0.5]{\includegraphics[width=0.7\textwidth]{../../resources/images/UserInteraction/Anchor.jpeg}}%
+				{Fonte: \url{https://medium.com/@jaaveeth.developer/arcore-81528569eb2c}}
+				\caption{Oggetto virtuale in un piano}
+				\label{fig: Oggetto virtuale in un piano}
+		\end{figure}	
 
 	\begin{flushleft}
-		Un esempio di tracciamento si può trovare nella sezione \emph{AugmentedImages} della nostra applicazione in cui è stato 		usato il metodo TrackingState per controllare se l'immagine di un pianeta veniva tracciata. 		 			(Esempio\vref{lst:Definizione Anchor in Augmented Images})\\
-		Nella modalità \emph{Plane Detection} gli anchor vengono disposti in Trackable che rappresentano i piani. Quando un animale viene posizionato in punto mantiene invariata la sua posa (posizione e orientamento) anche se l'ambiente circostante cambia. Ad esempio, se posizioniamo un animale nel nostro salotto, andiamo in cucina e ritorniamo in salotto, dobbiamo trovare l'animale nello stesso punto di prima.\\
-		
-		Di seguito sono riportati degli esempi in cui si può notare che la posizione del pinguino resta invariata da qualsiasi 			prospettiva (frontale,posteriore,laterale) e distanza.
+		Nella modalità \emph{Plane Detection} la posa (posizione e orientamento) di un animale rimane invariata anche se 				l'ambiente circostante cambia.\\
+		Qui sotto sono riportati degli esempi in cui si può notare che il pinguino rimane nello stesso punto da qualsiasi 				prospettiva e distanza.
 	\end{flushleft}
 	
-	
-	\clearpage
 	\begin{figure}
 			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pingvicino.jpg}}%
-			{Fonte: \url{nostra applicazione}}
-			\caption{Pinguino da un'inquadratura vicina}
-			\label{fig: pinguino vicino}
-	\end{figure}
+			\copyrightbox[b]{
+				\subfloat[][\emph{Pinguino da un'inquadratura vicina}]
+				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pingvicino.jpg}}  \quad,
+				\subfloat[][\emph{Pinguino da un'inquadratura lontana}]
+				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pinglontano1.jpg}} \quad,
+				\subfloat[][\emph{Giove da lontano}]
+				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pinglontano2.jpg}}
+			}{Fonte: \url{https://developers.google.com/}}	
+			\caption{Esempio di inquadrature differenti in Plane Detection}
+			\label{fig:augm_img}
+		\end{figure}	
 	
-	\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pinglontano1.jpg}}%
-			{Fonte: \url{nostra applicazione}}
-			\caption{Pinguino da un'inquadratura lontana frontale}
-			\label{fig: pinguino lontano1}
-	\end{figure}
-	
-	\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pinglontano2.jpg}}%
-			{Fonte: \url{nostra applicazione}}
-			\caption{Pinguino da un'inquadratura lontana posteriore}
-			\label{fig: pinguino lontano2}
-	\end{figure}
-	
-	\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pingangolo1.jpg}}%
-			{Fonte: \url{nostra applicazione}}
-			\caption{Pinguino da una prima inquadratura laterale}
-			\label{fig: pinguino angolo1}
-	\end{figure}
-	
-	\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.3\textwidth]{../../resources/images/AnchorTrackable/pingangolo2.jpg}}%
-			{Fonte: \url{nostra applicazione}}
-			\caption{Pinguino da una seconda inquadratura laterale}
-			\label{fig: pinguino angolo1}
-	\end{figure}
 		
-
+	\begin{figure}
+			\centering
+			\copyrightbox[b]{
+				\subfloat[][\emph{Tracciamento immagine}]
+				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/Giove2d.jpg}}  \,
+				\subfloat[][\emph{Giove da vicino}]
+				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/GioveVicino.jpg}} \,
+				\subfloat[][\emph{Giove da lontano}]
+				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/GioveLontano.jpg}}
+			}{Fonte: \url{https://developers.google.com/}}	
+			\caption{Esempio di rilevamento in Augmented Images}
+			\label{fig:augm_img}
+		\end{figure}
 \end{document}

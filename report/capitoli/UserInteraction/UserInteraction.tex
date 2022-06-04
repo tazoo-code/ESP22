@@ -47,7 +47,7 @@
 \begin{document}
 
 	\chapter{User Interaction}
-	ARCore utilizza la tecnologia \textit{ray casting} per permettere all'utente di posizionare un oggetto nella scena corrente 	in un punto fissato. Quando lo schermo del telefono viene toccato o viene compiuta qualche altra interazione, 					viene proiettato un raggio nella visuale del mondo della fotocamera che può intersecare un preciso punto (costituito da 		due coordinate x,y) o piani geometrici. ARCore permette di ricavare un elenco dei risultati delle intersezioni con la 			geometria della scena rilevata attraverso gli hitTest. Solitamente il primo risultato è quello più significativo 				perchè si riferisce all'intersezione più vicina al dispositivo.\\
+	ARCore utilizza la tecnologia \textit{ray casting} per permettere all'utente di posizionare un oggetto nella scena corrente 	in un punto fissato. Quando lo schermo del telefono viene toccato o viene compiuta qualche altra interazione, 					viene proiettato un raggio nella visuale del mondo della fotocamera che può intersecare un preciso punto o piani geometrici. ARCore permette di ricavare un elenco dei risultati delle intersezioni con la geometria della scena rilevata attraverso gli hitTest. Solitamente il primo risultato è quello più significativo perchè si riferisce all'intersezione più vicina al dispositivo.\\
 	Ogni risultato è costituito da:
 	
 	\begin{itemize}
@@ -57,88 +57,15 @@
 	\end{itemize}
 	
 	\begin{flushleft}
-	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli 	oggetti legati ad essa.\\
-	Nella nostra applicazione abbiamo utilizzato l'ancoraggio per due modalità: 
-		\begin{itemize}
-		\item[•] \emph{Plane Detection}: quando viene premuto lo schermo viene creato un oggetto Anchor sul punto corrispondente dove verrà renderizzato il modello 3D dell'animale selezionato. (Esempio\vref{lst: Definizione Anchor in Plane Detection})
-		\item[•] \emph{Augmented Images}: se l'immagine di un pianeta viene riconosciuta viene definito un Anchor nel suo centro nel quale verrà renderizzato il modello 3D del pianeta. (Esempio\vref{lst: Definizione Anchor in Augmented Images})
-	\end{itemize}
-	\end{flushleft}
-	
-	\begin{center}
-				\begin{minipage}{1.15\textwidth}
-					\begin{lstlisting}[caption={Definizione Anchor in Plane Detection}, label={lst: Definizione Anchor in Plane Detection}, language=Kotlin]
-					 //Evento che si verifica quando viene toccato un piano
-            		 arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-
-                	 //Se siamo nella modalità place model
-                	 if (!switchButton.isChecked) {
-
-                     arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
- 
-                        // Crea il transformable model e lo aggiunge all'anchor
-                        addChild(TransformableNode(arFragment.transformationSystem).apply {
-
-                            setModel()
-                            renderable = objRenderable
-                            
-                            //...
-					
-				\end{lstlisting}
-			\end{minipage}
-		\end{center}
-	\vspace{0.2cm}
-	\begin{center}
-			\begin{minipage}{1.1\textwidth}
-				\begin{lstlisting}[caption={Definizione Anchor in Augmented Images}, label={lst:Definizione Anchor in Augmented Images}, 	language=Kotlin]
-				//Per ogni immagine tracciata  se non è presente il  modello allora viene immediatamente costruito e instanziato
-        		for (augmentedImage in augmentedImages) {
-
-            		if (augmentedImage.trackingState == TrackingState.TRACKING) {
-
-                		for (i in 0 until namesobj.size) {
-
-                    		if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
-
-                        		Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()
-
-                        		if(namesobj[i]=="systemsolar"){
-                            		renderObject(
-                                		arFragment,
-                                		augmentedImage.createAnchor(augmentedImage.centerPose),
-                                		"solar_system"
-                            		)
-                        		}else {
-                            		renderObject(
-                                		arFragment,
-                                		augmentedImage.createAnchor(augmentedImage.centerPose),
-                                		namesobj[i]
-                            		)
-                        		}	
-                        		renderobj[i] = true
-                    		}
-                		}
-            		}
-        		}
-				\end{lstlisting}
-		\end{minipage}
-	\end{center}
-		
+	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli 	oggetti legati ad essa come descritto in capitolo (Anchor and Trackanle).\\
+	\end{flushleft}	
 		Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
 		\begin{itemize}
 		\item[•] \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
 		\item[•]\textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
 		\item[•] \textbf{Punto caratteristico}: permette di disporre oggetti in superfici arbitrarie basandosi su caratteristiche visive attorno al punto sul quale l'utente tocca. 
-		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno nel punto selezionato. 
+		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
 	\end{itemize}
-	
-	\begin{figure}
-			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/UserInteraction/Anchor.jpeg}}%
-			{Fonte: \url{https://medium.com/@jaaveeth.developer/arcore-81528569eb2c}}
-			\caption{Oggetto virtuale in un piano}
-			\label{fig: Oggetto virtuale in un piano}
-	\end{figure}
 	
 	\begin{flushleft}
 		Il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo Aereo; il rilevamento di un piano 			consente di disporre un animale in un punto preciso. Questo evento è stato gestito dal metodo 									\textit{setOnTapArPlaneListener} riportato nell'esempio \vref{lst: Definizione Anchor in Plane Detection}.\\
