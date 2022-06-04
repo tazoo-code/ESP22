@@ -1,40 +1,5 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
-
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../../bibliografia.bib}
 
 %pacchetto per immagini
 \usepackage{graphicx}
@@ -42,9 +7,6 @@
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
 \usepackage{url}
-
-
-\usepackage{lipsum}
 
 \begin{document}
 	\section{Light estimation}
@@ -60,7 +22,7 @@
 	
 	\begin{figure}
 		\centering
-		\copyrightbox[l]{\includegraphics[width=0.5\textwidth]{./resources/images/light_effects}}%
+		\copyrightbox[l]{\includegraphics[width=0.5\textwidth]{./resources/images/light_estimation/light_effects}}%
 			{Fonte: \url{https://developers.google.com}}
 		\caption{Esempio degli effetti prodotti dagli oggetti quando sono illuminati.}
 		\label{fig:light_effects}
@@ -93,7 +55,7 @@
 
 	
 
-	\subsection*{Environmental HDR mode}
+	\subsection{Environmental HDR mode}
 		La modalità \textit{Environmental HDR} combina tre diverse API per replicare la luce reale, come descritti dalla figura~\vref{fig:env_HDR}.
 	
 		\paragraph*{Main Directional Light}
@@ -108,13 +70,13 @@
 	
 		\begin{figure}
 			\centering
-			\copyrightbox[l]{\includegraphics[width=0.8\textwidth]{./resources/images/env_HDR}}%
+			\copyrightbox[l]{\includegraphics[width=0.8\textwidth]{./resources/images/light_estimation/env_HDR}}%
 			{Fonte: \url{https://developers.googleblog.com}}
 			\caption{Composizione della modalità Environmental HDR.}
 			\label{fig:env_HDR}
 		\end{figure}
 	
-	\subsection*{Ambient intensity mode}
+	\subsection{Ambient intensity mode}
 		La modalità \textit{Ambient intensity} determina l'intensità media dei pixel e la correzione del colore di una data immagine. Dopo aver filtrato l'intensità media di un insieme di pixel e il bilanciamento del bianco per ogni frame, vengono corretti la luce e il colore dell'oggetto virtuale, affinché si integri meglio con la scena \cite{suonsivu2020rgbd}. Questa modalità può essere utilizzata se la stima della luce non è critica, come per oggetti che possiedono già una propria illuminazione integrata.
 	
 	
