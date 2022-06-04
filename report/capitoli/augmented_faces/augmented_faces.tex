@@ -62,14 +62,14 @@
 	
 	\begin{figure}
 		\centering
-		\copyrightbox[l]{%
+		\copyrightbox[b]{
 			\subfloat[][\emph{Esempio di face mesh}]
 			{\includegraphics[width=0.31\textwidth]{./resources/images/face_mesh}}  \,
 			\subfloat[][\emph{Posizione del center pose}]
 			{\includegraphics[width=0.31\textwidth]{./resources/images/center_pose}} \,
 			\subfloat[][\emph{Posizioni di tre region pose}]
 			{\includegraphics[width=0.31\textwidth]{./resources/images/region_poses}}
-	 	}{Fonte: \url{https://developers.google.com/}}	
+		}{Fonte: \url{https://developers.google.com/}}	
 		\caption{Elementi ottenuti tramite l'API Augmented Faces}
 		\label{fig:augm_faces}
 	\end{figure}
@@ -96,7 +96,7 @@
 	
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
-			\begin{lstlisting}[caption={Utilizzo della modalità Augmented Face.}, label={lst:faces_use}, language=Kotlin]
+			\begin{lstlisting}[caption={Utilizzo della modalità Augmented Faces.}, label={lst:faces_use}, language=Kotlin]
 			// Ricava gli oggetti trackable dalla sessione ARCore
 			val faces = session.getAllTrackables(AugmentedFace::class.java)
 			
