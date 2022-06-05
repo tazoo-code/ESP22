@@ -67,6 +67,8 @@
 		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
 	\end{itemize}
 	\clearpage
+	
+	\section{Definizione e gestione di un HitTest}
 	E' possibile ricevere un hitTest di tipo diverso nel seguente modo:
 	\begin{center}
 		\begin{minipage}{1.1\textwidth}
@@ -110,21 +112,21 @@
 	\end{center}
 	
 	
-	Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo Frame.hitTest(origin3: Array<float>, originOffset: int, direction3: Array<float>, originOffset: int) dove i quattro parametri specificano:
+	\begin{flushleft}
+		Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo \textbf{Frame.hitTest(origin3: 			Array<float>, originOffset: int, direction3: Array<float>, originOffset: int)} dove i quattro parametri 						specificano:
+	\end{flushleft}
 	
 	\begin{itemize}
-		\item[•] origin3: array che contiene le 3 coordinate del punto di partenza del raggio.
-		\item[•] originOffset: offset sommato alle coordinate dell'array di partenza.
-		\item[•] director3: array che contiene le 3 coordinate del punto di arrivo del raggio.
-		\item[•] directorOffset: offset sommato alle coordinate dell'array di arrivo.
+		\item[•] \emph{origin3}: array che contiene le 3 coordinate del punto di partenza del raggio.
+		\item[•] \emph{originOffset}: offset sommato alle coordinate dell'array di partenza.
+		\item[•] \emph{director3}: array che contiene le 3 coordinate del punto di arrivo del raggio.
+		\item[•] \emph{directorOffset}: offset sommato alle coordinate dell'array di arrivo.
 	\end{itemize}
 	
 	\begin{flushleft}
-		Per creare un anchor sul risultato del tocco viene usato hitResult.createAnchor() che restituirà un anchor disposto sul 		Trackable sottostantesu cui è venuto il tocco.\\
+		Per creare un anchor sul risultato del tocco viene usato \textbf{hitResult.createAnchor()} che restituirà un anchor 				disposto sul Trackable sottostantesu cui è venuto il tocco.\\
 		Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo 			Aereo; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato 					gestito dal metodo \textit{setOnTapArPlaneListener} riportato nell'esempio di codice \vref{lst: Definizione Anchor in 			Plane Detection}.\\
 	\end{flushleft}
-	
-	
 			
 	
 \end{document}

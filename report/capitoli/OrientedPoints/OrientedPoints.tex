@@ -40,19 +40,28 @@
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
 \usepackage{listings}
+\usepackage{subfig}
 
 \begin{document}
 		
 	\chapter{Oriented Points}
 	
-		ARCore utilizza i punti orientati quando vengono toccate superfici che non sono piane. Attorno al punto individuato 			dal tocco vengono esaminati dei punti caratteristici grazie ai quali è possibile stimare l'angolo 								dell'intersezione. Il punto orientato è costituito dal risultato del hitTest che prende considerazione questo angolo.
+		ARCore utilizza i punti orientati quando vengono toccate superfici che non sono piane (figura \vref{fig: surf-arb}. 			Attorno al punto individuato dal tocco vengono esaminati dei punti caratteristici grazie ai quali è 							possibile stimare l'angolo dell'intersezione. Il punto orientato è costituito dal risultato del hitTest che prende 				considerazione questo angolo. 
 		L'invocazione del metodo \emph{getOrientationMode()} su un oggetto Point consente di ritornare l'enumerazione 					\emph{Point.OrientationMode} che restituisce la modalità di orientamento del punto.\\
 		La modalità di orientamento può essere di due tipi:
 		\begin{itemize}
 			\item[•] \textbf{ESTIMATED SURFACE NORMAL} se la coordinata X è perpendicolare al raggio di proiezione e parallela alla superficie fisica centrata e attorno al hitTest; Y giace sulla normale alla superficie stimata e Z punta verso la direzione dell'utente.
-			\item[•] \textbf{INITIALIZED TO IDENTITY} l'orientamento è inizializzato in base all'identità ma può variare con il tempo. Ciò che cambia dall'altra modalità è che la coordinata X punta verso la prospettiva del dispositivo dell'utente ed Y punta verso l'alto.
+			\item[•] \textbf{INITIALIZED TO IDENTITY} l'orientamento è inizializzato in base all'identità (unitario) ma può variare con il tempo. Ciò che cambia dall'altra modalità è che la coordinata X punta verso la prospettiva del dispositivo dell'utente ed Y punta verso l'alto.
 		\end{itemize}
-	
-	
+		
+				
+		\begin{figure}
+				\centering
+				\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/OrientedPoints/points1.png}}%
+				{Fonte: \url{https://developers.google.com/ar/develop/java/depth/developer-guide}}
+				\caption{Esempio di punti orientati su una superficie arbitraria}
+				\label{fig: surf-arb}
+		\end{figure}
+		
 		
 \end{document}
