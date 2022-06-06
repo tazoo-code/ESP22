@@ -46,7 +46,7 @@
 		
 	\chapter{Depth understanding}
 	
-		\section{API depth}
+		\section{API Depth}
 	
 			ARCore Depth API aggiunge un livello di realismo attraverso l'uso di algoritmi che generano immagini o mappe di 				profondità. Questi algoritmi sono in grado di ottenere stime di profondità fino a 65 metri. Un'immagine di 						profondità 	(figura \vref{fig: depth-map} offre una visualizzazione 3D del mondo reale, ogni pixel è 							associato alla distanza dalla scena e attraverso l'uso di colori differenti è possibile riconoscere quali aree 					dello spazio sono più vicine al dispositivo. La profondità viene acquisita con piccoli spostamenti dai quali si 				ottengono misure più efficienti (fino a 5 metri). Per ciascun frame può essere recuperata 										l'immagine di profondità corrispondente dopo che l'utente abbia iniziato a muoversi con il dispositivo. Depth API 				richiede una grande potenza di elaborazione ed è supportata solo da alcuni dispositivi; dunque è necessario 					attivarla manualmente quando viene creata una sessione ARCore.\\
 		 	Le principale funzionalità offerte da depth API sono tre:
@@ -145,31 +145,6 @@
 			\end{minipage}
 		\end{center}
 		
-		\subsection{Depth Hit Test}
-		
-		Integrando la profondità sono stati ottenuti degli hit test più precisi grazie ai quali è possibile  							posizionare contenuti virtuali anche su superfici non piane in aree con bassa texture. (Codice in \vref{lst: Depth Hit 			Test})\\
-
-		\begin{center}
-				\begin{minipage}{0.95\textwidth}
-					\begin{lstlisting}[caption={Depth Hit Test}, label={lst: Depth Hit Test}, language=Kotlin]
-					 val frame = arFragment.arSceneView.frame
-					
-					 val hitResultList: List<hitResult> = frame.hitTest(tap)
-					
-					 for(hit in hitResultList){
-						 val trackable: Trackable=hit.trackable
-						
-						 if(trackable id Plane || trackable is Point || trackable is DepthPoint){
-							 val anchor=hit.createAnchor()
-							 //Use anchor here
-						 }
-					}
-					
-				\end{lstlisting}
-			\end{minipage}
-		\end{center}
-		
-		
 		\section{Raw Depth API}
 		Le ARCore Raw Depth API forniscono informazioni più precise sulla profondità di alcuni pixel di un'immagine e 					permettono di rappresentare la geometria della scena generando delle \textbf{immagini di profondità grezze}. A 					queste immagini vengono associate delle \textbf{immagini di affidabilità} che stabiliscono il grado di confidenza di 			ciascun pixel (associato ad un valore di profondità). In particolare, ogni pixel è un numero intero senza segno a 8 bit 		che indica la stima della confidenza con valori compresi tra 0 (più bassa) e 255 (più alta) inclusi. I pixel 					senza una stima della profondità valida hanno un valore di confidenza pari a 0 e un valore di profondità 						corrispondente pari a 0.
 		
@@ -182,19 +157,29 @@
 		\end{figure}
 		
 		\begin{flushleft}
-			L'uso di Raw Depth API è molto utile nei casi in cui c'è il bisogno di avere una maggiore precisione, ad esempio 				nella ricostruzione 3d, misurazione, rilevamento delle forme.
+			L'uso di Raw Depth API è molto utile nei casi in cui c'è il bisogno di avere una maggiore precisione, ad esempio 				nella misurazione (PHORIA ARConnect App), ricostruzione 3d  (3d Live Scanner App), rilevamento delle forme (Jam3).
+			
 		\end{flushleft}
 		
+		\begin{figure}
+				\centering
+				\copyrightbox[0.5]{\includegraphics[width=0.5\textwidth]{../../resources/images/depthAPI/deptRawAPI2.png}}%
+				{Fonte: \url{https://www.youtube.com/watch?v=13WugTMOdSs}}
+				\caption{Applicazioni Raw Depth API }
+				\label{fig: app-depth-raw-api}
+		\end{figure}
 		\subsection{Sessione ARCore con Raw depth API}
 		
 		Inizialmente si deve effettuare il controllo sulla compatibilità del dispositivo come riportato nel codice \vref{lst: check-api-depth }.\\
-		Per acquisire un'immagine di affidabilità viene invocato il metodo \textbf{acquireRawDepthConfidenceImage()}; da 				ciascuna immagine di può ricavare l'accuratezza di ogni pixel di profondità non elaborato. Codice riportato \vref{lst: confidence-image}
+		Per acquisire un'immagine di confidenza viene invocato il metodo \textbf{acquireRawDepthConfidenceImage()}, dalla 				quale si può ricavare l'accuratezza di ogni pixel di profondità non elaborato. Codice riportato \vref{lst: confidence-			image}
 		
 		\begin{center}
 				\begin{minipage}{0.95\textwidth}
 					\begin{lstlisting}[caption={Estrazione di un'immagine di confidenza}, label={lst: confidence-image}, language=Kotlin]
 					 try {
-  						// Depth image is in uint16, at GPU aspect ratio, in native orientation.
+					 
+					 	//First of all, retrieve raw depth image
+  						// Raw Depth image is in uint16, at GPU aspect ratio, in native orientation.
   						frame.acquireRawDepthImage16Bits().use { rawDepth ->
   						
     						// Confidence image is in uint8, matching the depth image size.
@@ -221,6 +206,30 @@
   						}
 					} catch (e: NotYetAvailableException) {
   						// Depth image is not (yet) available.
+					}
+					
+				\end{lstlisting}
+			\end{minipage}
+		\end{center}
+		
+		\section{Depth Hit Test}
+		
+		Integrando la profondità sono stati ottenuti degli hit test più precisi grazie ai quali è possibile  							posizionare contenuti virtuali anche su superfici non piane in aree con bassa texture. (Codice in \vref{lst: Depth Hit 			Test})\\
+
+		\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={Depth Hit Test}, label={lst: Depth Hit Test}, language=Kotlin]
+					 val frame = arFragment.arSceneView.frame
+					
+					 val hitResultList: List<hitResult> = frame.hitTest(tap)
+					
+					 for(hit in hitResultList){
+						 val trackable: Trackable=hit.trackable
+						
+						 if(trackable id Plane || trackable is Point || trackable is DepthPoint){
+							 val anchor=hit.createAnchor()
+							 //Use anchor here
+						 }
 					}
 					
 				\end{lstlisting}
