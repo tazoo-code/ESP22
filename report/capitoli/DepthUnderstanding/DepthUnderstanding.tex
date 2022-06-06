@@ -46,18 +46,106 @@
 		
 	\chapter{Depth understanding}
 	
-		ARCore Depth API  permette agli sviluppatori di generare mappe di profondità attraverso l'uso di algoritmi di 					profondità del movimento. Una mappa di profondità offre una visualizzazione in 3D del mondo reale, ogni pixel è 				associato alla distanza dalla scena e attraverso l'uso di colori differenti è possibile riconoscere quali aree dello 			spazio sono più vicine al dispositivo. Quando viene avviata una nuova sessione ARCore il display dello smartphone è 			nero, ma non appena si effettua un piccolo movimento la profondità viene rilevata. La stima della profondità è ricavata 		attraverso il movimento dello smartphone. Quando si progettano delle applicazioni che si concentrano sulla profondità 			bisogna considerare che la profondità viene calcolata meglio quando la scena rimane la stessa con piccoli spostamenti. 			Il dispositivo ha bisogno di muoversi un pò per generare la profondità. Un altro fattore da prendere in considerazione 			è quando l'utente compie lunghi spostamenti; in questo caso la stima della profondità arriva fino a 8 metri ma la 				migliore accuratezza si ha tra 0 e 5 metri.\\
-		Per ottimizzare ulteriormente le funzionalità offerte da depth API è stato effettuato un uso selettivo del machine 				learning.\\
-		 Le principale funzionalità offerte da depth API sono tre:
+		\section{API depth}
+	
+			ARCore Depth API aggiunge un livello di realismo attraverso l'uso di algoritmi che generano immagini o mappe di 				profondità. Questi algoritmi sono in grado di ottenere stime di profondità fino a 65 metri. Un'immagine di 						profondità 	(figura \vref{fig: depth-map} offre una visualizzazione 3D del mondo reale, ogni pixel è 							associato alla distanza dalla scena e attraverso l'uso di colori differenti è possibile riconoscere quali aree 					dello spazio sono più vicine al dispositivo. La profondità viene acquisita con piccoli spostamenti dai quali si 				ottengono misure più efficienti (fino a 5 metri). Per ciascun frame può essere recuperata 										l'immagine di profondità corrispondente dopo che l'utente abbia iniziato a muoversi con il dispositivo. Depth API 				richiede una grande potenza di elaborazione ed è supportata solo da alcuni dispositivi; dunque è necessario 					attivarla manualmente quando viene creata una sessione ARCore.\\
+		 	Le principale funzionalità offerte da depth API sono tre:
 		\begin{itemize}
 			\item[•] \textbf{Copertura dei contenuti}: permette di posizionare accuratamente dei contenuti virtuali di fronte o dietro degli oggetti reali.
 			\item[•] \textbf{Immersione}: permette di decorare una scena con oggetti virtuali che interagiscono tra di loro.
 			\item[•] \textbf{Interazione}: i contenuti virtuali sono in grado di interagire con il mondo reale attraverso cambiamenti fisici e collisioni.
 		\end{itemize}
 		
+			\begin{figure}
+				\centering
+				\copyrightbox[0.5]{\includegraphics[width=0.5\textwidth]{../../resources/images/depthAPI/DepthMap.png}}%
+				{Fonte: \url{https://developers.google.com/ar/develop/depth}}
+				\caption{Esempio di mappa di profondità}
+				\label{fig: depth-map}
+			\end{figure}	
+		
 		\clearpage
 		
-		\section{Depth Hit Test}
+		\subsection{Sessione ARCore con depth API}
+		
+			Prima di iniziare una nuova sessione ARCore è necessario controllare se il dispositivo supporta depth API. A volte 				questa opzione può essere disattivata oppure non supportata nonostante il dispositivo supporti ARCore. Dopo aver 				definito la sessione con le opportune configurazioni è possibile controllare se il dispositivo e la fotocamera 					supportano una determinata modalità di profondità invocando il metodo \textbf{isDepthModeSupported(Config.DepthMode 			mode)} sull'istanza della sessione. Se la modalità è supportata viene configurata la sessione e sarà possibile 					sfruttare depth API. (Codice \vref{lst: check-api-depth})\\
+		
+			\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={ Controllo supporto depth API}, label={lst: check-api-depth}, language=Kotlin]
+				
+					val config = session.config
+
+					// Check whether the user's device supports the Depth API.
+					val isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
+					if (isDepthSupported) {
+  						config.depthMode = Config.DepthMode.AUTOMATIC
+					}
+					session.configure(config)
+				
+					\end{lstlisting}
+			\end{minipage}
+		\end{center}
+		
+		\begin{flushleft}
+		Per ottenere l'immagine di profondità relativa al frame corrente viene invocato il metodo 										\textbf{acquireDepthImage16Bits()}.(Codice \vref{lst: depth-image})\\
+		\end{flushleft}
+		
+		\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={ Estrazione di un'immagine profonda}, label={lst: depth-image}, 		language=Kotlin]
+					val frame = arFragment.arSceneView.frame
+
+					// Retrieve the depth image for te current frame, if available
+					try{
+						frame.acquireDepthImage16Bits().use{ depthImage ->
+							//Use the depth image here
+						}
+					} catch(e: NotYetAvailableException){
+						// This means that depth data is not available yet.
+  						// Depth data will not be available if there are no tracked
+  						// feature points. This can happen when there is no motion, or when the
+  						// camera loses its ability to track objects in the surrounding
+  						// environment. 
+					}
+					
+					\end{lstlisting}
+			\end{minipage}
+		\end{center}
+		\clearpage
+		\begin{center}
+				\begin{minipage}{0.95\textwidth}
+					\begin{lstlisting}[caption={ Estrazione di informazioni da un'immagine profonda}, label={lst: inf-depth-img}, 		language=Kotlin]
+					/** Obtain the depth in millimeters for [depthImage] at coordinates ([x], [y]). */
+					fun getMillimetersDepth(depthImage: Image, x: Int, y: Int): Int {
+					
+  						// The depth image has a single plane, which stores depth for each
+  						// pixel as 16-bit unsigned integers.
+  						val plane = depthImage.planes[0]
+  						
+  						//The distance between adjacent pixel samples, in bytes
+  						val pixelStride= x * plane.pixelStride
+  						
+  						//The row stride for this color plane, in bytes.
+  						val rowStride= y * plane.rowStride
+  						
+  						val byteIndex = pixelStride + rowStride 
+  						
+  						//Retrieves this buffer's byte order. 
+  						val buffer = plane.buffer.order(ByteOrder.nativeOrder())
+  					
+  						//Reads two bytes at the given index, composing them into a short value
+  						// according to the current byte order.
+  						val depthSample = buffer.getShort(byteIndex)
+  						
+  						return depthSample.toInt()
+					}
+					
+					\end{lstlisting}
+			\end{minipage}
+		\end{center}
+		
+		\subsection{Depth Hit Test}
 		
 		Integrando la profondità sono stati ottenuti degli hit test più precisi grazie ai quali è possibile  							posizionare contenuti virtuali anche su superfici non piane in aree con bassa texture. (Codice in \vref{lst: Depth Hit 			Test})\\
 
@@ -81,64 +169,61 @@
 			\end{minipage}
 		\end{center}
 		
-		\section{Immagine di profondità}
 		
-		Le immagini di profondità sono costituite da pixel che sono associati ad una misurazione della distanza dalla scena 
-		ripresa dalla fotocamera. \vref{fig: depth-map}
+		\section{Raw Depth API}
+		Le ARCore Raw Depth API forniscono informazioni più precise sulla profondità di alcuni pixel di un'immagine e 					permettono di rappresentare la geometria della scena generando delle \textbf{immagini di profondità grezze}. A 					queste immagini vengono associate delle \textbf{immagini di affidabilità} che stabiliscono il grado di confidenza di 			ciascun pixel (associato ad un valore di profondità). In particolare, ogni pixel è un numero intero senza segno a 8 bit 		che indica la stima della confidenza con valori compresi tra 0 (più bassa) e 255 (più alta) inclusi. I pixel 					senza una stima della profondità valida hanno un valore di confidenza pari a 0 e un valore di profondità 						corrispondente pari a 0.
 		
 		\begin{figure}
 				\centering
-				\copyrightbox[0.5]{\includegraphics[width=0.5\textwidth]{../../resources/images/depthAPI/DepthMap.png}}%
-				{Fonte: \url{https://developers.google.com/ar/develop/depth}}
-				\caption{Esempio di mappa di profondità}
-				\label{fig: depth-map}
-		\end{figure}	
-		
-		
-		\section{Sessione ARCore con depth API}
-		
-			Prima di iniziare una nuova sessione ARCore è necessario controllare se il dispositivo supporta depth API. A volte 				questa opzione può essere disattivata oppure non supportata nonostante il dispositivo supporti ARCore. Dopo aver 				definito la sessione con le opportune configurazioni è possibile controllare se il dispositivo e la fotocamera 					supportano una determinata modalità di profondità invocando il metodo \textit{isDepthModeSupported(Config.DepthMode 			mode)} sull'istanza della sessione. Se la modalità è supportata viene configurata la sessione e sarà possibile 					sfruttare depth API. (Codice \vref{lst: Controllo supporto depth API})\\
-		
-			\begin{center}
-				\begin{minipage}{0.95\textwidth}
-					\begin{lstlisting}[caption={ Controllo supporto depth API}, label={lst: Controllo supporto depth API}, 		language=Kotlin]
-				
-					val config = session.config
-
-					// Check whether the user's device supports the Depth API.
-					val isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
-					if (isDepthSupported) {
-  						config.depthMode = Config.DepthMode.AUTOMATIC
-					}
-					session.configure(config)
-				
-					\end{lstlisting}
-			\end{minipage}
-		\end{center}
+				\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/depthAPI/deptRawAPI.png}}%
+				{Fonte: \url{https://stackoverflow.com/questions/59088045/arcore-raw-depth-data-from-rear-android-depth-camera}}
+				\caption{Differenze tra immagini in API Raw Depth }
+				\label{fig: depth-raw-api}
+		\end{figure}
 		
 		\begin{flushleft}
-		Per ottenere l'immagine di profondità relativa al frame corrente viene invocato il metodo 										\textit{acquireDepthImage16Bits()}. (Esempio \vref{fig: depth-map})\\
+			L'uso di Raw Depth API è molto utile nei casi in cui c'è il bisogno di avere una maggiore precisione, ad esempio 				nella ricostruzione 3d, misurazione, rilevamento delle forme.
 		\end{flushleft}
+		
+		\subsection{Sessione ARCore con Raw depth API}
+		
+		Inizialmente si deve effettuare il controllo sulla compatibilità del dispositivo come riportato nel codice \vref{lst: check-api-depth }.\\
+		Per acquisire un'immagine di affidabilità viene invocato il metodo \textbf{acquireRawDepthConfidenceImage()}; da 				ciascuna immagine di può ricavare l'accuratezza di ogni pixel di profondità non elaborato. Codice riportato \vref{lst: confidence-image}
 		
 		\begin{center}
 				\begin{minipage}{0.95\textwidth}
-					\begin{lstlisting}[caption={ Controllo supporto depth API}, label={lst: Controllo supporto depth API}, 		language=Kotlin]
-					val frame = arFragment.arSceneView.frame
-
-					// Retrieve the depth image for te current frame, if available
-					try{
-						frame.acquireDepthImage16Bits().use{ depthImage ->
-							//Use the depth image here
-						}
-					} catch(e: NotYetAvailableException){
-						// This means that depth data is not available yet.
-  						// Depth data will not be available if there are no tracked
-  						// feature points. This can happen when there is no motion, or when the
-  						// camera loses its ability to track objects in the surrounding
-  						// environment. 
+					\begin{lstlisting}[caption={Estrazione di un'immagine di confidenza}, label={lst: confidence-image}, language=Kotlin]
+					 try {
+  						// Depth image is in uint16, at GPU aspect ratio, in native orientation.
+  						frame.acquireRawDepthImage16Bits().use { rawDepth ->
+  						
+    						// Confidence image is in uint8, matching the depth image size.
+    						frame.acquireRawDepthConfidenceImage().use { rawDepthConfidence ->
+    						
+      							// Compare timestamps to determine whether depth is is based on new
+      							// depth data, or is a reprojection based on device movement.
+     							 val thisFrameHasNewDepthData = frame.timestamp == rawDepth.timestamp
+     							 
+      							if (thisFrameHasNewDepthData) {
+      							
+        							val depthData = rawDepth.planes[0].buffer
+        							val confidenceData = rawDepthConfidence.planes[0].buffer
+        							val width = rawDepth.width
+        							val height = rawDepth.height
+        							someReconstructionPipeline.integrateNewImage(
+          							depthData,
+          							confidenceData,
+         						 	width = width,
+          							height = height
+        							)
+      							}
+    						}
+  						}
+					} catch (e: NotYetAvailableException) {
+  						// Depth image is not (yet) available.
 					}
 					
-					\end{lstlisting}
+				\end{lstlisting}
 			\end{minipage}
 		\end{center}
 		
