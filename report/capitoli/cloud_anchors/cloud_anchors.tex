@@ -27,7 +27,7 @@
 		\litem{Resolving} gli utenti possono utilizzare l'ID ricevuto per ricreare l'anchor quando si trovano nello stesso ambiente. L'API compara la scena del dispositivo con la mappa 3D caricata precedentemente per determinare la posizione dell'utente e visualizzare correttamente l'oggetto virtuale.
 	\end{enumerate}
 	
-	\begin{figure}
+	\begin{figure}[t]
 		\centering
 		\subfloat[][\emph{Creazione dell'anchor locale.}]
 		{\includegraphics[width=0.45\textwidth]{./resources/images/cloud_anchors/creation}}  \quad
@@ -41,7 +41,7 @@
 		\label{fig:cloud}
 	\end{figure}
 
-	\section{Implementazione e utilizzo}
+	\section{Configurazione e utilizzo}
 	Per implementare un'applicazione che utilizzi i Cloud Anchor è prima necessario creare un progetto in \textit{Google Cloud Platform} e abilitare il ARCore Cloud Anchor API per l'hosting, il salvataggio e il resolving degli anchor.
 	\\
 	\noindent
@@ -56,7 +56,8 @@
 		\end{minipage}
 	\end{center}
 
-	\subsection*{Autenticazione}
+	\subsection{Autenticazione}
+	\label{subsec:auth}
 	Se il cloud anchor deve poter avere processi host/resolve di durata massima 24 ore, come ad esempio per giochi virtuali multigiocatore, è necessaria un'autenticazione tramite chiave dell'app. Tale autenticazione si compie generando una \textit{API key} per il progetto cloud dal \textit{Google Cloud Console} e aggiungendola nel campo \verb|android:value| in un tag \verb|meta-data|, nel campo \verb|application| del file \verb|AndroidManifest.xml| dell'applicazione, come spiegato dal listing~\vref{lst:auth}.
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
@@ -71,7 +72,7 @@
 	\noindent
 	Per cloud anchor che devono persistere per una durata compresa tra 1 e 365 giorni invece, è necessaria un'autenticazione tramite \textit{OAuth client}, che associa l'applicazione android al progetto di Google Cloud Platform. Tale autenticazione richiede una chiave \textit{SHA-1 fingerprint} che si può generare con il task \verb|signingReport| di Gradle.
 	
-	\subsection*{Hosting}
+	\subsection{Hosting}
 	Il metodo \verb|hostCloudAnchorWithTtl(anchor:Anchor, ttlDays:Int)| della classe \verb|Session| permette di iniziare l'hosting di \verb|anchor| con una durata di \verb|ttlDays| giorni, un numero positivo compreso tra 1 e 365; per hosting con durata fino a 24 ore è invece necessaria l'invocazione del metodo \verb|hostCloudAnchor(anchor:Anchor)|. Entrambi i metodi restituiscono il nuovo anchor, con la stessa posizione di \verb|anchor| e con stato \verb|Anchor.CloudAnchorState.TASK_IN_PROGRESS|. Il listing~\vref{lst:hosting} tratto dal codelab \cite{codelab2021cloud} realizza l'hosting tramite un oggetto della classe wrapper \verb|CloudAnchorManager|.
 	
 	\begin{center}
@@ -85,7 +86,7 @@
 		\end{minipage}
 	\end{center}
 	
-	\subsection*{Resolving}
+	\subsection{Resolving}
 	Il metodo \verb|resolveCloudAnchor(String cloudAnchorId)| della classe \verb|Session| compie il resolving, creando un anchor sulla base delle informazioni 3D inviate e comparate con la mappa 3D caricata durante l'hosting, per poter posizionare correttamente l'oggetto rispetto al dispositivo che sta compiendo il resolving.
 
 	
