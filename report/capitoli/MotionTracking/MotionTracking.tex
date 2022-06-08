@@ -1,41 +1,6 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
 
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../bibliografia.bib}
-
-\usepackage{lipsum}
 \usepackage{graphicx}
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
@@ -45,20 +10,20 @@
 	\section{Motion tracking}
 	
 		ARCore usa un processo chiamato \emph{Simultaneous localization and mapping (SLAM)} per determinare lo stato di un
-		dispositivo che si trova all'interno di un ambiente sconosciuto. Questo stato è descritto dalla sua \textbf{posa} 				(posizione e orientazione) che viene stimata attraverso prestazioni di \emph{odometria} e \textbf{rilevazione di punti 			caratteristici}. Con odometria si intende l'uso di dati ricavati da sensori di movimento che permettono di 						valutare il cambiamento della posizione nel tempo. Nel caso degli smartphone viene utilizzato il sensore IMU che 				rileva misure inerziali (dati non visuali) come la velocita, accelerazione e posizione. La rilevazione di 						punti caratteristici è l'individuazione di immagini con caratteristiche differenti (dati visuali) che							consentono al dispositivo di calcolare la sua posizione relativa. Questi punti di riferimento insieme alle misurazioni 			ricavate dai sensori permettono di avere una buona stima della posa e di ricavare la rappresentazione di una mappa 				dell'ambiente circostante. Tuttavia, il movimento sequenziale stimato dallo SLAM include un certo margine di errore che 		si accumula nel tempo causando una notevole deviazione dai valori reali. Una soluzione che può essere adottata per 				risolvere questo problema consiste nel considerare come punto di riferimento un luogo visitato in precedenza di cui si 			sono memorizzate le sue caratteristiche \cite{mathworks2022slam}. Grazie alle informazioni di questo luogo è possibile 			minimizzare l'errore nella stima della posa.\\
-		I contenuti virtuali possono essere renderizzati nella giusta prospettiva allineando la posa della telecamera virtuale 			con quella calcolata da ARCore. Il contenuto virtuale sembra reale perchè è sovrapposto all'immagine ottenuta dalla 			fotocamera del dispositivo.\\
-		Nella figura \vref{fig: Motion Tracking} si può notare come la posizione dell'utente è tracciata in relazione ai punti 			caratteristici identificati nel divano reale.
+		dispositivo che si trova all'interno di un ambiente sconosciuto. Questo stato è descritto dalla sua \textbf{posa} (posizione e orientazione) che viene stimata attraverso prestazioni di \emph{odometria} e \textbf{rilevazione di punti caratteristici}. Con odometria si intende l'uso di dati ricavati da sensori di movimento che permettono di valutare il cambiamento della posizione nel tempo. Nel caso degli smartphone viene utilizzato il sensore IMU che rileva misure inerziali (dati non visuali) come la velocita, accelerazione e posizione. La rilevazione di punti caratteristici è l'individuazione di immagini con caratteristiche differenti (dati visuali) che	consentono al dispositivo di calcolare la sua posizione relativa. Questi punti di riferimento insieme alle misurazioni ricavate dai sensori permettono di avere una buona stima della posa e di ricavare la rappresentazione di una mappa dell'ambiente circostante. Tuttavia, il movimento sequenziale stimato dallo SLAM include un certo margine di errore che si accumula nel tempo causando una notevole deviazione dai valori reali. Una soluzione che può essere adottata per risolvere questo problema consiste nel considerare come punto di riferimento un luogo visitato in precedenza di cui si sono memorizzate le sue caratteristiche \cite{mathworks2022slam}. Grazie alle informazioni di questo luogo è possibile minimizzare l'errore nella stima della posa.\\
+		I contenuti virtuali possono essere renderizzati nella giusta prospettiva allineando la posa della telecamera virtuale con quella calcolata da ARCore. Il contenuto virtuale sembra reale perchè è sovrapposto all'immagine ottenuta dalla 			fotocamera del dispositivo.\\
+		Nella figura \vref{fig: Motion Tracking} si può notare come la posizione dell'utente è tracciata in relazione ai punti caratteristici identificati nel divano reale.
 		
 		\begin{figure}
 				\centering
-				\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/MotionTracking/MotionTracking.jpg}}%
+				\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{./resources/images/MotionTracking/MotionTracking.jpg}}%
 				{Fonte: \url{https://developers.google.com/ar/develop/fundamentals}}
 				\caption{Motion Tracking}
 				\label{fig: Motion Tracking}
 		\end{figure}
 		
 		\begin{flushleft}
-			Nella figura \vref{fig: Slam} sono rappresentati i moduli principali dello SLAM che si differenziano in quattro 			categorie \cite{andreasjakl2018slam}:
+			Nella figura \vref{fig: Slam} sono rappresentati i moduli principali dello SLAM che si differenziano in quattro categorie \cite{andreasjakl2018slam}:
 		\end{flushleft}
 		
 		\begin{itemize}
@@ -70,7 +35,7 @@
 	
 		\begin{figure}
 			\centering
-			\copyrightbox[0.5]{\includegraphics[width=1\textwidth]{../../resources/images/MotionTracking/SLAM.png}}%
+			\copyrightbox[0.5]{\includegraphics[width=1\textwidth]{./resources/images/MotionTracking/SLAM.png}}%
 			{Fonte: \url{https://www.andreasjakl.com/basics-of-ar-slam-simultaneous-localization-and-mapping/}}
 			\caption{Struttura dei moduli SLAM}
 			\label{fig: Slam}
@@ -78,26 +43,25 @@
 		
 		\begin{figure}
 			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.6\textwidth]{../../resources/images/MotionTracking/FeaturesPoints.png}}%
+			\copyrightbox[0.5]{\includegraphics[width=0.6\textwidth]{./resources/images/MotionTracking/FeaturesPoints.png}}%
 			{Fonte: \url{https://www.youtube.com/watch?v=UkIcupOTJrY&t=170s}}
 			\caption{Punti caratteristici}
 			\label{fig: Punti caratteristici}
 		\end{figure}
 		
 		\begin{flushleft}
-			Nell'esempio (a) in figura \vref{fig: Error Tracking} si può vedere come il margine di errore si accumula nel tempo 			portando ad una rappresentazione inconsistente della mappa dell'ambiente. In (b) si può notare un 								miglioramento della mappa allineando le varie scansioni in base ai vincoli imposti dalle pose relative. 
-		\end{flushleft}
-		
+			Nell'esempio (a) in figura \vref{fig: Error Tracking} si può vedere come il margine di errore si accumula nel tempo portando ad una rappresentazione inconsistente della mappa dell'ambiente. In (b) si può notare un miglioramento della mappa allineando le varie scansioni in base ai vincoli imposti dalle pose relative. 
+		\end{flushleft}		
 		\begin{figure}
 			\centering
-			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{../../resources/images/MotionTracking/ErrorMap.png}}%
+			\copyrightbox[0.5]{\includegraphics[width=0.8\textwidth]{./resources/images/MotionTracking/ErrorMap.png}}%
 			{Fonte: \url{https://www.andreasjakl.com/basics-of-ar-slam-simultaneous-localization-and-mapping/}}
 			\caption{Correzione degli errori da una mappa}
 			\label{fig: Error Tracking}
 		\end{figure}
 		
 		\begin{flushleft}
-			Per eseguire dei test sulle \textbf{performance} del Motion Tracking si devono tenere in considerazione alcuni 					aspetti:
+			Per eseguire dei test sulle \textbf{performance} del Motion Tracking si devono tenere in considerazione alcuni aspetti:
 		\end{flushleft}
 		
 		\begin{itemize}

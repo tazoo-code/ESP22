@@ -1,43 +1,5 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
-
-\input{./../../resources/kotlin.tex}
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../bibliografia.bib}
-
-\usepackage{lipsum}
 \usepackage{graphicx}
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
@@ -57,12 +19,12 @@
 	\end{itemize}
 	
 	\begin{flushleft}
-	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di 							contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli 	oggetti legati ad essa come descritto nel capitolo (Anchor and Trackable).\\
+	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli oggetti legati ad essa come descritto nel capitolo (Anchor and Trackable).\\
 	\end{flushleft}	
 		Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
 		\begin{itemize}
 		\item[•] \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
-		\item[•]\textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
+		\item[•] \textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
 		\item[•] \textbf{Punto caratteristico}: permette di disporre oggetti in superfici arbitrarie basandosi su caratteristiche visive attorno al punto sul quale l'utente tocca. 
 		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
 	\end{itemize}
@@ -113,7 +75,7 @@
 	
 	
 	\begin{flushleft}
-		Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo \textbf{Frame.hitTest(origin3: 			Array<float>, originOffset: int, direction3: Array<float>, originOffset: int)} dove i quattro parametri 						specificano:
+		Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo \textbf{Frame.hitTest(origin3: Array<float>, originOffset: int, direction3: Array<float>, originOffset: int)} dove i quattro parametri 						specificano:
 	\end{flushleft}
 	
 	\begin{itemize}
@@ -124,8 +86,8 @@
 	\end{itemize}
 	
 	\begin{flushleft}
-		Per creare un anchor sul risultato del tocco viene usato \textbf{hitResult.createAnchor()} che restituirà un anchor 				disposto sul Trackable sottostante su cui è avvenuto il tocco.\\
-		Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo 			Aereo; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato 					gestito dal metodo \textit{setOnTapArPlaneListener} riportato nell'esempio di codice \vref{lst: Definizione Anchor in 			Plane Detection}.\\
+		Per creare un anchor sul risultato del tocco viene usato \textbf{hitResult.createAnchor()} che restituirà un anchor disposto sul Trackable sottostante su cui è avvenuto il tocco.\\
+		Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo Aereo; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato 					gestito dal metodo \textit{setOnTapArPlaneListener} riportato nell'esempio di codice \vref{lst: Definizione Anchor in Plane Detection}.\\
 	\end{flushleft}
 			
 	

@@ -1,43 +1,5 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
-
-\input{./../../resources/kotlin.tex}
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../bibliografia.bib}
-
-\usepackage{lipsum}
 \usepackage{graphicx}
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
@@ -47,8 +9,8 @@
 		
 	\chapter{Anchor and Trackable}
 	
-		ARCore definisce gli Anchor per assicurare che gli oggetti virtuali rimangano nella stessa posizione e vengano 					tracciati nel tempo. L'ambiente circostante può cambiare, ed è necessario che la posizione di questi oggetti
-		rimanga stabile \cite{gumgumcu2019arcore}. Gli Anchor sono disposti in insieme di punti o piani rappresentati da 				oggetti di tipo \textbf{Trackable}.\\
+		ARCore definisce gli Anchor per assicurare che gli oggetti virtuali rimangano nella stessa posizione e vengano tracciati nel tempo. L'ambiente circostante può cambiare, ed è necessario che la posizione di questi oggetti
+		rimanga stabile \cite{gumgumcu2019arcore}. Gli Anchor sono disposti in insieme di punti o piani rappresentati da oggetti di tipo \textbf{Trackable}.\\
 		Gli oggetti Trackable rappresentano la forma geometrica sulla quale verranno definiti gli anchor.
 		Su questi oggetti possono essere invocati 3 metodi:
 		\begin{itemize}
@@ -57,7 +19,7 @@
 			\item[•] \emph{getTrackingState()} restituisce un oggetto TrackingState che rappresenta lo stato del Trackable. Questo stato può essere: PAUSED quando il rilevamento viene perso ma potrebbe riprendere in futuro; STOPPED quando viene fermato e non verrà più ripreso; TRACKING se viene tracciato il determinato Trackable.
 		\end{itemize}
 		\begin{flushleft}
-			La definizione di anchor e lo stato di tracciamento sono stati molto importanti per la definizione delle 						funzionalità principali della nostra applicazione.\\
+			La definizione di anchor e lo stato di tracciamento sono stati molto importanti per la definizione delle funzionalità principali della nostra applicazione.\\
 	 		In base alla modalità l'applicazione offre funzionalità differenti:
 		\end{flushleft}
 	 	\begin{itemize}
@@ -92,7 +54,7 @@
 		\vspace{0.2cm}
 		\begin{center}
 			\begin{minipage}{1.1\textwidth}
-				\begin{lstlisting}[caption={Definizione Anchor in Augmented Images}, label={lst: Definizione Anchor in Augmented Images}, 	language=Kotlin]
+				\begin{lstlisting}[caption={Definizione Anchor in Augmented Images}, label={lst: Definizione Anchor in Augmented Images}, language=Kotlin]
 				//Per ogni immagine tracciata  se non è presente il  modello allora viene immediatamente costruito e instanziato
         		for (augmentedImage in augmentedImages) {
 
@@ -133,26 +95,26 @@
 		\end{flushleft}
 		\begin{figure}
 				\centering
-				\copyrightbox[0.5]{\includegraphics[width=0.7\textwidth]{../../resources/images/UserInteraction/Anchor.jpeg}}%
+				\copyrightbox[0.5]{\includegraphics[width=0.7\textwidth]{./resources/images/UserInteraction/Anchor.jpeg}}%
 				{Fonte: \url{https://medium.com/@jaaveeth.developer/arcore-81528569eb2c}}
 				\caption{Oggetto virtuale in un piano}
 				\label{fig: Oggetto virtuale in un piano}
 		\end{figure}	
 
 	\begin{flushleft}
-		Nella modalità \emph{Plane Detection} la posa (posizione e orientamento) di un animale rimane invariata anche se 				l'ambiente circostante cambia.\\
-		Qui sotto sono riportati degli esempi in cui si può notare che il pinguino rimane nello stesso punto da qualsiasi 				prospettiva e distanza.
+		Nella modalità \emph{Plane Detection} la posa (posizione e orientamento) di un animale rimane invariata anche se l'ambiente circostante cambia.\\
+		Qui sotto sono riportati degli esempi in cui si può notare che il pinguino rimane nello stesso punto da qualsiasi prospettiva e distanza.
 	\end{flushleft}
 	
 	\begin{figure}
 			\centering
 			\copyrightbox[b]{
 				\subfloat[][\emph{Pinguino da un'inquadratura vicina}]
-				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pingvicino.jpg}}  \quad,
+				{\includegraphics[width=0.28\textwidth]{./resources/images/AnchorTrackable/pingvicino.jpg}}  \quad,
 				\subfloat[][\emph{Pinguino da un'inquadratura lontana frontale}]
-				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pinglontano1.jpg}} \quad,
+				{\includegraphics[width=0.28\textwidth]{./resources/images/AnchorTrackable/pinglontano1.jpg}} \quad,
 				\subfloat[][\emph{Pinguino da un'inquadratura lontana posteriore}]
-				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pinglontano2.jpg}}
+				{\includegraphics[width=0.28\textwidth]{./resources/images/AnchorTrackable/pinglontano2.jpg}}
 			}{Fonte: \url{}}	
 			\caption{Esempio di inquadrature differenti in Plane Detection}
 			\label{fig:augm_img}
@@ -166,11 +128,11 @@
 			\centering
 			\copyrightbox[b]{
 				\subfloat[][\emph{Tracciamento immagine}]
-				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/Giove2d.jpg}}  \,
+				{\includegraphics[width=0.28\textwidth]{./resources/images/AnchorTrackable/Giove2d.jpg}}  \,
 				\subfloat[][\emph{Giove da vicino}]
-				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/GioveVicino.jpg}} \,
+				{\includegraphics[width=0.28\textwidth]{./resources/images/AnchorTrackable/GioveVicino.jpg}} \,
 				\subfloat[][\emph{Giove da lontano}]
-				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/GioveLontano.jpg}}
+				{\includegraphics[width=0.28\textwidth]{./resources/images/AnchorTrackable/GioveLontano.jpg}}
 			}{Fonte: \url{}}	
 			\caption{Esempio di rilevamento in Augmented Images}
 			\label{fig:augm_img}
