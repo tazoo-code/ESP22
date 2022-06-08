@@ -48,7 +48,7 @@
 	\chapter{Anchor and Trackable}
 	
 		ARCore definisce gli Anchor per assicurare che gli oggetti virtuali rimangano nella stessa posizione e vengano 					tracciati nel tempo. L'ambiente circostante può cambiare, ed è necessario che la posizione di questi oggetti
-		rimanga stabile. Gli Anchor sono disposti in insieme di punti o piani rappresentati da oggetti di tipo Trackable.\\
+		rimanga stabile \cite{gumgumcu2019arcore}. Gli Anchor sono disposti in insieme di punti o piani rappresentati da 				oggetti di tipo \textbf{Trackable}.\\
 		Gli oggetti Trackable rappresentano la forma geometrica sulla quale verranno definiti gli anchor.
 		Su questi oggetti possono essere invocati 3 metodi:
 		\begin{itemize}
@@ -149,16 +149,19 @@
 			\copyrightbox[b]{
 				\subfloat[][\emph{Pinguino da un'inquadratura vicina}]
 				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pingvicino.jpg}}  \quad,
-				\subfloat[][\emph{Pinguino da un'inquadratura lontana}]
+				\subfloat[][\emph{Pinguino da un'inquadratura lontana frontale}]
 				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pinglontano1.jpg}} \quad,
-				\subfloat[][\emph{Giove da lontano}]
+				\subfloat[][\emph{Pinguino da un'inquadratura lontana posteriore}]
 				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/pinglontano2.jpg}}
-			}{Fonte: \url{https://developers.google.com/}}	
+			}{Fonte: \url{}}	
 			\caption{Esempio di inquadrature differenti in Plane Detection}
 			\label{fig:augm_img}
 	\end{figure}	
+	\clearpage
 	
-		
+	\begin{flushleft}
+		Anche nella modalità \emph{Augmented Images} il pianeta rimane ancorato alla sua posizione. (Figura \vref{fig:augm_img})
+	\end{flushleft}
 	\begin{figure}
 			\centering
 			\copyrightbox[b]{
@@ -168,7 +171,7 @@
 				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/GioveVicino.jpg}} \,
 				\subfloat[][\emph{Giove da lontano}]
 				{\includegraphics[width=0.28\textwidth]{../../resources/images/AnchorTrackable/GioveLontano.jpg}}
-			}{Fonte: \url{https://developers.google.com/}}	
+			}{Fonte: \url{}}	
 			\caption{Esempio di rilevamento in Augmented Images}
 			\label{fig:augm_img}
 		\end{figure}
