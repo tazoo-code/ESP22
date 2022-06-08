@@ -1,6 +1,7 @@
 package com.example.esp22
 
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -8,9 +9,18 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        val currentLang = "it"
+        newBase.resources.configuration.setLocale(Locale(currentLang))
+        applyOverrideConfiguration(newBase.resources.configuration)
+
+        super.attachBaseContext(newBase)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
