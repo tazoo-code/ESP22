@@ -71,13 +71,9 @@ class AugmentedImagesActivity: AppCompatActivity() {
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
 
-                //TODO Risolvere se possibile il problema dell'auto facus
-                //config.focusMode = Config.FocusMode.AUTO
                 // Disable plane detection
 
                 config.planeFindingMode = Config.PlaneFindingMode.DISABLED
-
-                //database = AugmentedImageDatabase(session)
 
                 database = assets.open("myimages.imgdb").use {
                     AugmentedImageDatabase.deserialize(session, it)
