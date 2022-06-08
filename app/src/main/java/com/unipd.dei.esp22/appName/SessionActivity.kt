@@ -122,7 +122,11 @@ class SessionActivity : AppCompatActivity() {
 
                             val hitNode: Node? = hitTestResult.node
 
+                            //hitNode!!.renderableInstance.destroy()
                             hitNode!!.renderable = null
+
+
+
                             hitNode.parent = null
 
                             val children =hitNode.children
@@ -169,6 +173,7 @@ class SessionActivity : AppCompatActivity() {
                         addChild(TransformableNode(arFragment.transformationSystem).apply {
 
                             setModel()
+
                             renderable = objRenderable
 
                             /*Associo al nodo il listener che elimina il nodo quando
@@ -275,16 +280,10 @@ class SessionActivity : AppCompatActivity() {
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
         Log.i("OBJ",obj)
-        var uri = Uri.parse("models/$obj.glb")
-
-        /*
-        //Per risolvere problema della lettera maiuscola in Bengal.glb
-        if(obj=="bengal"){
-            uri = Uri.parse("models/Bengal.glb")
-        }
-        */
+        val uri = Uri.parse("models/$obj.glb")
 
         ModelRenderable.builder()
+            //.setAsyncLoadEnabled(true)
             .setSource(this, uri)
             .setIsFilamentGltf(true)
             .build()
