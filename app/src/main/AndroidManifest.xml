@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.esp22">
+    package="com.unipd.dei.esp22.appName">
     <!-- premessi della fotocamera -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!--
@@ -18,12 +18,12 @@
         android:theme="@style/Theme.Esp22" >
 
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.unipd.dei.esp22.appName.SettingsActivity"
             android:exported="false"
             android:configChanges="uiMode|locale|layoutDirection" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.unipd.dei.esp22.appName.MainActivity"
             android:exported="true"
             android:configChanges="uiMode|locale|layoutDirection" >
             <intent-filter>
@@ -33,12 +33,12 @@
         </activity>
 
         <activity
-            android:name=".SessionActivity"
+            android:name="com.unipd.dei.esp22.appName.SessionActivity"
             android:exported="true">
         </activity>
 
         <activity
-            android:name=".AugmentedImagesActivity"
+            android:name="com.unipd.dei.esp22.appName.AugmentedImagesActivity"
             android:exported="true" >
         </activity>
 

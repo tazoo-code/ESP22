@@ -1,6 +1,6 @@
 <resources>
     <!-- app name -->
-    <string name="app_name" translatable="false">esp22</string>
+    <string name="app_name" translatable="false">appName</string>
 
     <!-- imageview descriptions -->
     <string name="settings_button_icon">Settings</string>
@@ -29,8 +29,8 @@
     <string name="english">English</string>
     <string name="home_button">Home</string>
     <string name="info_button">Info</string>
-    <string name="info_session"> Info text for plane detection</string>
-    <string name="info_augmented"> Info text for augmented images</string>
+    <string name="info_session">In this activity, planes will be identified in the environment and will be marked with white dots. By pressing on the small arrow at the bottom of the screen you can choose the 3D model to insert into the environment. To place it you must press on the screen over a detected plane. To change from place mode to delete mode you can press on the switch at the top left of the screen.</string>
+    <string name="info_augmented">In this activity you can view the 3D models of the planets from the images in the database. To download the image package go to the link. To view the 3D model, frame for at least 25% of the frame with the chosen image and wait for it to be detected. To reset the environment and models press the CLEAR button at the top left of the screen.</string>
     <string name="ok" translatable="false">OK</string>
 
 
