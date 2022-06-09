@@ -19,7 +19,7 @@ class InfoDialogFragment : DialogFragment() {
 
             val s: String
             //In base all'activity che ha chiamato questo fragment viene usato un messaggio di info diverso
-            if (requireActivity().localClassName == "SessionActivity"){
+            if (requireActivity().localClassName == "PlaneDetectionActivity"){
                 s = getString(R.string.info_session)
                 //Costruisce l'AlertDialog con il messaggio passato
                 builder.setMessage(s)
