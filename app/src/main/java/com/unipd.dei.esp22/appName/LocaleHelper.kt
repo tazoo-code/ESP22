@@ -5,9 +5,10 @@ import androidx.preference.PreferenceManager
 import java.util.*
 
 // Classe per la gestione della lingua
-class LocaleHelper(){
+class LocaleHelper{
 
     companion object {
+
         // Metodo per la scelta della lingua
         // Se la lingua è fissata (inglese o italiano) restituisce rispettivamente "en" o "it",
         // Se è impostata su system_default restituisce la lingua del sistema

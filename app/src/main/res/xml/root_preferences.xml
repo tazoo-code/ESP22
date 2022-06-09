@@ -1,7 +1,10 @@
+<!-- Preferenze dell'activity SettingsActivity -->
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Interfaccia -->
     <PreferenceCategory app:title="@string/display_header">
 
+        <!-- Tema -->
         <ListPreference
             app:defaultValue="system_default"
             app:entries="@array/theme_entries"
@@ -11,8 +14,10 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <!-- Lingua -->
     <PreferenceCategory app:title="@string/language_header">
 
+        <!-- Lingua -->
         <ListPreference
             app:defaultValue="system_default"
             app:entries="@array/language_entries"
@@ -21,6 +26,5 @@
             app:title="@string/language_title"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
 
 </PreferenceScreen>

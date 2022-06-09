@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!-- Layout per l'activity ActivityMain portrait -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Tasto per l'activity SettingsActivity -->
         <ImageView
             android:id="@+id/settings_button"
             android:layout_width="32dp"
@@ -40,6 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mainToolbar">
 
+        <!-- Tasto per l'activity PlaneDetectionActivity -->
         <ImageView
             android:id="@+id/rendering_3d"
             android:layout_width="match_parent"
@@ -49,10 +52,12 @@
             android:background="@color/grey_surface"
             android:src="@drawable/rendering_3d" />
 
+        <!-- Spazio verticale -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="40dp" />
 
+        <!-- Tasto per l'activity AugmentedImagesActivity -->
         <ImageView
             android:id="@+id/augmented_images"
             android:layout_width="match_parent"
