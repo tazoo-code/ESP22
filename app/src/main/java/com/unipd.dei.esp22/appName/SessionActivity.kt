@@ -122,10 +122,7 @@ class SessionActivity : AppCompatActivity() {
 
                             val hitNode: Node? = hitTestResult.node
 
-                            //hitNode!!.renderableInstance.destroy()
                             hitNode!!.renderable = null
-
-
 
                             hitNode.parent = null
 
