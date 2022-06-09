@@ -19,14 +19,12 @@ class InfoDialogFragment : DialogFragment() {
 
             val s: String
             //In base all'activity che ha chiamato questo fragment viene usato un messaggio di info diverso
-            if (requireActivity().localClassName == "SessionActivity"){
+            if (requireActivity().localClassName == "PlaneDetectionActivity"){
                 s = getString(R.string.info_session)
                 //Costruisce l'AlertDialog con il messaggio passato
                 builder.setMessage(s)
                     .setPositiveButton(R.string.ok
-                    ) { dialog, id ->
-                        //Azione in caso di pulsante premuto
-                    }
+                    ) { _, _ -> }
                     .setTitle("Info")
 
             }else if(requireActivity().localClassName == "AugmentedImagesActivity"){
@@ -34,9 +32,8 @@ class InfoDialogFragment : DialogFragment() {
                 //Costruisce l'AlertDialog con il messaggio passato
                 builder.setMessage(s)
                     .setPositiveButton(R.string.ok
-                    ) { dialog, id ->
-                        //Azione in caso di pulsante premuto
-                    }
+                    ) { _, _ ->}
+
                     .setNegativeButton(R.string.download
                     ){ dialog, id ->
                         val viewIntent = Intent(
