@@ -1,6 +1,7 @@
 package com.unipd.dei.esp22.appName
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
+import java.util.*
 
 class PlaneDetectionActivity : AppCompatActivity() {
 
@@ -283,6 +285,18 @@ class PlaneDetectionActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         arFragment.onPause()
+    }
+
+    // Prima della creazione dell'activity viene scelta la lingua
+    // in base alle impostazioni scelte
+    override fun attachBaseContext(newBase: Context) {
+        // Metodo per la scelta della lingua, passando il contesto attuale
+        val lang = LocaleHelper.chooseLanguage(newBase)
+        // Imposta la lingua al contesto
+        newBase.resources.configuration.setLocale(Locale(lang))
+        applyOverrideConfiguration(newBase.resources.configuration)
+
+        super.attachBaseContext(newBase)
     }
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D

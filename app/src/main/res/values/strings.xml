@@ -1,6 +1,6 @@
 <resources>
     <!-- app name -->
-    <string name="app_name" translatable="false">appName</string>
+    <string name="app_name" translatable="true">appName</string>
 
     <!-- imageview descriptions -->
     <string name="settings_button_icon">Settings</string>

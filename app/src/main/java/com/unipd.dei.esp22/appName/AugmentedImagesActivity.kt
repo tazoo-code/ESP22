@@ -1,4 +1,7 @@
 package com.unipd.dei.esp22.appName
+
+
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +19,7 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
+import java.util.*
 
 class AugmentedImagesActivity: AppCompatActivity() {
 
@@ -230,5 +234,17 @@ class AugmentedImagesActivity: AppCompatActivity() {
         node!!.select()
 
         listnode.add(node!!)
+    }
+
+    // Prima della creazione dell'activity viene scelta la lingua
+    // in base alle impostazioni scelte
+    override fun attachBaseContext(newBase: Context) {
+        // Metodo per la scelta della lingua, passando il contesto attuale
+        val lang = LocaleHelper.chooseLanguage(newBase)
+        // Imposta la lingua al contesto
+        newBase.resources.configuration.setLocale(Locale(lang))
+        applyOverrideConfiguration(newBase.resources.configuration)
+
+        super.attachBaseContext(newBase)
     }
 }
