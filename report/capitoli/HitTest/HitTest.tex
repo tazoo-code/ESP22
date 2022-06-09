@@ -10,85 +10,81 @@
 
 	\chapter{HitTest}
 	
-	Un hitTest è il risultato che viene restituito quando viene toccato un determinato Trackable.
+	Un \textit{HitTest} è il risultato che viene restituito quando viene toccato un determinato oggetto \verb|Trackable|.
 	Ogni risultato è costituito da:
 	\begin{itemize}
-		\item[•] \textbf{Lunghezza in metri} dall'origine del raggio che può essere ricavata dall'invocazione del metodo \emph{getDistance()}.
-		\item[•] \textbf{Posa} (posizione e orientamento) del punto toccato con \emph{getHitPose()}.
-		\item[•] \textbf{Istanza Trackable} che contiene la geometria 3d che è stata toccata con \emph{getTrackable()}.
+		\item \textbf{Lunghezza in metri} dall'origine del raggio che può essere ricavata dall'invocazione del metodo \verb|getDistance()|.
+		\item \textbf{Posa} (posizione e orientamento) del punto toccato con \verb|getHitPose()|.
+		\item \textbf{Istanza Trackable} che contiene la geometria 3d che è stata toccata con \verb|getTrackable()|.
 	\end{itemize}
 	
-	\begin{flushleft}
-	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli oggetti legati ad essa come descritto nel capitolo (Anchor and Trackable).\\
-	\end{flushleft}	
-		Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
+	\noindent
+	Questo risultato può essere utilizzato per definire un'ancora che permette di fissare la posizione di contenuti virtuali all'interno dello spazio. L'ancora si adatta agli aggiornamenti dell'ambiente circostante e aggiorna gli oggetti legati ad essa come descritto nel capitolo~\vref{cap:anchor} relativo ad Anchor e Trackable.\\
+	
+	\noindent
+	Esistono quattro tipi di risultati che si possono ottenere in una sessione ARCore:
 		\begin{itemize}
-		\item[•] \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
-		\item[•] \textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
-		\item[•] \textbf{Punto caratteristico}: permette di disporre oggetti in superfici arbitrarie basandosi su caratteristiche visive attorno al punto sul quale l'utente tocca. 
-		\item[•] \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
+		\item \textbf{Profondità}: richiede l'attivazione di depth API nella sessione ARCore ed è usato per posizionare oggetti su superfici arbitrarie (non solo su piani).
+		\item \textbf{Aereo}: permette di posizionare un oggetto su superfici piane e utilizza la loro geometria per determinare la profondità e l'orientamento del punto individuato.
+		\item \textbf{Punto caratteristico}: permette di disporre oggetti in superfici arbitrarie basandosi su caratteristiche visive attorno al punto sul quale l'utente tocca. 
+		\item \textbf{Posizionamento istantaneo}: consente di posizionare un oggetto rapidamente in un piano utilizzando la sua geometria completa attorno al punto selezionato. 
 	\end{itemize}
 	\clearpage
 	
 	\section{Definizione e gestione di un HitTest}
-	E' possibile ricevere un hitTest di tipo diverso nel seguente modo:
+	E' possibile ricevere un \verb|HitTest| di tipo diverso come descritto dal listing~\vref{lst: hitTest-filter}.
 	\begin{center}
-		\begin{minipage}{1.1\textwidth}
-			\begin{lstlisting}[caption={Filtraggio hitTest in base al tipo}, label={lst: hitTest-filter}, language=Kotlin]
-			
-			//Retrieve hit-test results are sorted by increasing distance from the camera or virtual ray's
-			// origin.
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Filtraggio hitTest in base al tipo.}, label={lst: hitTest-filter}, language=Kotlin]
+			// I risultati dell'hit-test sono ordinati per distanza crescente dalla fotocamera.
 			val hitResultList =
   				if (usingInstantPlacement) {
-    				// When using Instant Placement, the value in APPROXIMATE DISTANCE METERS will determine
-    				// how far away the anchor will be placed, relative to the camera's view.
+    				// Se si usa la modalità Instant Placement, il valore in 
+    				// APPROXIMATE DISTANCE METERS determina quanto lontano sarà 
+    				// piazzato l'anchor, dal punto di vista della fotocamera.
     				frame.hitTestInstantPlacement(tap.x, tap.y, APPROXIMATE_DISTANCE_METERS)
-    				// Hit-test results using Instant Placement will only have one result of type
-    				// InstantPlacementResult.
+    				// I risultati dell'Hit-test usando Instant Placement 
+    				// avranno un solo risultato di tipo InstantPlacementResult.
   				} else {
     				frame.hitTest(tap)
   				}
   				
-			// The first hit result is often the most relevant when responding to user input.
-			val firstHitResult =
-  				hitResultList.firstOrNull { hit ->
+			// Il primo hit result di solito è il più rilevante per rispondere agli input dell'utente.
+			val firstHitResult = hitResultList.firstOrNull { hit ->
   					val trackable = hit.trackable!!
   					
   					if(trackable is DepthPoint){
-  						// Replace with any type of trackable type
+  						// Sostituisci con un qualsiasi oggetto Trackable
   						true
-  					}else{
+  					} else {
   						false
   					}
-
   				}
   				
 			if (firstHitResult != null) {
-  				// Do something with this hit result. For example, create an anchor at this point of interest.
+  				// Utilizza l'hit result. Ad esempio crea un anchor su tale punto di interesse.
   				val anchor = firstHitResult.createAnchor()
-  				//Use this anchor in your AR experience...
+  				// Utilizzo dell'anchor...
 			}
-  								
 			\end{lstlisting}
 		\end{minipage}
 	\end{center}
 	
 	
-	\begin{flushleft}
-		Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo \textbf{Frame.hitTest(origin3: Array<float>, originOffset: int, direction3: Array<float>, originOffset: int)} dove i quattro parametri 						specificano:
-	\end{flushleft}
+	\noindent
+	Per definire un hitTest attraverso un raggio \textbf{arbitrario} si può usare il metodo \verb|Frame.hitTest(origin3: Array<float>, originOffset: int, direction3:| \\
+	\verb|Array<float>, originOffset: int)| dove i quattro parametri specificano:
 	
 	\begin{itemize}
-		\item[•] \emph{origin3}: array che contiene le 3 coordinate del punto di partenza del raggio.
-		\item[•] \emph{originOffset}: offset sommato alle coordinate dell'array di partenza.
-		\item[•] \emph{director3}: array che contiene le 3 coordinate del punto di arrivo del raggio.
-		\item[•] \emph{directorOffset}: offset sommato alle coordinate dell'array di arrivo.
+		\item \verb|origin3|: array che contiene le 3 coordinate del punto di partenza del raggio.
+		\item \verb|originOffset|: offset sommato alle coordinate dell'array di partenza.
+		\item \verb|director3|: array che contiene le 3 coordinate del punto di arrivo del raggio.
+		\item \verb|directorOffset|: offset sommato alle coordinate dell'array di arrivo.
 	\end{itemize}
 	
-	\begin{flushleft}
-		Per creare un anchor sul risultato del tocco viene usato \textbf{hitResult.createAnchor()} che restituirà un anchor disposto sul Trackable sottostante su cui è avvenuto il tocco.\\
-		Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo Aereo; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato 					gestito dal metodo \textit{setOnTapArPlaneListener} riportato nell'esempio di codice \vref{lst: Definizione Anchor in Plane Detection}.\\
-	\end{flushleft}
+	\noindent
+	Per creare un anchor sul risultato del tocco viene usato \verb|hitResult.createAnchor()| che restituirà un anchor disposto sul \verb|Trackable| sottostante su cui è avvenuto il tocco.
+	Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo Aereo; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato gestito dal metodo \verb|setOnTapArPlaneListener| riportato nell'esempio di codice \vref{lst: Definizione Anchor in Plane Detection}.
 			
 	
 \end{document}
