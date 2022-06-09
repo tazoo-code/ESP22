@@ -1,43 +1,6 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
 
-\input{./../../resources/kotlin.tex}
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../bibliografia.bib}
-
-\usepackage{lipsum}
 \usepackage{graphicx}
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
@@ -47,23 +10,21 @@
 \begin{document}
 
 	\chapter{User Interaction}
-	ARCore utilizza la tecnologia \textit{ray casting} per permettere all'utente di posizionare un oggetto nella scena corrente 	in un punto fissato. Quando lo schermo del telefono viene toccato o viene compiuta qualche altra interazione, 					viene proiettato un raggio nella visuale del mondo della fotocamera che può intersecare un preciso punto o piani 				geometrici. ARCore permette di ricavare un elenco dei risultati delle intersezioni con la geometria della scena rilevata 		attraverso gli hitTest. Solitamente il primo risultato è quello più significativo perchè si riferisce all'intersezione più 		vicina al dispositivo. \vref{fig:pet_img}\\
+	ARCore utilizza la tecnologia \textit{ray casting} per permettere all'utente di posizionare un oggetto nella scena corrente in un punto fissato. Quando lo schermo del telefono viene toccato o viene compiuta qualche altra interazione, viene proiettato un raggio nella visuale del mondo della fotocamera che può intersecare un preciso punto o piani geometrici. ARCore permette di ricavare un elenco dei risultati delle intersezioni con la geometria della scena rilevata attraverso gli hitTest. Solitamente il primo risultato è quello più significativo perchè si riferisce all'intersezione più vicina al dispositivo.
 	
-	\begin{figure}
+	\begin{figure}[h]
 			\centering
-			\copyrightbox[b]{
-				\subfloat[][\emph{}]
-				{\includegraphics[width=0.3\textwidth]{../../resources/images/UserInteraction/Animals1.jpg}}  \quad,
-				\subfloat[][\emph{}]
-				{\includegraphics[width=0.3\textwidth]{../../resources/images/UserInteraction/Animals2.jpg}} \quad,
-			}{Fonte: \url{https://developers.google.com/}}	
-			\caption{Esempio di più hitTest su un piano in Plane Detection}
+			\subfloat[][]
+			{\includegraphics[width=0.3\textwidth]{./resources/images/UserInteraction/Animals1.jpg}}  \qquad
+			\subfloat[][]
+			{\includegraphics[width=0.3\textwidth]{./resources/images/UserInteraction/Animals2.jpg}} \qquad
+			\caption{Esempio di molteplici hitTest su un piano in Plane Detection.}
 			\label{fig:pet_img}
 	\end{figure}
 	
-	\begin{flushleft}
-		Un potenziale test potrebbe consistere nel posizionare un numero notevole di oggetti virtuali nella scena 	ed 					esaminare se le performance diminuiscono con l'incremento del numero di oggetti.  Si potrebbe scoprire se esiste una 			soglia di numero di oggetti  per la quale l'applicazione si arresta. Si consiglia di eliminare anchor inutili per 				evitare che le performance diminuiscano notevolmente.
-	\end{flushleft}
+	\noindent
+	Un potenziale test per stimare le performance dell'interazione con l'utente potrebbe consistere nel posizionare un numero notevole di oggetti virtuali nella scena ed esaminare se le performance diminuiscono con l'incremento del numero di oggetti. Si potrebbe scoprire se esiste una soglia di numero di oggetti per la quale l'applicazione si arresta. Si consiglia di eliminare anchor inutili per evitare che le performance diminuiscano notevolmente.
+
 			
 	
 \end{document}
