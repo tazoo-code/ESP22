@@ -48,8 +48,6 @@ class InfoDialogFragment : DialogFragment() {
                     .setTitle("Info")
             }
 
-
-
             // Crea l'oggetto AlertDialog e lo ritorna
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")

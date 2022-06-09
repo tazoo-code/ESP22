@@ -1,6 +1,4 @@
 package com.unipd.dei.esp22.appName
-
-
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +7,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.unipd.dei.esp22.appName.InfoDialogFragment
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
@@ -20,39 +17,52 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 
-
 class AugmentedImagesActivity: AppCompatActivity() {
 
+    //Fragment che gestisce le interazioni AR dell'utente
     private lateinit var arFragment: ArFragment
 
+    //Database che contiene le immagini aumentate
     private lateinit var database: AugmentedImageDatabase
 
+    /*Lista di TransformableNode che sono presenti nella scena,
+      ciascuno è associato ad un preciso pianeta che ruota su se stesso.
+      Quando vengono creati */
     private val listnode: MutableList<TransformableNode> = arrayListOf()
 
+    /*Lista di Boolean che specifica se è stato renderizzato il modello 3d
+      del pianeta di una determinata immagine */
     private var renderobj: MutableList<Boolean> = arrayListOf()
 
+    //Array di stringhe dei nomi delle immagini aumentate
     private lateinit var namesobj : Array<String>
 
+    //Nodo sul quale verrà renderizzato il modello 3d del pianeta
     private var node : TransformableNode? = null
 
+    //Variabile che serve per far ruotare i pianeti su se stessi
     private var rot = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_augmented_images)
 
+        //Recupero i nomi delle immagini aumentate dal file arrays.xml
         namesobj= this.resources.getStringArray(R.array.planet_array)
 
+        //Inizialmente nessun modello del pianeta è renderizzato
         for( i in 0 until namesobj.size){
             renderobj.add(false)
         }
 
+        //Riferimento all'immagine che permette di tornare alla home
         val homeButton : ImageView = findViewById(R.id.home_button_augm)
 
+        //Riferimento all'immagine che permette di ricevere dello info sul funzionamento dell'applicazione
         val infoButton :ImageView = findViewById(R.id.info_button_augmented)
 
+        /*Button che permette di riavviare l'activity eliminando
+          tutti i pianeti renderizzati. */
         val clearButton = findViewById<Button>(R.id.clear)
 
         homeButton.setOnClickListener {
@@ -63,31 +73,41 @@ class AugmentedImagesActivity: AppCompatActivity() {
             InfoDialogFragment().show(supportFragmentManager,"AugmentedImagesActivity")
         }
 
+        //Listener per il riavvio dell'activity
         clearButton!!.setOnClickListener(setOnClickListener)
 
+        //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 
         //Configurazione sessione ArCore
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
 
-                // Disable plane detection
-
+                // Modalita plane detection disabilitata
                 config.planeFindingMode = Config.PlaneFindingMode.DISABLED
 
+                /*Riferimento al database: il file "myimages.imgdb" è stato creato grazie allo
+                  strumento a riga di comando "arcoreimg"*/
                 database = assets.open("myimages.imgdb").use {
                     AugmentedImageDatabase.deserialize(session, it)
                 }
 
+                //Configurazione del database di immagini aumentate
                 config.augmentedImageDatabase = database
+
+                //Stima della luce disabilitata
                 config.lightEstimationMode = Config.LightEstimationMode.DISABLED
+
+                //Configurazione della sessione con le impostazioni definite precedentemente
                 session.configure(config)
 
+                //Listener che verrà chiamato per ciascun fotogramma prima che la scena si aggiorni
                 arFragment.arSceneView.scene.addOnUpdateListener(onUpdateFrame)
 
                 val a = session.config
                 val b = a.focusMode.name
                 Log.i("Camera","Camerafocus -> $b")
+
                 //Necessario per abilitare le modifiche
                 session.resume()
             }
@@ -111,11 +131,11 @@ class AugmentedImagesActivity: AppCompatActivity() {
         startActivity(intent)
     }
 
-    //listener che viene invocato ad ogni aggiornamento della scena di ARCore
+    //Listener che viene invocato ad ogni aggiornamento della scena di ARCore
     private val onUpdateFrame = Scene.OnUpdateListener {
         val frame = arFragment.arSceneView.arFrame
 
-        //Ruoto di 1 grado ogni frame ogni nodo per far ruotare i pianeti su se stessi
+        //Ruoto di 1 grado ogni nodo per far ruotare i pianeti su se stessi
         if (listnode.isNotEmpty()) {
             for (n in listnode) {
 
@@ -132,13 +152,18 @@ class AugmentedImagesActivity: AppCompatActivity() {
             AugmentedImage::class.java
         )
 
-        //Per ogni immagine tracciata  se non è presente il modello allora viene immediatamente costruito e instanziato
+        //Ciclo le immagini individuate
         for (augmentedImage in augmentedImages) {
 
+            //Controlla se l'immagine è stata tracciata
             if (augmentedImage.trackingState == TrackingState.TRACKING) {
 
+                //Controlla a quale immagine corrisponde
                 for (i in 0 until namesobj.size) {
 
+                    /* Se vil modello 3d del pianeta corrispondente all'immagine
+                       non è stato renderizzato, allora lo crea
+                     */
                     if (augmentedImage.name.contains(namesobj[i]) && !renderobj[i]) {
 
                         Toast.makeText(this,""+namesobj[i]+" rilevato",Toast.LENGTH_SHORT).show()

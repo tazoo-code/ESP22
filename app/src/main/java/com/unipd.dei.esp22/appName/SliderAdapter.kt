@@ -5,7 +5,6 @@ import android.view.*
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
-
 class SliderAdapter(private val list: Array<String>) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
@@ -68,7 +67,6 @@ class SliderAdapter(private val list: Array<String>) :
      interface OnItemClickListener {
          fun onItemClick(view: View?, position: Int)
      }
-
 
      override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
          val childView = view.findChildViewUnder(e.x, e.y)

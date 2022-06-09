@@ -33,7 +33,7 @@
         </activity>
 
         <activity
-            android:name="com.unipd.dei.esp22.appName.SessionActivity"
+            android:name="com.unipd.dei.esp22.appName.PlaneDetectionActivity"
             android:exported="true">
         </activity>
 

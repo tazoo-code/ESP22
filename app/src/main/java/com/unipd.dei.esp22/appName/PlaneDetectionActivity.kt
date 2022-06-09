@@ -26,10 +26,12 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
 
-class SessionActivity : AppCompatActivity() {
+class PlaneDetectionActivity : AppCompatActivity() {
 
+    //Fragment che gestisce le interazioni AR dell'utente
     private lateinit var arFragment: ArFragment
 
+    //Oggetto sul quale verrà renderizzato il modello 3d
     private var objRenderable: ModelRenderable? = null
 
     //Array contenente il nome dei modelli
@@ -38,13 +40,12 @@ class SessionActivity : AppCompatActivity() {
     //Nome dell'oggetto dal quale sarà costruito il modello 3d
     lateinit var obj: String
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_session)
+        setContentView(R.layout.activity_plane_detection)
 
+        //Recupero i nomi dei modelli dal file arrays.xml
         stringArray = this.resources.getStringArray(R.array.object_array)
-
 
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
@@ -55,12 +56,16 @@ class SessionActivity : AppCompatActivity() {
         //Riferimento a switchbutton per il cambio di modalità (Place model-->Delete model)
         val switchButton = findViewById<SwitchCompat>(R.id.switch1)
 
+        //Riferimento al layout che contiene le immagini dei modelli da posizionare
         val bottomSheet: LinearLayout = findViewById(R.id.bottom_sheet_layout)
 
+        //Riferimento all'immagine che permette di tornare alla home
         val homeButton: ImageView = findViewById(R.id.home_button_session)
 
+        //Riferimento all'immagine che permette di ricevere dello info sul funzionamento dell'applicazione
         val infoButton : ImageView = findViewById(R.id.info_button_session)
 
+        //Per rilevare il comportamento dello slider (quando è in evidenza oppure nascosto)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
         //Se il pulsante home viene premuto ritorna alla home
@@ -96,9 +101,12 @@ class SessionActivity : AppCompatActivity() {
 
                     override fun onItemClick(view: View?, position: Int) {
 
+                        /* Le immagini dei modelli sullo slider sono disposti nello
+                           stesso ordine nell'array. Dunque un click un item alla
+                           posizione (p) corrisponde al nome del modello alla posizione
+                           (p) nel stringArray.*/
                         obj = stringArray[position]
                         Log.i("Modello",obj)
-                        //In base alla posizione degli oggetti
                         setModel()
                     }
                 })
@@ -120,12 +128,14 @@ class SessionActivity : AppCompatActivity() {
 
                             Log.d(TAG, "handleOnTouch hitTestResult.getNode() != null")
 
+                            //Restituisce il nodo che è stato colpito dal hitTest
                             val hitNode: Node? = hitTestResult.node
 
                             hitNode!!.renderable = null
 
                             hitNode.parent = null
 
+                            //Eliminazione di tutti i figli del nodo
                             val children =hitNode.children
                             if(children.isNotEmpty() && children != null){
                                 for (i in 0 until children.size){
@@ -134,7 +144,6 @@ class SessionActivity : AppCompatActivity() {
                             }
 
                             arFragment.arSceneView.scene.removeChild(hitNode)
-
                         }
                     }
                 }
@@ -144,18 +153,21 @@ class SessionActivity : AppCompatActivity() {
         //Configurazione sessione ArCore
         arFragment.apply {
             setOnSessionConfigurationListener { session, config ->
+                /*Se il dispositivo supporta depth API viene configurata
+                  sessione ARCore che è in grado di rilevare la profondità */
                 if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
                     config.depthMode = Config.DepthMode.AUTOMATIC
                 }
             }
             setOnViewCreatedListener { arSceneView ->
-                // Available modes: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED
+                /*Se il dispositivo supporta la profondità viene attivata l'occlusione
+                  degli oggetti virtuali (nascosti da oggetti reali)
+                  Modalita disponibili: DEPTH_OCCLUSION_DISABLED, DEPTH_OCCLUSION_ENABLED */
                 arSceneView.cameraStream.depthOcclusionMode =
                     CameraStream.DepthOcclusionMode.DEPTH_OCCLUSION_ENABLED
 
-                // Use this mode if you want your objects to be more like if they where real
+                // Modalità che configura la luce in modo che gli oggetti virtuali siano più reali
                 arSceneView.lightEstimationConfig = LightEstimationConfig.REALISTIC
-
             }
 
             //Evento che si verifica quando viene toccato un piano
@@ -181,7 +193,6 @@ class SessionActivity : AppCompatActivity() {
                             if (renderableInstance!=null && renderableInstance.hasAnimations()){
                                 renderableInstance.animate(true).start()
                             }
-
 
                             // Add child model relative the a parent model
                             addChild(Node().apply {
@@ -211,7 +222,7 @@ class SessionActivity : AppCompatActivity() {
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    //Nothing
+                    //Niente
                 }
             })
 

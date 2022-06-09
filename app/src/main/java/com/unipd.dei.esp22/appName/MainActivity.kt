@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
-import com.unipd.dei.esp22.appName.AugmentedImagesActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         //In caso della pressione del tasto planeDetect viene avviata l'activity del plane detection
         val planeDetectButton : ImageView = findViewById(R.id.rendering_3d)
         planeDetectButton.setOnClickListener{
-            val intent = Intent(this, SessionActivity::class.java)
+            val intent = Intent(this, PlaneDetectionActivity::class.java)
             startActivity(intent)
         }
 
