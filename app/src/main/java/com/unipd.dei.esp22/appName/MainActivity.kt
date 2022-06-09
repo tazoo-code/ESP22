@@ -9,23 +9,16 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
+import androidx.preference.PreferenceManager
 import com.unipd.dei.esp22.appName.AugmentedImagesActivity
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    override fun attachBaseContext(newBase: Context) {
-        val currentLang = "it"
-        newBase.resources.configuration.setLocale(Locale(currentLang))
-        applyOverrideConfiguration(newBase.resources.configuration)
-
-        super.attachBaseContext(newBase)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val preferences : SharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         //Imposta il tema dell'applicazione in base alla configurazione del sistema
         when (preferences.getString("theme", "system_default")) {
@@ -64,5 +57,17 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         recreate()
+    }
+
+    // Prima della creazione dell'activity viene scelta la lingua
+    // in base alle impostazioni scelte
+    override fun attachBaseContext(newBase: Context) {
+        // Metodo per la scelta della lingua, passando il contesto attuale
+        val lang = LocaleHelper.chooseLanguage(newBase)
+        // Imposta la lingua al contesto
+        newBase.resources.configuration.setLocale(Locale(lang))
+        applyOverrideConfiguration(newBase.resources.configuration)
+
+        super.attachBaseContext(newBase)
     }
 }

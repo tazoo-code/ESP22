@@ -23,4 +23,5 @@
     <string name="info_session">In questa attività verranno individuati dei piani nell\'ambiente e verranno contrassegnati con dei pallini bianchi. Premendo sulla freccetta in basso allo schermo è possibile scegliere il modello 3D da inserire nell\'ambiente. Per inserirlo bisogna premere sullo schermo sopra un piano individuato. Per cambiare dalla modalità piazzamento alla modalità elimina si può premere sullo switch in alto a sinistra dello schermo.</string>
     <string name="info_augmented">In questa attività è possibile visualizzare i modelli 3D dei pianeti delle immagini presenti nel database. Per scaricare il pacchetto di immagini premi Scarica. Per visualizzare il modello 3D, inquadrare per almeno il 25% dell\'inquadratura l\'immagine prescelta e attendere che sia rilevata. Per resettare l\'ambiente e i modelli premere il tasto PULISCI in alto a sinistra dello schermo.</string>
     <string name="download">Scarica</string>
+    <string name="app_name">appNameIT</string>
 </resources>

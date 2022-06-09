@@ -1,13 +1,16 @@
 package com.unipd.dei.esp22.appName
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
+import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -52,11 +55,7 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<Preference>("language")!!.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference, lang: Any ->
-                    when (lang) {
-                        "system_default" -> {}
-                        "italian" -> updateLang("it")
-                        "english" -> updateLang("en")
-                    }
+                    activity?.recreate()
                     true
                 }
 
@@ -71,9 +70,17 @@ class SettingsActivity : AppCompatActivity() {
                 }
         }
 
-        fun updateLang (lang : String){
+    }
 
-        }
+    // Prima della creazione dell'activity viene scelta la lingua
+    // in base alle impostazioni scelte
+    override fun attachBaseContext(newBase: Context) {
+        // Metodo per la scelta della lingua, passando il contesto attuale
+        val lang = LocaleHelper.chooseLanguage(newBase)
+        // Imposta la lingua al contesto
+        newBase.resources.configuration.setLocale(Locale(lang))
+        applyOverrideConfiguration(newBase.resources.configuration)
 
+        super.attachBaseContext(newBase)
     }
 }
