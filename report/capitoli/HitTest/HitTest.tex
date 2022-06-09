@@ -81,51 +81,48 @@
 	\end{itemize}
 	
 	\noindent
-	
-	Per creare un anchor sul risultato del tocco viene usato \verb|hitResult.createAnchor()| che restituirà un anchor disposto 		sul \verb|Trackable| sottostante su cui è avvenuto il tocco.
-	Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo 			\verb|Aereo|; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato gestito 	dal metodo \verb|setOnTapArPlaneListener| riportato nell'esempio di codice \vref{lst: Definizione Anchor in Plane 				Detection}.\\
-	Oltre all'oggetto hitTest è stato molto importante \verb|hitTestResult| definito nella documentazione di 						\emph{sceneView}. Questo oggetto mantiene tutti gli hitTest che vengono creati quando l'utente tocca lo schermo. 				Inoltre, contiene le informazioni associate al nodo che è stato colpito dal hitTest. Quando l'utente posiziona un'animale 		in 	un piano, viene creato un oggetto \verb|anchorNode| passando al costruttore l'anchor generato dal 							hitTest. Successivamente, viene aggiunto un oggetto \verb|TransformableNode| come nodo figlio di AnchorNode. Questo 			tipo di nodo può essere utilizzato per aggiungere un oggetto \verbe|Node| come figlio, per eseguire operazioni di 				traslazione, selezione, rotazione e scala. L'utilizzo di hitTestResult è stato utile nell'eliminazione degli animali perchè 	ci ha dato la possibilità di ricavare l'oggetto Node associato all'animale che l'utente voleva eliminare. Per rilevare un 		hitTestResult viene invocato il metodo setOnTouchListener(delNode) su TransformableNode dove delNode è un oggetto di tipo 		Node.OnTouchListener.\\	Nell'esempio \vref{lst: delete-node} è riportato il codice dell'eliminazione di un nodo dalla 			scena.
+	Per creare un anchor sul risultato del tocco viene usato \verb|hitResult.createAnchor()| che restituirà un anchor disposto sul \verb|Trackable| sottostante su cui è avvenuto il tocco.
+	Nel caso della nostra applicazione il risultato restituito da hitTest nella modalità \emph{Plane Detection} è di tipo \verb|Aereo|; il rilevamento di un piano consente di disporre un animale in un punto preciso. Questo evento è stato gestito dal metodo \verb|setOnTapArPlaneListener| riportato nell'esempio di codice \vref{lst: Definizione Anchor in Plane Detection}.
+	\\
+	Oltre all'oggetto hitTest è stato molto importante \verb|hitTestResult| definito nella documentazione di \emph{sceneView}. Questo oggetto mantiene tutti gli hitTest che vengono creati quando l'utente tocca lo schermo. Inoltre, contiene le informazioni associate al nodo che è stato colpito dal hitTest. Quando l'utente posiziona un'animale in un piano, viene creato un oggetto \verb|anchorNode| passando al costruttore l'anchor generato dal hitTest. Successivamente, viene aggiunto un oggetto \verb|TransformableNode| come nodo figlio di AnchorNode. Questo tipo di nodo può essere utilizzato per aggiungere un oggetto \verb|Node| come figlio, per eseguire operazioni di traslazione, selezione, rotazione e scala. L'utilizzo di hitTestResult è stato utile nell'eliminazione degli animali perchè ci ha dato la possibilità di ricavare l'oggetto Node associato all'animale che l'utente voleva eliminare. Per rilevare un hitTestResult viene invocato il metodo \verb|setOnTouchListener(delNode)| su \verb|TransformableNode| dove delNode è un oggetto di tipo Node.OnTouchListener.
+	\\	
+	Nell'esempio \vref{lst: delete-node} è riportato il codice dell'eliminazione di un nodo dalla scena.
 	
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
 			\begin{lstlisting}[caption={Eliminazione di un nodo dalla scena in Plane Detection}, label={lst: delete-node}, language=Kotlin]
 			//Listener per eliminare i nodi
-        	val delNode =
-            	Node.OnTouchListener { hitTestResult, motionEvent ->
-                	if(switchButton.isChecked){
-                    	Log.d(TAG, "handleOnTouch")
-
-                    	// Prima chiamata ad ArFragment per gestire TrasformableNode
-                    	arFragment.onPeekTouch(hitTestResult, motionEvent)
-
-                    	//La rimozione si verifica con un evento ACTION_UP
-                    	if (motionEvent.action == MotionEvent.ACTION_UP) {
-
-                        	if (hitTestResult.node != null && switchButton.isChecked) {
-
-                            	Log.d(TAG, "handleOnTouch hitTestResult.getNode() != null")
-
-                            	//Restituisce il nodo che è stato colpito dal hitTest
-                            	val hitNode: Node? = hitTestResult.node
-
-                            	hitNode!!.renderable = null
-
-                            	hitNode.parent = null
-
-                            	//Eliminazione di tutti i figli del nodo
-                            	val children =hitNode.children
-                            	if(children.isNotEmpty() && children != null){
-                                	for (i in 0 until children.size){
-                                    children[i].renderable = null
-                                	}
-                            	}
-
-                            	arFragment.arSceneView.scene.removeChild(hitNode)
-                        	}
-                    	}
-                	}
-                true
-            }
+			val delNode = Node.OnTouchListener { hitTestResult, motionEvent ->
+					if(switchButton.isChecked){
+						// Prima chiamata ad ArFragment per gestire TrasformableNode
+						arFragment.onPeekTouch(hitTestResult, motionEvent)
+						
+						// La rimozione si verifica con un evento ACTION UP
+						if (motionEvent.action == MotionEvent.ACTION_UP) {
+							
+							if (hitTestResult.node != null && switchButton.isChecked) {
+								
+								//Restituisce il nodo che è stato colpito dal hitTest
+								val hitNode: Node? = hitTestResult.node
+								
+								hitNode!!.renderable = null
+								
+								hitNode.parent = null
+								
+								//Eliminazione di tutti i figli del nodo
+								val children = hitNode.children
+								if(children.isNotEmpty() && children != null){
+									for (i in 0 until children.size){
+										children[i].renderable = null
+									}
+								}
+							
+								arFragment.arSceneView.scene.removeChild(hitNode)
+							}
+						}
+					}
+				true
+			}
 			\end{lstlisting}
 		\end{minipage}
 	\end{center}
