@@ -38,7 +38,7 @@ class InfoDialogFragment : DialogFragment() {
                     ){ dialog, id ->
                         val viewIntent = Intent(
                             "android.intent.action.VIEW",
-                            Uri.parse("https://cdn.discordapp.com/attachments/969613466300190725/984166272717717594/NewPlanet.zip")
+                            Uri.parse("https://cdn.discordapp.com/attachments/969613466300190725/984510415537066035/NewPlanet_.zip")
                         )
                         startActivity(viewIntent)
                     }
