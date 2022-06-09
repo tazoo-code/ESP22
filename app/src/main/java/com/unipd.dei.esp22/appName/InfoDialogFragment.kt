@@ -24,9 +24,7 @@ class InfoDialogFragment : DialogFragment() {
                 //Costruisce l'AlertDialog con il messaggio passato
                 builder.setMessage(s)
                     .setPositiveButton(R.string.ok
-                    ) { dialog, id ->
-                        //Azione in caso di pulsante premuto
-                    }
+                    ) { _, _ -> }
                     .setTitle("Info")
 
             }else if(requireActivity().localClassName == "AugmentedImagesActivity"){
@@ -34,9 +32,8 @@ class InfoDialogFragment : DialogFragment() {
                 //Costruisce l'AlertDialog con il messaggio passato
                 builder.setMessage(s)
                     .setPositiveButton(R.string.ok
-                    ) { dialog, id ->
-                        //Azione in caso di pulsante premuto
-                    }
+                    ) { _, _ ->}
+
                     .setNegativeButton(R.string.download
                     ){ dialog, id ->
                         val viewIntent = Intent(

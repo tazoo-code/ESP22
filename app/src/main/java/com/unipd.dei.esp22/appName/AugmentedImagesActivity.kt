@@ -51,7 +51,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
         namesobj= this.resources.getStringArray(R.array.planet_array)
 
         //Inizialmente nessun modello del pianeta è renderizzato
-        for( i in 0 until namesobj.size){
+        for( i in namesobj.indices){
             renderobj.add(false)
         }
 
@@ -159,7 +159,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
             if (augmentedImage.trackingState == TrackingState.TRACKING) {
 
                 //Controlla a quale immagine corrisponde
-                for (i in 0 until namesobj.size) {
+                for (i in namesobj.indices) {
 
                     /* Se vil modello 3d del pianeta corrispondente all'immagine
                        non è stato renderizzato, allora lo crea
