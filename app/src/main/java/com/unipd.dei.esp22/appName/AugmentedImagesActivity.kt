@@ -195,7 +195,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
     //Funzione chiamata per costruire i modelli 3d dei pianeti
     private fun renderObject(fragment: ArFragment, anchor: Anchor, name: String) {
         ModelRenderable.builder()
-            .setSource(this, Uri.parse("models/$name.glb"))
+            .setSource(this, Uri.parse("models/augmentedImage/$name.glb"))
             .setIsFilamentGltf(true)
             .build()
             .thenAccept { renderable: ModelRenderable ->

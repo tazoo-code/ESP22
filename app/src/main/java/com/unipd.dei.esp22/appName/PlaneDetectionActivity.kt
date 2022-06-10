@@ -302,7 +302,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
         Log.i("OBJ",obj)
-        val uri = Uri.parse("models/$obj.glb")
+        val uri = Uri.parse("models/planeDetect/$obj.glb")
 
         ModelRenderable.builder()
             //.setAsyncLoadEnabled(true)
