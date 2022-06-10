@@ -8,12 +8,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.ar.core.Config
@@ -110,6 +113,13 @@ class PlaneDetectionActivity : AppCompatActivity() {
                         obj = stringArray[position]
                         Log.i("Modello",obj)
                         setModel()
+
+
+                        val vg = view as ViewGroup
+                        val c = vg.getChildAt(1)
+                        c.visibility = View.VISIBLE
+
+
                     }
                 })
         )
