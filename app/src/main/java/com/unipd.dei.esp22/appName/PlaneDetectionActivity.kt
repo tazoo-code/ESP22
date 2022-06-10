@@ -77,7 +77,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
 
         //Se il pulsante info viene premuto allora invoca il fragment con il messaggio di info
         infoButton.setOnClickListener{
-            InfoDialogFragment().show(supportFragmentManager,"SessionActivity")
+            InfoDialogFragment().show(supportFragmentManager,"PlaneDetectionActivity")
         }
 
         //Evento per cambio modalità

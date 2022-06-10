@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        InfoDialogFragment().show(supportFragmentManager,"MainActivity")
+
         //In caso della pressione del tasto setting viene avviata l'activity delle impostazioni
         val settingsButton : ImageView = findViewById(R.id.settings_button)
         settingsButton.setOnClickListener{

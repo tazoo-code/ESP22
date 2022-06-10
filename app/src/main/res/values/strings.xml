@@ -34,6 +34,7 @@
     <string name="ok" translatable="false">OK</string>
     <string name="download">Download</string>
     <string name="slider_item">Item of the slider</string>
+    <string name="info_main">" Text main"</string>
 
 
 </resources>
