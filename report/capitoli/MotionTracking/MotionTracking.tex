@@ -8,13 +8,14 @@
 \begin{document}
 
 	\section{Motion tracking}
+	\label{sec:motion_tracking}
 	
 		ARCore usa un processo chiamato \emph{Simultaneous localization and mapping (SLAM)} per determinare lo stato di un
 		dispositivo che si trova all'interno di un ambiente sconosciuto. Questo stato è descritto dalla sua \textbf{posa} (posizione e orientazione) che viene stimata attraverso prestazioni di \emph{odometria} e \textbf{rilevazione di punti caratteristici}. Con odometria si intende l'uso di dati ricavati da sensori di movimento che permettono di valutare il cambiamento della posizione nel tempo. Nel caso degli smartphone viene utilizzato il sensore IMU che rileva misure inerziali (dati non visuali) come la velocita, accelerazione e posizione. La rilevazione di punti caratteristici è l'individuazione di immagini con caratteristiche differenti (dati visuali) che	consentono al dispositivo di calcolare la sua posizione relativa. Questi punti di riferimento insieme alle misurazioni ricavate dai sensori permettono di avere una buona stima della posa e di ricavare la rappresentazione di una mappa dell'ambiente circostante. Tuttavia, il movimento sequenziale stimato dallo SLAM include un certo margine di errore che si accumula nel tempo causando una notevole deviazione dai valori reali. Una soluzione che può essere adottata per risolvere questo problema consiste nel considerare come punto di riferimento un luogo visitato in precedenza di cui si sono memorizzate le sue caratteristiche \cite{mathworks2022slam}. Grazie alle informazioni di questo luogo è possibile minimizzare l'errore nella stima della posa.\\
 		I contenuti virtuali possono essere renderizzati nella giusta prospettiva allineando la posa della telecamera virtuale con quella calcolata da ARCore. Il contenuto virtuale sembra reale perchè è sovrapposto all'immagine ottenuta dalla fotocamera del dispositivo.\\
 		Nella figura \vref{fig: Motion Tracking} si può notare come la posizione dell'utente è tracciata in relazione ai punti caratteristici identificati nel divano reale.
 		
-		\begin{figure}
+		\begin{figure}[h]
 			\centering
 			\copyrightbox[b]{\includegraphics[width=0.8\textwidth]{./resources/images/MotionTracking/MotionTracking.jpg}}%
 			{Fonte: \url{https://developers.google.com/ar/develop/fundamentals}}
@@ -32,7 +33,7 @@
 			\item \emph{SLAM estimate}: calcola una posa localizzata cercando di ridurre al minimo le discrepanze tra i descrittori di features estratti e memorizzati nel tempo.
 		\end{itemize}
 	
-		\begin{figure}
+		\begin{figure}[h]
 			\centering
 			\copyrightbox[b]{\includegraphics[width=1\textwidth]{./resources/images/MotionTracking/SLAM.png}}%
 			{Fonte: \url{https://www.andreasjakl.com/basics-of-ar-slam-simultaneous-localization-and-mapping/}}

@@ -3,8 +3,96 @@
 
 \begin{document}
 	\chapter{Funzioni fondamentali}
-	\textbf{TODO creazione di sessione?}
-	Nel seguente capitolo vengono 
 	
-	 
+	In questo capitolo vengono presentati i concetti fondamentali del framework ARCore, che permettono di sperimentare una semplice esperienza AR. Dopo un'introduzione su come configurare ARCore, abilitando il framework e creando la sessione ARCore, vengono mostrate le funzionalità su cui esso è basato, cioè il \textbf{Motion Tracking} (paragrafo~\vref{sec:motion_tracking}), l'\textbf{Environmental Understanding} (paragrafo~\vref{sec:env_und}) e il \textbf{Light Estimation} (paragrafo~\vref{sec:light_est}).
+	
+	\section{Configurazione}
+	Per abilitare le funzionalità ARCore è importante configurare correttamente l'applicazione verificando che il dispositivo supporti ARCore e che siano disponibili i permessi di utilizzo della fotocamera, e creando la sessione ARCore.
+	
+	\subsection{Abilitare ARCore}
+	L'applicazione può utilizzare ARCore in due modalità differenti, \textit{AR Required} e \textit{AR Optional}, che specificano se l'installazione della libreria \textit{Google Play Services for AR} è obbligatoria oppure opzionale, come spiegato dalla documentazione ufficiale \cite{google2022enable}. Per entrambe le modalità viene riportato un esempio di configurazione del file \verb|AndroidManifest.xml|, con la dichiarazione di permesso di utilizzo della fotocamera e di ARCore, con la modalità specificata.
+	
+	\subsubsection{AR Required} 
+	In questa modalità modalità è impossibile utilizzare l'applicazione in un dispositivo che non supporta Google Play Services for AR. Vengono quindi effettuate delle verifiche sull'installazione di tale libreria: se essa non è presente viene automaticamente installata, mentre viene aggiornata se necessario. 
+	\\
+	Minima versione SDK necessaria: Android 7.0 (API Level 24). 
+	\\
+	Si veda il listing~\vref{lst:AR_required} per un esempio del file \verb|AndroidManifest.xml|.
+	
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={AndroidManifest.xml per la modalità AR Required.}, label={lst:AR_required}, language=xml, morekeywords={android:name, android:value}, keywordstyle={\color{NavyBlue}\bfseries}, alsodigit={-}, stringstyle={\color{ForestGreen}\ttfamily}, emph={manifest, uses-permission, uses-feature, meta-data, application},emphstyle={\color{OrangeRed}}, commentstyle={\color{gray}\ttfamily} ]
+			<!--Utilizzo della fotocamera-->
+			<uses-permission android:name="android.permission.CAMERA" />
+			
+			<!--Limita la visibilita in Play Store solo ai dispositivi supportati-->
+			<uses-feature android:name="android.hardware.camera.ar" />
+			
+			<application ...>
+				<!--Richiede di installare il Google Play Services for AR-->
+				<meta-data android:name="com.google.ar.core" android:value="required" />
+			</application>
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+	
+	
+	\subsubsection{AR Optional}
+	Se è abilitata questa modalità, l'applicazione ha una componente opzionale che richiede i servizi AR. Essa può quindi essere installata da tutti i dispositivi, ma le funzionalità AR sono attivate solo se il dispositivo supporta ARCore e se è installata la libreria  Google Play Services for AR. 
+	\\
+	Minima versione SDK necessaria: Android 4.0 (API Level 14).
+	\\
+	Si veda il listing~\vref{lst:AR_optional} per un esempio del file \verb|AndroidManifest.xml|.
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={AndroidManifest.xml per la modalità AR Optional.}, label={lst:AR_optional}, language=xml, morekeywords={android:name, android:value}, keywordstyle={\color{NavyBlue}\bfseries}, alsodigit={-}, stringstyle={\color{ForestGreen}\ttfamily}, emph={manifest, uses-permission, uses-feature, meta-data, application},emphstyle={\color{OrangeRed}}, commentstyle={\color{gray}\ttfamily} ]
+			<!--Utilizzo della fotocamera-->
+			<uses-permission android:name="android.permission.CAMERA" />
+			
+			<!--Non si devono dichiarare le feature AR, per non limitarne la visibilita-->
+			
+			<application ...>
+				<!--Non obbligatorio installare il Google Play Services for AR-->
+				<meta-data android:name="com.google.ar.core" android:value="optional" />
+			</application>
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+
+	\subsection{Verifiche runtime}
+	Durante l'utilizzo dell'applicazione è necessario verificare che ARCore sia supportato e che sia installato il Google Play Services for AR, come dichiarato dal manifest.
+	
+	\subsubsection{Supporto ARCore}
+	Il supporto di ARCore può essere verificato con il metodo \verb|checkAvailability| della classe \verb|ArCoreApk|. Esso può restituire \verb|Availability.SUPPORTED_INSTALLED| se ARCore è installato, \verb|Availability.SUPPORTED_APK_TOO_OLD| se la versione ARCore non è aggiornata, oppure il valore \verb|Availability.SUPPORTED_NOT_INSTALLED| se il dispositivo supporta ARCore ma non è installato. Se il dispositivo non supporta il framework, restituisce \verb|Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE|. Le informazioni restituite dal metodo, possono rendere invisibili alcune funzionalità se l'applicazione utilizza la modalità AR Optional.
+	
+	\subsubsection{Verifica della versione ARCore}
+	La verifica che ARCore sia installato deve essere fatta in entrambe le modalità, nel metodo \verb|onResume()| dell'applicazione, utilizzando il metodo \verb|requestInstall()| della classe \verb|ArCoreApk|. Esso restituisce un oggetto \verb|ArCoreApk.InstallStatus|, che può avere valore \verb|InstallStatus.INSTALLED| se ARCore è installato e se è quindi possibile creare una sessione ARCore, oppure \verb|InstallStatus.INSTALL_REQUESTED|. In questo caso, l'activity che sta controllando la presenza di ARCore viene messa in pausa, viene mostrato all'utente una nuova schermata per installare o aggiornare il Google Play Services for AR, e l'activity viene ripresa quando l'installazione è completata.
+	
+	\subsection{Configurazione della sessione ARCore}
+	La \textit{sessione ARCore} è un oggetto della classe \verb|Session| che può contenere i processi necessari per eseguire l'esperienza AR. Essa gestisce il sistema AR e rappresenta il punto di accesso all'API ARCore \cite{google2022session}.
+	\\
+	Per creare una sessione ARCore è necessario utilizzare il costruttore di default della classe. Dopo la sua creazione, la sessione deve essere opportunamente configurata per poter abilitare le funzionalità aggiuntive del framework, descritte nei capitoli successivi. Il listings~\vref{lst:create_session} tratto dalla documentazione ufficiale mostra un esempio di creazione della sessione ARCore.
+	
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Creazione della sessione ARCore.}, label={lst:create_session}, language=Kotlin]
+			fun createSession() {
+				// Crea una nuova sessione ARCore.
+				session = Session(this)
+				
+				// Crea una configurazione per la sessione.
+				val config = Config(session)
+				
+				// Configura opportunamente la sessione, abilitando alcune funzionalità specifiche 
+				// come il depth understanding o l'API Augmented Faces.
+				
+				// Configura la sessione.
+				session.configure(config)
+			}
+			\end{lstlisting}
+		\end{minipage}
+	\end{center} 
+ 
+ 	\noindent
+ 	Dato che la sessione ARCore occupa una grande quantità di memoria, è sempre necessario utilizzare il metodo \verb|close()| sull'oggetto \verb|Session| quando la sessione non è più utilizzata, per rilasciare le risorse occupate. Tale metodo può essere invocato, ad esempio, dal metodo \verb|onDestroy()| dell'activity che crea la sessione.
 \end{document}
