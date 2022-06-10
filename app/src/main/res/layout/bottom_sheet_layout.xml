@@ -10,7 +10,7 @@
     app:behavior_peekHeight="35dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <!-- Freccia verso l'alto-->
+    <!-- Freccia verso l'alto -->
     <ImageButton
         android:id="@+id/gallery_arrow"
         android:layout_width="80dp"
@@ -20,7 +20,7 @@
         android:layout_gravity="center"
         android:background="@drawable/round_corner"/>
 
-    <!-- RecyclerView per contenere le preview -->
+    <!-- RecyclerView per contenere le preview dei modelli 3D -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/slider_recycler_view"
         android:layout_width="match_parent"

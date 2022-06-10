@@ -1,51 +1,9 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
 
-\input{./../../resources/kotlin.tex}
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./bibliografia.bib}
-
-%pacchetto per immagini
 \usepackage{graphicx}
-\usepackage{subfig}
-
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
-\usepackage{url}
-\usepackage{lipsum}
-
 
 
 
@@ -58,6 +16,11 @@
 	Dopo aver fornito delle immagini, ARCore con un algoritmo che estrae dei punti caratteristici in scala di grigi dall’immagine, ripone tutti questi dettagli in uno o più database.
 	
 	Durante l’esecuzione, ARCore cerca questi punti nell’ambiente consentendo di rilevare la posizione, l’orientamento e la dimensione dell’immagine nello spazio.
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.5\textwidth]{./resources/images/AugmentedImages/Img1.jpeg}
+\caption{Versione in 3D di mercurio} 
+\end{figure}
 
 	\section{Capacità}
 	ARCore riesce a individuare fino a 20 immagini in contemporanea e non individua due istanze della stessa immagine.
@@ -96,11 +59,11 @@
 	
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
-		\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ai_dbimport}, language=Kotlin]
-		val imageDatabase = this.assets.open("example.imgdb").use {
+		\begin{lstlisting}[caption={Importazione database.}, label={lst:ai_dbimport}, language=Kotlin]
+		 val imageDatabase = this.assets.open("example.imgdb").use  {
 			
-			AugmentedImageDatabase.deserialize(session, it)
-		}
+			 AugmentedImageDatabase.deserialize(session, it)
+		 }
 		\end{lstlisting}
 		\end{minipage}
 	\end{center}
@@ -109,19 +72,50 @@
 	
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
-		\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ai_dbruntime}, language=Kotlin]
-		val imageDatabase = AugmentedImageDatabase(session)
+		\begin{lstlisting}[caption={Creazione del database.}, label={lst:ai_dbruntime}, language=Kotlin]
+		 val imageDatabase = AugmentedImageDatabase(session)
 		
-		val bitmap = assets.open("dog.jpg").use { BitmapFactory.decodeStream(it) }
+		 val bitmap = assets.open("dog.jpg").use {  BitmapFactory.decodeStream(it) }
 		
-		// If the physical size of the image is not known, use addImage(String, Bitmap) instead, at the
-		// expense of an increased image detection time.
+		 // If the physical size of the image is not known, use  addImage(String, Bitmap) instead, at the
+		 // expense of an increased image detection time.
 		
-		val imageWidthInMeters = 0.10f // 10 cm
+		 val imageWidthInMeters = 0.10f // 10 cm
 		
-		val dogIndex = imageDatabase.addImage("dog", bitmap, imageWidthInMeters)
+		 val dogIndex = imageDatabase.addImage("dog", bitmap,  imageWidthInMeters)
 		\end{lstlisting}
 		\end{minipage}
+	\end{center}
+	
+	\section{Tool arcoreimg}	
+	
+	Per la creazione del database non a runtime si può utilizzare il tool fornito nel SDK di Google ARCore 	per Android chiamato Arcoimg.
+	
+	Oltre a creare il database, questo strumento permette di calcolare quanto è adatta per essere individuata dalla libreria.
+	Per valutarla bisogna usare il proprio terminale e scrivere:
+	\begin{center}
+	
+	\begin{minipage}{0.95\textwidth}
+	\begin{lstlisting}[caption={Valutazione delle immagini}, label={lst:ai_session}, language=Kotlin]
+	   arcoreimg.exe eval-img --input_image_path=image.png
+	  \end{lstlisting}
+	\end{minipage}
+	\end{center}
+	
+	Se si ottiene un punteggio superiore a 75 su 100 allora l'immagine è utilizzabile all'interno del database e sarà individuata facilmente.
+	
+	Per avere un buon punteggio bisogna che le immagini non abbiano molte ripetizioni geometriche (come i QR code). Più le immagini hanno elementi dalle forme e colori diversi, più sarà facile individuarle.
+	
+	
+	
+	\begin{center}
+		\begin{figure}[htp]
+			\centering
+			\copyrightbox[b]{\includegraphics[width=0.9\textwidth]{./resources/images/AugmentedImages/Img2.jpg}}%
+			{Fonte: \url{https://developers.google.com}}
+			\caption{Esempio sulla qualità delle immagini.}
+			\label{fig:env_und}
+		\end{figure}
 	\end{center}
 	
 	\section{Come abilitare il tracciamento delle immagini}
@@ -130,11 +124,11 @@
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
 		\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ai_session}, language=Kotlin]
-		val config = Config(session)
+		 val config = Config(session)
 		
-		config.augmentedImageDatabase = imageDatabase
+		 config.augmentedImageDatabase = imageDatabase
 		
-		session.configure(config)
+		 session.configure(config)
 		\end{lstlisting}
 		\end{minipage}
 	\end{center}
