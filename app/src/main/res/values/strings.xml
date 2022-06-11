@@ -35,6 +35,7 @@
     <string name="download">Download</string>
     <string name="slider_item">Item of the slider</string>
     <string name="info_main">" Text main"</string>
+    <string name="gallery_item">Elemento della gallery</string>
 
 
 </resources>

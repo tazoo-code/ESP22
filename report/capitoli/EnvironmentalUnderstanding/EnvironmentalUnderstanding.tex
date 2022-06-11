@@ -8,12 +8,10 @@
 \begin{document}
 	\section{Comprensione Ambientale}
 	\label{sec:Enviromental_Understanding}
-	ARCore ha a disposizione funzione di comprensione dell’ambiente che gli consente di capire cosa circonda il dispositivo. Questa funzione è basata sulla ricerca di piani e vari punti caratteristici dell’ambiente.
-	
-	ARCore si concentra nel trovare dei punti caratteristici posati lungo piani verticali e orizzontali così da riuscire a calcolare la posizione dei piani attraverso dei calcoli tra i sensori del dispositivo uniti al tracciamento dei punti caratteristici nell’immagine. 
-	
-	Inoltre, questa libreria è in grado di rilevare i bordi dei piani e utilizzare tutte queste informazioni per poter posizionare degli oggetti virtuali su di essi.
-	
+	ARCore ha a disposizione funzione di comprensione dell’ambiente che gli consente di capire cosa circonda il dispositivo. Questa funzione è basata sulla ricerca di piani e vari punti caratteristici dell’ambiente \cite{google2022fundamentals}. \\
+	\noindent
+	ARCore si concentra nel trovare dei punti caratteristici posati lungo piani verticali e orizzontali così da riuscire a calcolare la posizione dei piani attraverso dei calcoli tra i sensori del dispositivo uniti al tracciamento dei punti caratteristici nell’immagine.  Inoltre, questa libreria è in grado di rilevare i bordi dei piani e utilizzare tutte queste informazioni per poter posizionare degli oggetti virtuali su di essi.\\
+	\noindent
 	Poiché ARCore basa la sua comprensione dell’ambiente su dei punti caratteristici, le superfici senza texture come un pavimento o un muro bianco potrebbero non essere rilevate facilmente.
 
 	\begin{center}
@@ -25,14 +23,14 @@
 			\label{fig:env_und}
 		\end{figure}
 	\end{center}
-	
-	Nell'applicazione che abbiamo sviluppato questa abilità diventa fondamentale.L'oggetto posizionato viene scalato in base all'ambiente così da renderlo più realistico.
+	\noindent
+	Nell'applicazione che abbiamo sviluppato questa abilità diventa fondamentale. L'oggetto posizionato viene scalato in base all'ambiente così da renderlo più realistico.
 	
 	\begin{center}
 		\begin{figure}[htp]
 		\centering
 		\includegraphics[width=0.5\textwidth]{./resources/images/EnvironmentalUnderstanding/env_understanding1.jpeg} 
-		\caption{Esempio dell'immersione dell'oggetto nella nostra 	applicazione nell'ambiente}
+		\caption{Esempio di immersione dell'oggetto nell'ambiente}
 	\end{figure}
 	
 	\end{center}

@@ -8,27 +8,31 @@
 
 \begin{document}
 	\chapter{Instant Placement}
-	L'API di posizionamento istantaneo consente di posizionare gli oggetti nell’ambiente prima ancora che venga spostato il dispositivo e che vengano individuati i piani.
-	
+	L'API di posizionamento istantaneo consente di posizionare gli oggetti nell’ambiente prima ancora che venga spostato il dispositivo e che vengano individuati i piani. \\
+	\noindent
 	Dopo che l’utente ha posizionato l’oggetto, la sua posizione viene perfezionata in tempo reale mentre l’utente si muove nell’ambiente.
-	
+	\\
+	\noindent
 	Successivamente, quando ARCore è in grado di identificare con precisione l’ubicazione dell’oggetto nello spazio, viene cambiata la sua posizione e dimensione per rispettare la scala dell’ambiente.
-	\begin{center}
-	\includegraphics[width=0.5\textwidth]{./resources/images/InstantPlacement/InstantPlacementImg.jpg} 
-	\end{center}
-	\section{Abilitare Instant Placement}
+	\begin{figure}
+		\centering
+		\copyrightbox[b]{\includegraphics[width=0.6\textwidth]{./resources/images/InstantPlacement/InstantPlacementImg.jpg} }%
+		{Fonte: \url{https://developers.google.com}}
+		\caption{dfgdf}
+		\label{fig:light_effects}
+	\end{figure}
+	\\
+	\noindent
 	Per abilitare l’instant placement bisogna creare una sessione configurata per supportare l’instant placement, come descritto dal listing~\vref{lst:ip_session}
 		
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
-		\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ip_session}, language=Kotlin]
-		fun createSession() {
-		
+			\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ip_session}, language=Kotlin]
+			fun createSession() {
+				
 			val session = Session(applicationContext);
 			
 			val config = Config(session)
-			
-			// Set the Instant Placement mode.
 			
 			config.instantPlacementMode = Config.InstantPlacementMode.LOCAL_Y_UP
 			
