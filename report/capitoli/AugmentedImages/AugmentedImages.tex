@@ -1,51 +1,9 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
 
-\input{./../../resources/kotlin.tex}
-
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%gestione delle testatine
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}
-\chead{}
-\rhead{Titolo}
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-
-%risorsa che contiene la bibliografia
-\addbibresource{./bibliografia.bib}
-
-%pacchetto per immagini
 \usepackage{graphicx}
-\usepackage{subfig}
-
 \usepackage[italian]{varioref}
 \usepackage{copyrightbox}
-\usepackage{url}
-\usepackage{lipsum}
-
 
 
 
@@ -58,9 +16,9 @@
 	Dopo aver fornito delle immagini, ARCore con un algoritmo che estrae dei punti caratteristici in scala di grigi dall’immagine, ripone tutti questi dettagli in uno o più database.
 	
 	Durante l’esecuzione, ARCore cerca questi punti nell’ambiente consentendo di rilevare la posizione, l’orientamento e la dimensione dell’immagine nello spazio.
-\begin{figure}
+\begin{figure}[htp]
 \centering
-\includegraphics[scale=0.3]{Img1.jpeg}
+\includegraphics[width=0.5\textwidth]{./resources/images/AugmentedImages/Img1.jpeg}
 \caption{Versione in 3D di mercurio} 
 \end{figure}
 
@@ -151,9 +109,9 @@
 	
 	
 	\begin{center}
-		\begin{figure}
+		\begin{figure}[htp]
 			\centering
-			\copyrightbox[l]{\includegraphics[width=0.9\textwidth]{Img2.jpg}}%
+			\copyrightbox[b]{\includegraphics[width=0.9\textwidth]{./resources/images/AugmentedImages/Img2.jpg}}%
 			{Fonte: \url{https://developers.google.com}}
 			\caption{Esempio sulla qualità delle immagini.}
 			\label{fig:env_und}

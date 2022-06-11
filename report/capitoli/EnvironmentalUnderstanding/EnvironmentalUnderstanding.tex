@@ -1,36 +1,13 @@
 \documentclass[crop=false, class=book]{standalone}
 
-%impostazioni lingua
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,italian]{babel}
 
-%sistema i margini
-\usepackage{geometry}
-\geometry{a4paper,top=2.2cm,bottom=2.2cm,left=3cm,right=3cm, heightrounded}
-
-%interlinea 1.5
-\usepackage{setspace}
-\onehalfspacing
-
-%formattazione titoli paragrafo
-\usepackage{titlesec}
-\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{0.7em}{\huge}
-
-%pacchetti per i riferimenti in bibliografia
-\usepackage[autostyle,italian=guillemets]{csquotes}
-\usepackage[sorting=none,style=numeric,citestyle=numeric-comp,backend=biber]{biblatex}
-\usepackage[pdftex]{graphicx} 
-
-%risorsa che contiene la bibliografia
-\addbibresource{./../../bibliografia.bib}
-
+\usepackage{graphicx}
+\usepackage[italian]{varioref}
 \usepackage{copyrightbox}
-
-
 
 \begin{document}
 	\section{Comprensione Ambientale}
+	\label{sec:Enviromental_Understanding}
 	ARCore ha a disposizione funzione di comprensione dell’ambiente che gli consente di capire cosa circonda il dispositivo. Questa funzione è basata sulla ricerca di piani e vari punti caratteristici dell’ambiente.
 	
 	ARCore si concentra nel trovare dei punti caratteristici posati lungo piani verticali e orizzontali così da riuscire a calcolare la posizione dei piani attraverso dei calcoli tra i sensori del dispositivo uniti al tracciamento dei punti caratteristici nell’immagine. 
@@ -40,9 +17,9 @@
 	Poiché ARCore basa la sua comprensione dell’ambiente su dei punti caratteristici, le superfici senza texture come un pavimento o un muro bianco potrebbero non essere rilevate facilmente.
 
 	\begin{center}
-		\begin{figure}
+		\begin{figure}[htp]
 			\centering
-			\copyrightbox[l]{\includegraphics[width=0.9\textwidth]{./../../resources/images/EnvironmentalUnderstanding/env_understanding.png}}%
+			\copyrightbox[b]{\includegraphics[width=0.9\textwidth]{./resources/images/EnvironmentalUnderstanding/env_understanding.png}}%
 			{Fonte: \url{https://developers.google.com}}
 			\caption{Esempio degli effetti prodotti dagli oggetti nell'ambiente.}
 			\label{fig:env_und}
@@ -52,9 +29,9 @@
 	Nell'applicazione che abbiamo sviluppato questa abilità diventa fondamentale.L'oggetto posizionato viene scalato in base all'ambiente così da renderlo più realistico.
 	
 	\begin{center}
-		\begin{figure}
+		\begin{figure}[htp]
 		\centering
-		\includegraphics[scale=0.22]{EUImg1.jpeg} 
+		\includegraphics[width=0.5\textwidth]{./resources/images/EnvironmentalUnderstanding/env_understanding1.jpeg} 
 		\caption{Esempio dell'immersione dell'oggetto nella nostra 	applicazione nell'ambiente}
 	\end{figure}
 	

@@ -43,7 +43,15 @@ class InfoDialogFragment : DialogFragment() {
                         startActivity(viewIntent)
                     }
                     .setTitle("Info")
-            }
+            }else if (requireActivity().localClassName == "MainActivity"){
+            s = getString(R.string.info_main)
+            //Costruisce l'AlertDialog con il messaggio passato
+            builder.setMessage(s)
+                .setPositiveButton(R.string.ok
+                ) { _, _ -> }
+                .setTitle("Info")
+
+        }
 
             // Crea l'oggetto AlertDialog e lo ritorna
             builder.create()

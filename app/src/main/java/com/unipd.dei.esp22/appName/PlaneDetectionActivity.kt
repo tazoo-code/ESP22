@@ -8,12 +8,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.ar.core.Config
@@ -77,7 +80,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
 
         //Se il pulsante info viene premuto allora invoca il fragment con il messaggio di info
         infoButton.setOnClickListener{
-            InfoDialogFragment().show(supportFragmentManager,"SessionActivity")
+            InfoDialogFragment().show(supportFragmentManager,"PlaneDetectionActivity")
         }
 
         //Evento per cambio modalità
@@ -110,6 +113,13 @@ class PlaneDetectionActivity : AppCompatActivity() {
                         obj = stringArray[position]
                         Log.i("Modello",obj)
                         setModel()
+
+
+                        val vg = view as ViewGroup
+                        val c = vg.getChildAt(1)
+                        c.visibility = View.VISIBLE
+
+
                     }
                 })
         )
@@ -302,7 +312,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
     //Crea il modello 3d che sarà renderizzato nello spazio 3D
     private fun setModel() {
         Log.i("OBJ",obj)
-        val uri = Uri.parse("models/$obj.glb")
+        val uri = Uri.parse("models/planeDetect/$obj.glb")
 
         ModelRenderable.builder()
             //.setAsyncLoadEnabled(true)
