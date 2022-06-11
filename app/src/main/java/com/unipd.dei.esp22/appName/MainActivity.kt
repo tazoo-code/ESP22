@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         //In caso della pressione del tasto augmImage viene avviata l'activity dell' augmented images
         val augmImagesButton : ImageView = findViewById(R.id.augmented_images)
         augmImagesButton.setOnClickListener{
-            val intent = Intent(this, ImagesGalleryActivity::class.java)
+            val intent = Intent(this, AugmentedImagesActivity::class.java)
             startActivity(intent)
         }
 

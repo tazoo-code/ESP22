@@ -76,7 +76,7 @@
         android:layout_marginStart="120dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="?attr/colorSecondaryVariant"
-        android:text="Galleria"
+        android:text="@string/gallery_button_string"
         android:textColor="?attr/colorOnSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

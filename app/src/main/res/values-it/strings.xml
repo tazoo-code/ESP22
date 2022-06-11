@@ -28,4 +28,7 @@
         \- <b>Plane Detection</b>\: ARCore rileva dei piani sui quali è possibile posizionare degli animali virtuali.\n
         \- <b>Augmented Image\:</b> ARCore rileva le immagini dei pianeti del sistema solare e crea i modelli 3D corrispondenti nel mondo reale.\n
         Per ulteriori informazioni sull\'uso delle varie modalità, cliccare sul tasto <i>info</i> in alto a destra.</string>
+    <string name="share_button_icon">Condividi</string>
+    <string name="gallery_item">Elemento della galleria</string>
+    <string name="gallery_button_string">Galleria</string>
 </resources>

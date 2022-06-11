@@ -2,6 +2,7 @@ package com.unipd.dei.esp22.appName
 
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -146,7 +147,8 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
     private val GallerysetOnClickListener= View.OnClickListener {
 
-
+        val intent = Intent(this, ImagesGalleryActivity::class.java)
+        startActivity(intent)
     }
 
     //Listener che viene invocato ad ogni aggiornamento della scena di ARCore

@@ -4,6 +4,7 @@
 
     <!-- imageview descriptions -->
     <string name="settings_button_icon">Settings</string>
+    <string name="share_button_icon">Share</string>
     <string name="rendering_3d_preview">Rendering 3D preview</string>
     <string name="augmented_images_preview">Augmented images preview</string>
     <string name="gallery_arrow">Arrow up/down icon</string>
@@ -34,8 +35,9 @@
     <string name="ok" translatable="false">OK</string>
     <string name="download">Download</string>
     <string name="slider_item">Item of the slider</string>
-    <string name="info_main">" Text main"</string>
-    <string name="gallery_item">Elemento della gallery</string>
+    <string name="info_main">Text main</string>
+    <string name="gallery_item">Gallery item</string>
+    <string name="gallery_button_string">Gallery</string>
 
 
 </resources>
