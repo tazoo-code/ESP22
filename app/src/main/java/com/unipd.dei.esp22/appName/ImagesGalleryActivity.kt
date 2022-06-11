@@ -3,8 +3,13 @@ package com.unipd.dei.esp22.appName
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.ar.sceneform.ux.TransformableNode
 
 class ImagesGalleryActivity : AppCompatActivity() {
+
+
+    private lateinit var planets : Array<String>
+    private lateinit var models: Array<Model>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -12,9 +17,13 @@ class ImagesGalleryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_gallery)
         val recyclerView: RecyclerView = findViewById(R.id.gallery_recycler_view)
 
-        val list = arrayOf("1", "2", "3", "4", "5","1", "2", "3", "4", "5","1", "2", "3", "4", "5","1", "2", "3", "4", "5")
+        planets=this.resources.getStringArray(R.array.planet_array)
+        models=Array<Model>(planets.size) {
+            Model(planets[it])
+        }
+
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = ImagesGalleryAdapter(list)
+        recyclerView.adapter = ImagesGalleryAdapter(models)
 
     }
 }

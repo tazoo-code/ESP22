@@ -69,6 +69,8 @@ class AugmentedImagesActivity: AppCompatActivity() {
           tutti i pianeti renderizzati. */
         val clearButton = findViewById<Button>(R.id.clear)
 
+        val galleryButton=findViewById<Button>(R.id.gallery)
+
         homeButton.setOnClickListener {
             finish()
         }
@@ -78,7 +80,13 @@ class AugmentedImagesActivity: AppCompatActivity() {
         }
 
         //Listener per il riavvio dell'activity
-        clearButton!!.setOnClickListener(setOnClickListener)
+        clearButton!!.setOnClickListener(ClearsetOnClickListener)
+
+
+        galleryButton!!.setOnClickListener(GallerysetOnClickListener)
+
+
+
 
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
@@ -128,11 +136,17 @@ class AugmentedImagesActivity: AppCompatActivity() {
     }
 
     //Listener per resettare il tracking delle immagini
-    private val setOnClickListener = View.OnClickListener {
+    private val ClearsetOnClickListener = View.OnClickListener {
         //Restart Activity
         val intent = intent
         finish()
         startActivity(intent)
+    }
+
+
+    private val GallerysetOnClickListener= View.OnClickListener {
+
+
     }
 
     //Listener che viene invocato ad ogni aggiornamento della scena di ARCore
