@@ -1,7 +1,6 @@
 package com.unipd.dei.esp22.appName
 
 import android.graphics.Color
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ class ImagesGalleryAdapter(private val list: Array<Model>) :
 RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
 
     companion object {
-        val uriList : ArrayList<Uri> = arrayListOf()
+        val imageList : ArrayList<String> = arrayListOf()
     }
 
     // Ritorna un nuovo ViewHolder
@@ -40,11 +39,10 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
             m.setSelected(!m.isSelected())
             holder.itemView.setBackgroundColor(if (m.isSelected()) Color.CYAN else Color.WHITE)
 
-            val uri = Uri.parse("android.resource://com.unipd.dei.esp22.appName/drawable/"+ m.getText())
             if(m.isSelected()){
-                uriList.add(uri)
-            } else if (uriList.contains(uri)) {
-                uriList.remove(uri)
+                imageList.add(m.getText()!!)
+            } else if (imageList.contains(m.getText())) {
+                imageList.remove(m.getText())
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.unipd.dei.esp22.appName
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,12 +32,20 @@ class ImagesGalleryActivity : AppCompatActivity() {
         val shareButton = findViewById<ImageView>(R.id.share_button)
         shareButton.setOnClickListener {
 
-            val uriList = ImagesGalleryAdapter.uriList
-            if(uriList.isNotEmpty()){
+            val imageList = ImagesGalleryAdapter.imageList
+            if(imageList.isNotEmpty()){
                 val shareIntent = Intent().apply {
+                    val uriArray = ArrayList<Uri>()
+                    for (name in imageList){
+                        val id = resources.getIdentifier(name,"drawable", packageName)
+                        //val file : File = File(filesDir, i)
+                        val uri = Uri.parse("android.resource://com.unipd.dei.esp22.appName/$id")
+                        uriArray.add(uri)
+                    }
                     action = Intent.ACTION_SEND_MULTIPLE
-                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
-                    type = "image/*"
+                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriArray )
+                    type = "image/png"
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 }
                 startActivity(Intent.createChooser(shareIntent, null))
             } else {
