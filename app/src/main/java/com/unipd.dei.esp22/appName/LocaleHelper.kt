@@ -16,11 +16,21 @@ class LocaleHelper{
         fun chooseLanguage(context : Context) : String{
             // Prende il valore di language salvato in sharedpreferences
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            var lang = when (prefs.getString("language", "english")) {
+            if(!prefs.contains("language"))
+            {
+                with (prefs.edit()) {
+                    putString("language", "system_default")
+                    commit()
+                }
+            }
+
+            val b = Locale.getDefault().language
+            val a = prefs.getString("language", Locale.getDefault().language)
+            var lang = when (a) {
                 "italian" -> "it"
                 "english" -> "en"
                 "system_default" -> Locale.getDefault().language
-                else -> "en"
+                else -> Locale.getDefault().language
             }
 
             // Se la lingua del dispositivo non è italiano o inglese, imposta inglese di default
