@@ -4,9 +4,17 @@
     <!-- premessi della fotocamera -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!--
+
+
  Limits app visibility in the Google Play Store to ARCore supported devices
          (https://developers.google.com/ar/devices).
     -->
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
     <uses-feature android:name="android.hardware.camera.ar" />
 
     <application
@@ -46,6 +54,23 @@
             android:name="com.unipd.dei.esp22.appName.ImagesGalleryActivity"
             android:exported="true" >
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+
+            android:authorities="com.unipd.dei.esp22.appName"
+
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <!-- Write down your package name -->
+            <!-- we intend to request content
+              URIs for the images/subdirectory
+              of your private file area -->
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/paths" />
+    </provider>
 
         <!--
  "AR Required" app, requires "Google Play Services for AR" (ARCore)

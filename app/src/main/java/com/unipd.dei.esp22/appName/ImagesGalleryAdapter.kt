@@ -11,7 +11,8 @@ class ImagesGalleryAdapter(private val list: Array<Model>) :
 RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
 
     companion object {
-        val imageList : ArrayList<String> = arrayListOf()
+        val imageList : MutableList<String> = arrayListOf()
+        val images : MutableList<ImageView> = arrayListOf()
     }
 
     // Ritorna un nuovo ViewHolder
@@ -31,6 +32,7 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
         val m= list[position]
+
         holder.bind(m.getText()!!)
 
         holder.itemView.setBackgroundColor(if (m.isSelected()) Color.CYAN else Color.WHITE)
@@ -40,9 +42,11 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
             holder.itemView.setBackgroundColor(if (m.isSelected()) Color.CYAN else Color.WHITE)
 
             if(m.isSelected()){
-                imageList.add(m.getText()!!)
+                imageList.add(m.getText() as String)
+                images.add(holder.itemImageView)
             } else if (imageList.contains(m.getText())) {
-                imageList.remove(m.getText())
+                imageList.remove(m.getText() as String)
+                images.remove(holder.itemImageView)
             }
         }
     }
