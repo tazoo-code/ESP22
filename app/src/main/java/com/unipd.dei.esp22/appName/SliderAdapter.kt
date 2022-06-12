@@ -1,6 +1,7 @@
 package com.unipd.dei.esp22.appName
 
 import android.graphics.Color
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.appcompat.view.menu.MenuView
@@ -11,12 +12,15 @@ class SliderAdapter(private val list: Array<ModelAnimal>) :
 
     private val elements : MutableList<View> = arrayListOf()
 
-    private val indices : MutableList<Int> = arrayListOf()
+    private val isSelected : MutableList<Boolean> = arrayListOf()
 
     // Ritorna un nuovo ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.slider_item, parent, false)
+            for (i in 0 until itemCount){
+                isSelected.add(false)
+            }
 
         return ItemViewHolder(view)
     }
@@ -29,28 +33,35 @@ class SliderAdapter(private val list: Array<ModelAnimal>) :
     // Mostra l'immagine in una certa posizione
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
+        Log.i("Slider",position.toString())
+        if(isSelected[position]){
+            holder.itemView.setBackgroundColor(Color.CYAN)
+            Log.i("Slider",position.toString() +" Cyan")
+        }else{
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
+            Log.i("Slider",position.toString() +" Trasparente")
+        }
+
         holder.bind(list[position].getText() as String)
 
-        holder.itemView.setBackgroundColor(if (list[position].isSelected()) Color.CYAN else Color.WHITE)
 
         holder.itemImageView.setOnClickListener {
 
-            if(!list[position].isSelected()) {
-                list[position].setSelected(true)
-                holder.itemView.setBackgroundColor(Color.CYAN)
-
-                if(indices.isNotEmpty()) {
-                    for (i in 0 until elements.size) {
-                        elements.get(i).setBackgroundColor(Color.WHITE)
-                    }
-                    for (j in indices) {
-                        list[j].setSelected(false)
-                        indices.remove(j)
-                    }
+            Log.i("Slider",position.toString())
+                //disattivare gli altri
+                for(e in elements){
+                    e.setBackgroundColor(Color.TRANSPARENT)
                 }
-                indices.add(position)
+
+                for (i in 0 until itemCount){
+                    isSelected[i] = false
+                }
+
+
+                //attiviamo quello selezionato
+                holder.itemView.setBackgroundColor(Color.CYAN)
                 elements.add(holder.itemView)
-            }
+                isSelected[position] = true
 
         }
     }
