@@ -63,10 +63,7 @@
             android:exported="false"
             android:grantUriPermissions="true">
 
-            <!-- Write down your package name -->
-            <!-- we intend to request content
-              URIs for the images/subdirectory
-              of your private file area -->
+
         <meta-data
             android:name="android.support.FILE_PROVIDER_PATHS"
             android:resource="@xml/paths" />

@@ -20,8 +20,6 @@ class ImagesGalleryActivity : AppCompatActivity() {
     private lateinit var planets : Array<String>
     private lateinit var modelPlanets: Array<ModelPlanet>
 
-    private lateinit var privateRootDir: File
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,15 +44,12 @@ class ImagesGalleryActivity : AppCompatActivity() {
 
                 val uriArray = ArrayList<Uri>()
 
-                //val fileArray= ArrayList<File>()
-
                 for (i in imageList.indices){
-                    //val id = resources.getIdentifier(imageList.get(i),"drawable", packageName)
 
-                    val img=images.get(i)
+                    val img= images[i]
                     val bitmapDrawable: BitmapDrawable= img.drawable as BitmapDrawable
                     val bitmap :Bitmap=bitmapDrawable.bitmap
-                    val uri: Uri= getImageToShare(bitmap,imageList.get(i)) as Uri
+                    val uri: Uri= getImageToShare(bitmap, imageList[i]) as Uri
                     uriArray.add(uri)
                 }
 
@@ -65,24 +60,7 @@ class ImagesGalleryActivity : AppCompatActivity() {
                 }
 
                 startActivity(Intent.createChooser(shareIntent, "SharePlanets"))
-                /*val shareIntent = Intent().apply {
-                    val uriArray = ArrayList<Uri>()
 
-                    val fileArray= ArrayList<File>()
-                    for (name in imageList){
-                        val id = resources.getIdentifier(name,"drawable", packageName)
-                        //val file : File = File(filesDir, i)
-
-                        val uri = Uri.parse("android.resource://com.unipd.dei.esp22.appName/$id")
-                        //val f= File("drawable/"+name+".png")
-                        uriArray.add(uri)
-                    }
-                    action = Intent.ACTION_SEND_MULTIPLE
-                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriArray )
-                    type = "image/png"
-                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                }
-                startActivity(Intent.createChooser(shareIntent, null))*/
             }else {
                 Toast.makeText(this,"Seleziona almeno un elemento", Toast.LENGTH_SHORT).show()
             }
@@ -101,7 +79,7 @@ class ImagesGalleryActivity : AppCompatActivity() {
         var uri: Uri? = null
         try {
             imagefolder.mkdirs()
-            val file = File(imagefolder, name+".png")
+            val file = File(imagefolder, "$name.png")
             val outputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
             outputStream.flush()

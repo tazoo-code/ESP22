@@ -14,7 +14,6 @@ class ModelPlanet(private var name:String?) {
         isSelected = selected
     }
 
-
     fun isSelected(): Boolean {
         return isSelected
     }

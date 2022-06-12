@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 
-
+//Classe per Dialog delle info
 class InfoDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -34,6 +34,7 @@ class InfoDialogFragment : DialogFragment() {
                     .setPositiveButton(R.string.ok
                     ) { _, _ ->}
 
+                    /*
                     .setNegativeButton(R.string.download
                     ){ dialog, id ->
                         val viewIntent = Intent(
@@ -41,8 +42,10 @@ class InfoDialogFragment : DialogFragment() {
                             Uri.parse("https://cdn.discordapp.com/attachments/969613466300190725/984510415537066035/NewPlanet_.zip")
                         )
                         startActivity(viewIntent)
-                    }
+                    }*/
+
                     .setTitle("Info")
+
             }else if (requireActivity().localClassName == "MainActivity"){
             s = getString(R.string.info_main)
             //Costruisce l'AlertDialog con il messaggio passato

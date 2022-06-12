@@ -121,12 +121,6 @@ class PlaneDetectionActivity : AppCompatActivity() {
                         Log.i("Modello",obj)
                         setModel()
 
-
-                        /*val vg = view as ViewGroup
-                        val c = vg.getChildAt(1)
-                        c.visibility = View.VISIBLE*/
-
-
                     }
                 })
         )

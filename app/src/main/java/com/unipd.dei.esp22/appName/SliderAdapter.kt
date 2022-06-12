@@ -33,13 +33,13 @@ class SliderAdapter(private val list: Array<ModelAnimal>) :
     // Mostra l'immagine in una certa posizione
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
-        Log.i("Slider",position.toString())
+        //Android ricostruisce gli elementi fuori dallo schermo quindi dobbiamo tenere conto degli oggetti selezionati
         if(isSelected[position]){
             holder.itemView.setBackgroundColor(Color.CYAN)
-            Log.i("Slider",position.toString() +" Cyan")
+            Log.d("Slider", "$position Cyan")
         }else{
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
-            Log.i("Slider",position.toString() +" Trasparente")
+            Log.d("Slider", "$position Trasparente")
         }
 
         holder.bind(list[position].getText() as String)
@@ -56,7 +56,6 @@ class SliderAdapter(private val list: Array<ModelAnimal>) :
                 for (i in 0 until itemCount){
                     isSelected[i] = false
                 }
-
 
                 //attiviamo quello selezionato
                 holder.itemView.setBackgroundColor(Color.CYAN)
