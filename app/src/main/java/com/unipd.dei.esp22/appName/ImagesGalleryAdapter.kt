@@ -1,18 +1,28 @@
 package com.unipd.dei.esp22.appName
 
+import android.content.Context
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
-class ImagesGalleryAdapter(private val list: Array<ModelPlanet>) :
+class ImagesGalleryAdapter(private val list: Array<ModelPlanet>, context: Context) :
 RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
+
+    private val cyan : Int
 
     companion object {
         val imageList : MutableList<String> = arrayListOf()
         val images : MutableList<ImageView> = arrayListOf()
+    }
+
+    init {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
+        cyan = typedValue.data
     }
 
     // Ritorna un nuovo ViewHolder
@@ -35,11 +45,11 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
 
         holder.bind(m.getText()!!)
 
-        holder.itemView.setBackgroundColor(if (m.isSelected()) Color.CYAN else Color.WHITE)
+        holder.itemView.setBackgroundColor(if (m.isSelected()) cyan else Color.WHITE)
 
         holder.itemImageView.setOnClickListener {
             m.setSelected(!m.isSelected())
-            holder.itemView.setBackgroundColor(if (m.isSelected()) Color.CYAN else Color.WHITE)
+            holder.itemView.setBackgroundColor(if (m.isSelected()) cyan else Color.WHITE)
 
             if(m.isSelected()){
                 imageList.add(m.getText() as String)

@@ -103,7 +103,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
         }
 
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = SliderAdapter(modelAnimals)
+        recyclerView.adapter = SliderAdapter(modelAnimals,this)
 
         //Listener per vedere quale oggetto da posizionare seleziono
         recyclerView.addOnItemTouchListener(

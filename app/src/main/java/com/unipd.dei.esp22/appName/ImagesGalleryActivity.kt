@@ -32,7 +32,7 @@ class ImagesGalleryActivity : AppCompatActivity() {
         }
 
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = ImagesGalleryAdapter(modelPlanets)
+        recyclerView.adapter = ImagesGalleryAdapter(modelPlanets, this)
 
         val shareButton = findViewById<ImageView>(R.id.share_button)
         shareButton.setOnClickListener {

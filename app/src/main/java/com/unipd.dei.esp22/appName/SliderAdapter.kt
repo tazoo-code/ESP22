@@ -1,18 +1,28 @@
 package com.unipd.dei.esp22.appName
 
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.ImageView
-import androidx.appcompat.view.menu.MenuView
 import androidx.recyclerview.widget.RecyclerView
 
-class SliderAdapter(private val list: Array<ModelAnimal>) :
+
+class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
     private val elements : MutableList<View> = arrayListOf()
 
     private val isSelected : MutableList<Boolean> = arrayListOf()
+
+    private val cyan : Int
+
+    init {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
+        cyan = typedValue.data
+    }
 
     // Ritorna un nuovo ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -35,7 +45,7 @@ class SliderAdapter(private val list: Array<ModelAnimal>) :
 
         //Android ricostruisce gli elementi fuori dallo schermo quindi dobbiamo tenere conto degli oggetti selezionati
         if(isSelected[position]){
-            holder.itemView.setBackgroundColor(Color.CYAN)
+            holder.itemView.setBackgroundColor(cyan)
             Log.d("Slider", "$position Cyan")
         }else{
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
@@ -58,7 +68,7 @@ class SliderAdapter(private val list: Array<ModelAnimal>) :
                 }
 
                 //attiviamo quello selezionato
-                holder.itemView.setBackgroundColor(Color.CYAN)
+                holder.itemView.setBackgroundColor(cyan)
                 elements.add(holder.itemView)
                 isSelected[position] = true
 
