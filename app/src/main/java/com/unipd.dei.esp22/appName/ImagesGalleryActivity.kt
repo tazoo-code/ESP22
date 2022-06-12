@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +18,7 @@ class ImagesGalleryActivity : AppCompatActivity() {
 
 
     private lateinit var planets : Array<String>
-    private lateinit var models: Array<Model>
+    private lateinit var modelPlanets: Array<ModelPlanet>
 
     private lateinit var privateRootDir: File
 
@@ -30,12 +29,12 @@ class ImagesGalleryActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.gallery_recycler_view)
 
         planets=this.resources.getStringArray(R.array.planet_array)
-        models=Array(planets.size) {
-            Model(planets[it])
+        modelPlanets=Array(planets.size) {
+            ModelPlanet(planets[it])
         }
 
         //Applica l'adapter alla recyclerView
-        recyclerView.adapter = ImagesGalleryAdapter(models)
+        recyclerView.adapter = ImagesGalleryAdapter(modelPlanets)
 
         val shareButton = findViewById<ImageView>(R.id.share_button)
         shareButton.setOnClickListener {

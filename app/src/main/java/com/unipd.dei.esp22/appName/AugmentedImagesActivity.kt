@@ -86,9 +86,6 @@ class AugmentedImagesActivity: AppCompatActivity() {
 
         galleryButton!!.setOnClickListener(GallerysetOnClickListener)
 
-
-
-
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
 

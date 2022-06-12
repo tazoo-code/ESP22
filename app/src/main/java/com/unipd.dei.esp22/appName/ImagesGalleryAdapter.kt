@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
-class ImagesGalleryAdapter(private val list: Array<Model>) :
+class ImagesGalleryAdapter(private val list: Array<ModelPlanet>) :
 RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
 
     companion object {
