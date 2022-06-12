@@ -75,7 +75,7 @@ class ImagesGalleryActivity : AppCompatActivity() {
 
     private fun getImageToShare(bitmap: Bitmap, name:String): Uri? {
 
-        val imagefolder: File = File(filesDir, "images")
+        val imagefolder = File(filesDir, "images")
         var uri: Uri? = null
         try {
             imagefolder.mkdirs()

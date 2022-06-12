@@ -2,21 +2,20 @@ package com.unipd.dei.esp22.appName
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.get
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.ar.core.Config
@@ -85,9 +84,24 @@ class PlaneDetectionActivity : AppCompatActivity() {
             finish()
         }
 
+        // Shared preferences
+        val preferences : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        // Salva la preferenza per mostrare o meno l'info dialog
+        if(!preferences.contains(InfoDialogFragment.DONT_SHOW_PLANES)){
+            with (preferences.edit()) {
+                putBoolean(InfoDialogFragment.DONT_SHOW_PLANES, false)
+                commit()
+            }
+        }
+
+        // Se è stato selezionato il checkbox "don't show again", non viene mostrato l'info
+        if(!preferences.getBoolean(InfoDialogFragment.DONT_SHOW_PLANES, false))
+            InfoDialogFragment().show(supportFragmentManager,InfoDialogFragment.PLANES_ACTIVITY)
+
         //Se il pulsante info viene premuto allora invoca il fragment con il messaggio di info
         infoButton.setOnClickListener{
-            InfoDialogFragment().show(supportFragmentManager,"PlaneDetectionActivity")
+            InfoDialogFragment().show(supportFragmentManager,InfoDialogFragment.PLANES_ACTIVITY)
         }
 
         //Evento per cambio modalità

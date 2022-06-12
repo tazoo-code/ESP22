@@ -24,9 +24,7 @@ class LocaleHelper{
                 }
             }
 
-            val b = Locale.getDefault().language
-            val a = prefs.getString("language", Locale.getDefault().language)
-            var lang = when (a) {
+            var lang = when (prefs.getString("language", Locale.getDefault().language)) {
                 "italian" -> "it"
                 "english" -> "en"
                 "system_default" -> Locale.getDefault().language

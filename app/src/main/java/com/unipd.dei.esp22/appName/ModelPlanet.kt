@@ -1,7 +1,5 @@
 package com.unipd.dei.esp22.appName
 
-import android.widget.ImageView
-
 class ModelPlanet(private var name:String?) {
 
     private var isSelected = false

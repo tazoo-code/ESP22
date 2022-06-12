@@ -3,6 +3,7 @@ package com.unipd.dei.esp22.appName
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
@@ -76,8 +78,23 @@ class AugmentedImagesActivity: AppCompatActivity() {
             finish()
         }
 
+        // Shared preferences
+        val preferences : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        // Salva la preferenza per mostrare o meno l'info dialog
+        if(!preferences.contains(InfoDialogFragment.DONT_SHOW_AUGM)){
+            with (preferences.edit()) {
+                putBoolean(InfoDialogFragment.DONT_SHOW_AUGM, false)
+                commit()
+            }
+        }
+
+        // Se è stato selezionato il checkbox "don't show again", non viene mostrato l'info
+        if(!preferences.getBoolean(InfoDialogFragment.DONT_SHOW_AUGM, false))
+            InfoDialogFragment().show(supportFragmentManager, InfoDialogFragment.AUGM_ACTIVITY)
+
         infoButton.setOnClickListener{
-            InfoDialogFragment().show(supportFragmentManager,"AugmentedImagesActivity")
+            InfoDialogFragment().show(supportFragmentManager,InfoDialogFragment.AUGM_ACTIVITY)
         }
 
         //Listener per il riavvio dell'activity

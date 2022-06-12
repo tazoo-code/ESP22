@@ -77,7 +77,7 @@ class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
 
     // Descrive un elemento e la sua posizione
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        public val itemImageView: ImageView = itemView.findViewById(R.id.slider_img_preview)
+        val itemImageView: ImageView = itemView.findViewById(R.id.slider_img_preview)
 
         fun bind(str : String) {
 
