@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.preference.PreferenceManager
 import java.util.*
 
-
+/*Classe che gestisce il menù principale che permette di scegliere tra le due modalità
+  e di andare sulle impostazioni
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

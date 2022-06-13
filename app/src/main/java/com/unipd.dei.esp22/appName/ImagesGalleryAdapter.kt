@@ -9,13 +9,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
+//Classe adapter per il recyclerview della Galleria
 class ImagesGalleryAdapter(private val list: Array<ModelPlanet>, context: Context) :
 RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
 
     private val cyan : Int
 
     companion object {
+        //Nomi dell immagini selezionate
         val names : MutableList<String> = arrayListOf()
+
+        //Immagini selezionate
         val images : MutableList<ImageView> = arrayListOf()
     }
 
@@ -45,12 +49,18 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
 
         holder.bind(m.getText()!!)
 
+        //Imposta il colore di background alla selezione
         holder.itemView.setBackgroundColor(if (m.isSelected()) cyan else Color.WHITE)
 
+        //Listener per l'immagine del pianeta
         holder.itemImageView.setOnClickListener {
+
+            //Imposta la selezione e il colore corrispondente
             m.setSelected(!m.isSelected())
             holder.itemView.setBackgroundColor(if (m.isSelected()) cyan else Color.WHITE)
 
+            /*Se l'immagine è selezionata allora viene aggiunta alla lista images
+              e il suo nome alla lista names */
             if(m.isSelected()){
                 names.add(m.getText() as String)
                 images.add(holder.itemImageView)
@@ -76,9 +86,6 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
             }
 
             itemImageView.setImageResource(id)
-
         }
     }
-
-
 }

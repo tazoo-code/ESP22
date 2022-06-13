@@ -10,7 +10,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import java.util.*
 
-
 // Activity per le impostazioni
 class SettingsActivity : AppCompatActivity() {
 

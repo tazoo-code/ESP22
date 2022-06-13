@@ -24,6 +24,7 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import java.util.*
 
+//Classe che gestisce la modalità Augmented Images
 class AugmentedImagesActivity: AppCompatActivity() {
 
     //Fragment che gestisce le interazioni AR dell'utente

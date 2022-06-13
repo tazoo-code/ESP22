@@ -30,6 +30,7 @@ import com.gorisse.thomas.sceneform.light.LightEstimationConfig
 import com.gorisse.thomas.sceneform.lightEstimationConfig
 import java.util.*
 
+//Classe che gestisce la modalità Plane Detection
 class PlaneDetectionActivity : AppCompatActivity() {
 
     //Fragment che gestisce le interazioni AR dell'utente

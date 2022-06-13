@@ -13,7 +13,6 @@ import kotlin.system.exitProcess
 //Classe per Dialog delle info
 class InfoDialogFragment : DialogFragment() {
 
-
     companion object {
         // Nomi delle key in shared preferences, per evitare errori di battitura
         const val DONT_SHOW_MAIN : String = "mainDontShow"
@@ -58,8 +57,6 @@ class InfoDialogFragment : DialogFragment() {
                     builder.setView(view)
                 }
             }
-
-
 
             val s: String
             //In base all'activity che ha chiamato questo fragment viene usato un messaggio di info diverso

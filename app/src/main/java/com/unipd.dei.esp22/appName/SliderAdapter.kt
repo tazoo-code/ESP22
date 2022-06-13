@@ -54,7 +54,6 @@ class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
 
         holder.bind(list[position].getText() as String)
 
-
         holder.itemImageView.setOnClickListener {
 
             Log.i("Slider",position.toString())

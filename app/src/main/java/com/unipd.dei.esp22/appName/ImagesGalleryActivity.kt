@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
 
+//Classe che gestisce la Galleria di immagini per la condivisione
 class ImagesGalleryActivity : AppCompatActivity() {
 
     //Array di stringhe che contiene i nomi delle immagini dei pianeti
@@ -108,10 +109,10 @@ class ImagesGalleryActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        while(!imgs.isEmpty()){
+        while(imgs.isNotEmpty()){
             imgs.removeLast()
         }
-        while(!namesImg.isEmpty()){
+        while(namesImg.isNotEmpty()){
             namesImg.removeLast()
         }
     }
