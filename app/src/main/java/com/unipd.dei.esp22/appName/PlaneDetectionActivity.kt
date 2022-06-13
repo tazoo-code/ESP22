@@ -105,14 +105,13 @@ class PlaneDetectionActivity : AppCompatActivity() {
         }
 
         //Evento per cambio modalità
-        switchButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
+        switchButton!!.setOnCheckedChangeListener { _, isChecked ->
 
             if (isChecked) {
                 switchButton.text = getString(R.string.delMode)
 
             } else {
                 switchButton.text = getString(R.string.placeMode)
-
             }
         }
 
@@ -198,7 +197,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
             }
 
             //Evento che si verifica quando viene toccato un piano
-            arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
 
                 //Se siamo nella modalità place model
                 if (!switchButton.isChecked) {

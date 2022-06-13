@@ -34,7 +34,7 @@ class InfoDialogFragment : DialogFragment() {
             // View del dialog
             val view : View = layoutInflater.inflate(R.layout.info_dialog, null)
             // Riferimento a checkbox
-            val checkBox: CheckBox = view.findViewById(R.id.checkBoxMain)
+            val checkBox: CheckBox = view.findViewById(R.id.checkBoxInfo)
             // Shared Preferences
             val prefs = PreferenceManager.getDefaultSharedPreferences(view.context)
 

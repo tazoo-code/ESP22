@@ -5,7 +5,7 @@ import androidx.preference.PreferenceManager
 import java.util.*
 
 // Classe per la gestione della lingua
-class LocaleHelper{
+class LocaleHelper {
 
     companion object {
 

@@ -7,7 +7,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 // Classe per gestire l'evento click su un elemento dello slider
-// TODO commenti
 class RecyclerItemClickListener(context: Context, listener: OnItemClickListener) : RecyclerView.OnItemTouchListener {
 
     private var mListener :OnItemClickListener?

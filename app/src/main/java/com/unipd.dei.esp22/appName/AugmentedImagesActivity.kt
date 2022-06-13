@@ -98,10 +98,10 @@ class AugmentedImagesActivity: AppCompatActivity() {
         }
 
         //Listener per il riavvio dell'activity
-        clearButton!!.setOnClickListener(ClearsetOnClickListener)
+        clearButton!!.setOnClickListener(clearSetOnClickListener)
 
 
-        galleryButton!!.setOnClickListener(GallerysetOnClickListener)
+        galleryButton!!.setOnClickListener(gallerySetOnClickListener)
 
         //Riferimento al ArFragment
         arFragment = (supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment)
@@ -151,7 +151,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
     }
 
     //Listener per resettare il tracking delle immagini
-    private val ClearsetOnClickListener = View.OnClickListener {
+    private val clearSetOnClickListener = View.OnClickListener {
         //Restart Activity
         val intent = intent
         finish()
@@ -159,7 +159,7 @@ class AugmentedImagesActivity: AppCompatActivity() {
     }
 
 
-    private val GallerysetOnClickListener= View.OnClickListener {
+    private val gallerySetOnClickListener= View.OnClickListener {
 
         val intent = Intent(this, ImagesGalleryActivity::class.java)
         startActivity(intent)

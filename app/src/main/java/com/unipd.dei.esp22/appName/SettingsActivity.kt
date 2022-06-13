@@ -53,7 +53,7 @@ class SettingsActivity : AppCompatActivity() {
 
             // Listener per la preference della lingua
             findPreference<Preference>("language")!!.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { preference: Preference, lang: Any ->
+                Preference.OnPreferenceChangeListener { _: Preference, _: Any ->
                     // Quando viene cambiata la lingua, si ricrea l'activity
                     activity?.recreate()
                     true
@@ -61,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
 
             // Listener per la preference del tema
             findPreference<Preference>("theme")!!.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { preference: Preference, theme: Any ->
+                Preference.OnPreferenceChangeListener { _: Preference, theme: Any ->
                     // Il metodo setDefaultNightMode si occupa di ricreare l'activity
                     when (theme) {
                         "dark_theme" -> setDefaultNightMode(MODE_NIGHT_YES)
