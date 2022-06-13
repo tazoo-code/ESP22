@@ -20,16 +20,21 @@
     <string name="clear">Pulisci</string>
     <string name="home_button">Home</string>
     <string name="info_button">Info</string>
-    <string name="info_session">In questa attività vengono individuati dei piani nell\'ambiente, contrassegnandoli con dei pallini bianchi. Premendo sulla freccetta in basso allo schermo è possibile scegliere il modello 3D da inserire nell\'ambiente. Per inserirlo, premere sullo schermo sopra un piano individuato. Per cambiare dalla modalità piazzamento alla modalità elimina si può premere sullo switch in alto a sinistra dello schermo.</string>
-    <string name="info_augmented">In questa attività è possibile visualizzare i modelli 3D delle immagini dei pianeti presenti nella galleria. Per visualizzarli, inquadrare l\'immagine prescelta e attendere che sia rilevata. Per resettare l\'ambiente e i modelli premere il tasto PULISCI in alto a sinistra dello schermo. Con il tasto GALLERIA è possibile convidere le immagini dei pianeti su altri dispositivi.</string>
+    <string name="info_session">In questa modalità vengono individuati dei piani nell\'ambiente, che vengono segnalati da pallini bianchi. Premendo sulla freccia nella parte bassa dello schermo è possibile scegliere il modello 3D da inserire nell\'ambiente, premendo sullo schermo su un piano individuato. In alto a sinistra è presente uno switch per passare alla modalità elimina, che permette di eliminare oggetti piazzati precedentemente toccandoli sullo schermo.</string>
+    <string name="info_augmented">In questa modalità è possibile visualizzare i modelli 3D delle immagini dei pianeti presenti nella galleria. Con il tasto GALLERIA è possibile visualizzare e condividere con altri dispositivi le immagini presenti. Per mostrare un modello 3D, inquadrare un\'immagine della galleria da un altro dispositivo e attendere che sia rilevata. Per resettare l\'ambiente e i modelli premere il tasto PULISCI in alto a sinistra.</string>
     <string name="download">Scarica</string>
     <string name="slider_item">Elemento dello slider</string>
     <string name="info_main">In questa applicazione sono presenti due modalità\:\n
-        \- <b>Plane Detection</b>\: ARCore rileva dei piani sui quali è possibile posizionare degli animali virtuali.\n
-        \- <b>Augmented Image\:</b> ARCore rileva le immagini dei pianeti del sistema solare e crea i modelli 3D corrispondenti nel mondo reale.\n
-        Per ulteriori informazioni sull\'uso delle varie modalità, cliccare sul tasto <i>info</i> in alto a destra.</string>
+        \t\- Plane Detection\: ARCore rileva dei piani nell\'ambiente circostante, sui quali è possibile posizionare degli animali virtuali.\n
+        \t\- Augmented Image\: ARCore rileva delle immagini dei pianeti del sistema solare e crea i modelli 3D corrispondenti in realtà aumentata.\n
+        \n
+        All\'interno delle modalità sono presenti informazioni aggiuntive su come utilizzare ciascuna di esse.</string>
     <string name="share_button_icon">Condividi</string>
     <string name="gallery_item">Elemento della galleria</string>
     <string name="gallery_button_string">Galleria</string>
     <string name="don_t_show_again">Non mostrare più</string>
+    <string name="reset_title">Ripristina le impostazioni predefinite</string>
+    <string name="reset_text">L\'applicazione verrà riportata alle impostazioni di default.</string>
+    <string name="conferma">Conferma</string>
+    <string name="annulla">Annulla</string>
 </resources>

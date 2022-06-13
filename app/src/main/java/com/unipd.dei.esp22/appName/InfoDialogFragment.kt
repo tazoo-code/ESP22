@@ -8,6 +8,7 @@ import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
+import kotlin.system.exitProcess
 
 //Classe per Dialog delle info
 class InfoDialogFragment : DialogFragment() {
@@ -23,6 +24,7 @@ class InfoDialogFragment : DialogFragment() {
         const val PLANES_ACTIVITY : String = "PlaneDetectionActivity"
         const val MAIN_ACTIVITY : String = "MainActivity"
         const val AUGM_ACTIVITY : String = "AugmentedImagesActivity"
+        const val SETTINGS_ACTIVITY : String = "SettingsActivity"
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -43,18 +45,21 @@ class InfoDialogFragment : DialogFragment() {
                 PLANES_ACTIVITY -> {
                     if (prefs.getBoolean(DONT_SHOW_PLANES, false))
                         checkBox.isChecked = true
+                    builder.setView(view)
                 }
                 AUGM_ACTIVITY -> {
                     if (prefs.getBoolean(DONT_SHOW_AUGM, false))
                         checkBox.isChecked = true
+                    builder.setView(view)
                 }
                 MAIN_ACTIVITY -> {
                     if (prefs.getBoolean(DONT_SHOW_MAIN, false))
                         checkBox.isChecked = true
+                    builder.setView(view)
                 }
             }
 
-            builder.setView(view)
+
 
             val s: String
             //In base all'activity che ha chiamato questo fragment viene usato un messaggio di info diverso
@@ -100,6 +105,26 @@ class InfoDialogFragment : DialogFragment() {
                             }
                         }
                         .setTitle("Info")
+
+                }
+                SETTINGS_ACTIVITY -> {
+                    s = getString(R.string.reset_text)
+                    builder.setMessage(s)
+                        .setPositiveButton(R.string.conferma) { _, _ ->
+                            with (prefs.edit()) {
+                                remove(DONT_SHOW_PLANES)
+                                remove(DONT_SHOW_AUGM)
+                                remove(DONT_SHOW_MAIN)
+                                remove("language")
+                                remove("theme")
+                                commit()
+                            }
+                            exitProcess(0)
+                        }
+                        .setNegativeButton(R.string.annulla) { _, _ ->
+                            // Do nothing
+                        }
+
 
                 }
             }

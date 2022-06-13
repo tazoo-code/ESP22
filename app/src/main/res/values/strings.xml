@@ -28,22 +28,29 @@
     <string name="default_language">System default</string>
     <string name="italian">Italian</string>
     <string name="english">English</string>
-
+    <!-- Reset -->
+    <string name="reset_header" translatable="false">Reset</string>
+    <string name="reset_title">Reset to default settings</string>
 
     <string name="home_button">Home</string>
     <string name="info_button">Info</string>
-    <string name="info_session">In this activity, planes will be identified in the environment and will be marked with white dots. By pressing on the small arrow at the bottom of the screen you can choose the 3D model to insert into the environment. To place it you have to press on the screen over a detected plane. To change from place mode to delete mode you can press on the switch at the top left of the screen.</string>
-    <string name="info_augmented">In this activity you can view 3D models of planet images in the gallery. To view them, frame the chosen image and wait for it to be detected. To reset the environment and models, press the CLEAN button at the top left of the screen. With the GALLERY button, you can share the images of the planets on other devices.</string>
+    <string name="info_session">In this mode, it is possible to identify planes in the environment that will be marked by white dots. Clicking on the arrow, at the bottom of the screen, you can choose the 3D model and enter it in the environment by pressing on an identified plane on the screen. At the top left of the screen there is a switch to shift to delete mode, that allows you to delete objects previously placed on the plane by touching them on the screen.</string>
+    <string name="info_augmented">In this mode it is possible to display the 3D models of the images of the planets, found in the gallery. With the button GALLERY it is possible to display and share the images with other devices. To display a 3D model, you have to frame an image of the gallery from another device and wait for it to be detected. to reset the environment and the 3D models, press the button CLEAR at the top left of the screen.</string>
     <string name="ok" translatable="false">OK</string>
     <string name="download">Download</string>
     <string name="slider_item">Item of the slider</string>
     <string name="gallery_item">Gallery item</string>
     <string name="gallery_button_string">Gallery</string>
-    <string name="info_main">There are two modes in this application\:\n
-        \- Plane Detection\: ARCore detects planes where you can place virtual animals on them.\n
-        \- Augmented Image\: ARCore detects images of planets of the solar system and creates corresponding 3D models in the real world.\n
-        For more information on using the various modes, click on the info button in the upper right corner.</string>
+    <string name="info_main">This application has two modes\:\n
+        \t\- Plane Detection\: ARCore detects the planes in the surrounding environment, where it is possible to place virtual objects.\n
+        \t\- Augmented Image\: ARCore detects images of the planets of the solar system and creates corresponding 3D models in the augmented reality.\n
+        \n
+        In each mode it is possible to find additional information on how to use them.
+    </string>
     <string name="don_t_show_again">Don\'t show again</string>
+    <string name="conferma">Confirm</string>
+    <string name="annulla">Cancel</string>
+    <string name="reset_text">The application will be brought back to default settings.</string>
 
 
 </resources>

@@ -27,4 +27,14 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <!-- Reset -->
+    <PreferenceCategory app:title="@string/reset_header">
+
+        <!-- Lingua -->
+        <Preference
+            app:title="@string/reset_title"
+            app:key="reset"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
