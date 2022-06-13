@@ -43,7 +43,7 @@
     <string name="gallery_button_string">Gallery</string>
     <string name="info_main">This application has two modes\:\n
         \t\- Plane Detection\: ARCore detects the planes in the surrounding environment, where it is possible to place virtual objects.\n
-        \t\- Augmented Image\: ARCore detects images of the planets of the solar system and creates corresponding 3D models in the augmented reality.\n
+        \t\- Augmented Images\: ARCore detects images of the planets of the solar system and creates corresponding 3D models in the augmented reality.\n
         \n
         In each mode it is possible to find additional information on how to use them.
     </string>

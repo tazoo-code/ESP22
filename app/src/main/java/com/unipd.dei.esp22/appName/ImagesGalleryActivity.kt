@@ -21,6 +21,10 @@ class ImagesGalleryActivity : AppCompatActivity() {
     //Array che contiene oggetti ModelPlanet che verrà passato come parametro ad ImagesGalleryAdapter
     private lateinit var modelPlanets: Array<ModelPlanet>
 
+    private lateinit var namesImg: MutableList<String>
+
+    private lateinit var imgs: MutableList<ImageView>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
@@ -46,10 +50,10 @@ class ImagesGalleryActivity : AppCompatActivity() {
         shareButton.setOnClickListener {
 
             //Lista di nomi delle immagini che sono state selezionate dalla galleria
-            val  namesImg = ImagesGalleryAdapter.names
+            namesImg = ImagesGalleryAdapter.names
 
             //Lista delle immagini che sono state selezionate dalla galleria
-            val  imgs=ImagesGalleryAdapter.images
+            imgs=ImagesGalleryAdapter.images
 
             //Se sono state selezionate delle immagini
             if(namesImg.isNotEmpty()){
@@ -70,20 +74,8 @@ class ImagesGalleryActivity : AppCompatActivity() {
 
                     //Creo l'uri per la bitmap corrispondente
 
-
-                    /* Creo un file nella sottodirectory file/images (definita nel file xml paths)
-                       con filesDir viene indicato il percorso assoluto nel filesystem dell'applicazione
-                       in cui è presente la sottodirectory images*/
-                    val imgfolder = File(filesDir, "images")
-
-                    try{
-                        //Creazione della directory in files/
-                        imgfolder.mkdirs()
-                    }catch(e: Exception){
-                        Toast.makeText(this, "" + e.message, Toast.LENGTH_LONG).show()
-                    }
                     //Creazione dell'uri di contenuto per ciascuna immagine salvata all'interno di files/images
-                    val uri: Uri= getImageToShare(bitmap, namesImg[i],imgfolder) as Uri
+                    val uri: Uri= getImageToShare(bitmap, namesImg[i]) as Uri
 
                     //Aggiungo l'uri alla lista di Uri
                     uriArray.add(uri)
@@ -114,12 +106,31 @@ class ImagesGalleryActivity : AppCompatActivity() {
         }
     }
 
-    private fun getImageToShare(bitmap: Bitmap, name:String, imagefolder:File): Uri? {
+    override fun onPause() {
+        super.onPause()
+        while(!imgs.isEmpty()){
+            imgs.removeLast()
+        }
+        while(!namesImg.isEmpty()){
+            namesImg.removeLast()
+        }
+    }
+
+    private fun getImageToShare(bitmap: Bitmap, name:String): Uri? {
+
+        /* Creo un file nella sottodirectory file/images (definita nel file xml paths)
+           con filesDir viene indicato il percorso assoluto nel filesystem dell'applicazione
+           in cui è presente la sottodirectory images*/
+        val imgfolder = File(filesDir, "images")
 
         var uri: Uri? = null
         try {
+
+            //Creazione della directory in files/
+            imgfolder.mkdirs()
+
             //Creazione il file dell'immagine nella directory files/images
-            val file = File(imagefolder, "$name.png")
+            val file = File(imgfolder, "$name.png")
 
             //Creazione di uno stream per la scrittura di dati su un file
             val outputStream = FileOutputStream(file)
