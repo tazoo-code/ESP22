@@ -41,16 +41,17 @@ class PlaneDetectionActivity : AppCompatActivity() {
     //Array contenente il nome dei modelli
     private lateinit var stringArray : Array<String>
 
+    //Array che contiene oggetti ModelAnimal che verrà passato come parametro ad SliderAdapter
+    private lateinit var modelAnimals: Array<ModelAnimal>
+
     //Nome dell'oggetto dal quale sarà costruito il modello 3d
     lateinit var obj: String
-
-    private lateinit var modelAnimals: Array<ModelAnimal>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plane_detection)
 
-        //Recupero i nomi dei modelli dal file arrays.xml
+        //Recupero i nomi degli animali dal file arrays.xml
         stringArray = this.resources.getStringArray(R.array.object_array)
 
         //Riferimento al ArFragment
@@ -74,10 +75,10 @@ class PlaneDetectionActivity : AppCompatActivity() {
         //Per rilevare il comportamento dello slider (quando è in evidenza oppure nascosto)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
+        //Per ciascun animale creo l'oggetto ModelAnimal corrispondente e lo aggiungo all'array
         modelAnimals=Array(stringArray.size) {
             ModelAnimal(stringArray[it])
         }
-
 
         //Se il pulsante home viene premuto ritorna alla home
         homeButton.setOnClickListener {
@@ -115,7 +116,7 @@ class PlaneDetectionActivity : AppCompatActivity() {
             }
         }
 
-        //Applica l'adapter alla recyclerView
+        //Definisce l'adapter per il recyclerView
         recyclerView.adapter = SliderAdapter(modelAnimals,this)
 
         //Listener per vedere quale oggetto da posizionare seleziono

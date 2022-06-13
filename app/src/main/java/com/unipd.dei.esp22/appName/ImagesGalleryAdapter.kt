@@ -15,7 +15,7 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
     private val cyan : Int
 
     companion object {
-        val imageList : MutableList<String> = arrayListOf()
+        val names : MutableList<String> = arrayListOf()
         val images : MutableList<ImageView> = arrayListOf()
     }
 
@@ -52,10 +52,10 @@ RecyclerView.Adapter<ImagesGalleryAdapter.ItemViewHolder>() {
             holder.itemView.setBackgroundColor(if (m.isSelected()) cyan else Color.WHITE)
 
             if(m.isSelected()){
-                imageList.add(m.getText() as String)
+                names.add(m.getText() as String)
                 images.add(holder.itemImageView)
-            } else if (imageList.contains(m.getText())) {
-                imageList.remove(m.getText() as String)
+            } else if (names.contains(m.getText())) {
+                names.remove(m.getText() as String)
                 images.remove(holder.itemImageView)
             }
         }

@@ -55,19 +55,19 @@
             android:exported="true" >
         </activity>
 
+        <!-- Definizione del File Provider del Manifest che specifica l'autorizzazione
+            da utilizzare nella generazione di URI di contenuto e il nome di un file XML che indica
+            le directory che l'app può condividere  -->
         <provider
             android:name="androidx.core.content.FileProvider"
-
             android:authorities="com.unipd.dei.esp22.appName"
-
             android:exported="false"
             android:grantUriPermissions="true">
-
 
         <meta-data
             android:name="android.support.FILE_PROVIDER_PATHS"
             android:resource="@xml/paths" />
-    </provider>
+        </provider>
 
         <!--
  "AR Required" app, requires "Google Play Services for AR" (ARCore)

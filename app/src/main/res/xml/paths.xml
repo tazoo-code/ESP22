@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Il FileProvider può generare un URI di contenuto solo per le immagini che sono
+    all'interno della directory specificata dall'attributo path, in questo caso "images".
+    Questa directory è contenuta nella directory files/ della memoria interna dell'applicazione.
+    Le immagini che verrano condivise con altre applicazioni verrano salvate nel percorso
+    files/images. L'attributo name indica al FileProvider di aggiungere il segmento di percorso
+    shared_image per gli URI dei file contenuti in files/images -->
 <paths>
     <files-path
         name="shared_images"
