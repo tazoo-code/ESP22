@@ -7,56 +7,155 @@
 
 
 \begin{document}
-	\chapter{RecordingPlayback}
+	\chapter{Recording e Playback}
 	
-	Solitamente quando si utilizza un’applicazione AR ci si trova ad essere in prima persona nell’ambiente il cui deve essere utilizzata.
-	
-	L'API Recording and Playback consente di utilizzare i servizi di ARCore anche su un feed video non in tempo reale. Più precisamente si può fornire un video e ARCore lo tratterà come se fosse un video registrato in tempo reale.
-	
+	Solitamente quando si utilizza un’applicazione AR ci si trova ad essere in prima persona nell’ambiente il cui deve essere utilizzata.	L'API \textit{Recording and Playback} consente di utilizzare i servizi di ARCore anche su un feed video non in tempo reale. Più precisamente si può fornire un video e ARCore lo tratterà come se fosse un video registrato in tempo reale \cite{google2022rec}.
+	\\
+	\noindent
 	L'API Recording archivia il video stream, i dati IMU o qualsiasi altri metadati personalizzati che scegli di salvare in un file MP4. Successivamente l’utente potrà sceglie se usare un video dal vivo oppure un video preregistrato.
  
 	\section{Compatibilità}
-	ARCore è necessario per utilizzare API Recording and Playback perché serve per registrare i dati nel file MP4. I file MP4 registrati, utilizzando questa funzionalità, sono essenzialmente file video con dati aggiuntivi  e possono essere visualizzati utilizzando qualsiasi video player. Per ispezionare i seguenti file è possibile usare, per esempio, il player Exoplayer di Android.
+	ARCore è necessario per utilizzare API Recording and Playback perché serve per registrare i dati nel file MP4. I file MP4 registrati, utilizzando questa funzionalità, sono essenzialmente file video con dati aggiuntivi e possono essere visualizzati utilizzando qualsiasi video player. Per ispezionare i file è possibile usare, per esempio, il player Exoplayer di Android.
 	 
-	\section{Come vengono registrati i dati video e AR per la riproduzione}
-	ARCore salva le registrazioni in formato MP4. All’interno di questo file sono contenuti più tracciati video registrati con la codifica H.264 e dati vari.
-	
-	La prima traccia video viene solitamente registrata ad una risoluzione di 640x480 (VGA) e questa traccia verrà usata per il motion tracking come fonte di video primaria.
-	
+	\section{Salvataggio di dati video e AR}
+	ARCore salva le registrazioni in formato MP4. All’interno di questo file sono contenuti più tracciati video registrati con la codifica H.264 e dati vari. La prima traccia video viene solitamente registrata ad una risoluzione di 640x480 (VGA) e questa traccia verrà usata per il motion tracking come fonte di video primaria.
+	\\
+	\noindent
 	Nel caso si voglia una risoluzione migliore, bisogna configurare una nuova fotocamera che abbia la risoluzione desiderata.
-	
 	In questo caso ARCore richiederà un feed in qualità 640x480 e un feed in alta risoluzione. Questo potrebbe rallentare la propria applicazione a causa di un maggiore utilizzo della CPU. Verrà inoltre selezionata la risoluzione personalizzata come fonte primaria del video che verrà salvato nel file MP4.
-	
+	\\
+	\noindent
 	La seconda traccia del file MP4 è una visualizzazione della mappa della profondità della fotocamera. Si tratta di un video ricavato dal sensore di profondità del proprio dispositivo e successivamente convertito in valori dei canali RGB.
-	
-	\section{Ulteriori dati salvati}
-	ARCore registra anche le misurazioni del giroscopio e dell’accelerometro del dispositivo. Inoltre, vengono salvati anche altri dati, tra cui alcuni considerati sensibili. Questi dati sono la versione SDK di Android, il fingerprint del dispositivo, informazioni addizionali sui sensori usati e, se il ARCore Geospatial API è attivo , la posizione stimata, i dati del magnetometro e della bussola.
+	\\
+	\noindent
+	ARCore registra anche le misurazioni del giroscopio e dell’accelerometro del dispositivo. Inoltre, vengono salvati anche altri dati, tra cui alcuni considerati sensibili. Questi dati sono la versione SDK di Android, il fingerprint del dispositivo, informazioni addizionali sui sensori usati e, se il ARCore Geospatial API è attivo, la posizione stimata, i dati del magnetometro e della bussola.
 	 
-	\section{Come registrare}
-	Per iniziare una sessione di registrazione inizialmente creo una sessione di ARCore, imposto il file di output e alcune configurazioni sulla registrazione. Infine inizio a registrare. Per concludere la registrazione è necessario invocare il metodo \verb|stopRecording()| sull'istanza \verb|session|. Si veda il listing~\vref{lst:pr_session} tratto dalla documentazione ufficiale Google.
+	\section{Recording}
+	Per iniziare una sessione di registrazione inizialmente viene creata la sessione di ARCore, viene specificato il file di output e alcune configurazioni sulla registrazione. Infine inizia la registrazione. Per concludere la registrazione è necessario invocare il metodo \verb|stopRecording()| sull'istanza \verb|session|. Si veda il listing~\vref{lst:pr_session} tratto dalla documentazione ufficiale Google \cite{google2022rec2}.
 	
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
-			\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:pr_session}, language=Kotlin]
-			// Configure the ARCore session.
-			val session = Session(context)
-			
+			\begin{lstlisting}[caption={Creazione della sessione per recording.}, label={lst:pr_session}, language=Kotlin]
+val session = Session(context)
+			// Creazione della sessione ARCore.
 			val destination = Uri.fromFile(File(context.getFilesDir(),"recording.mp4"))
 			
 			val recordingConfig = RecordingConfig(session)
 							.setMp4DatasetUri(destination)
 							.setAutoStopOnPause(true)
-			
+							
 			session.startRecording(recordingConfig)
 			
-			// Resume the ARCore session to start recording.
+			// Chiamata al metodo resume() per iniziare la registrazione.
 			session.resume()
 			
-			// Stop recording
+			// Ferma il recording.
 			session.stopRecording()
 			\end{lstlisting}
 		\end{minipage}
 	\end{center}	
+
+	\noindent
+	Tramite il metodo \verb|getRecordingStatus()| della classe \verb|Session| è possibile verificare lo stato della registrazione, tramite il valore di tipo \verb|RecordingStatus| restituito.
+
+
+	\section{Playback}
+	Il playback di una sessione precedentemente registrata è possibile tramite il metodo \verb|setPlaybackDatasetUri()| della classe \verb|Session|. La riproduzione inizia con la chiamata al metodo \verb|session.resume()| e può essere messa in pausa tramite il metodo \verb|session.pause()|. Il listing~\vref{lst:playback} mostra la riproduzione di una sessione.
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Creazione della sessione per il playback.}, label={lst:playback}, language=Kotlin]
+			// Configura la sessione ARCore.
+			val session = Session(context)
+			
+			// Specifica l'Uri del file da riprodurre.
+			val recordingUri = Uri.fromFile(File(context.filesDir, "recording.mp4"))
+			session.playbackDatasetUri = recordingUri
+			...
+			
+			// Inizia la riproduzione dall'inizio.
+			session.resume()
+			...
+			
+			// Metti in pausa la riproduzione del file.
+			session.pause()
+			...
+			
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}	
+	\noindent
+	Tramite il metodo \verb|setPlaybackDatasetUri(Uri mp4DatasetUri)| della classe \verb|Session| è possibile riprodurre dall'inizio il file già riprodotto, specificando lo stesso Uri, oppure iniziare il playback di un nuovo file MP4, come descritto dal listing~\vref{lst:playback2}.
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Esempi di utilizzo del playback.}, label={lst:playback2}, language=Kotlin]
+			// Riproduzione dall'inizio del file
+			session.pause()
+			// Specificando lo stesso Uri la riproduzione inizia da capo.
+			session.playbackDatasetUri = previousRecordingUri
+			// Il file viene riprodotto dall'inizio
+			session.resume() 
+			
+			// Riproduzione di un nuvo file
+			session.pause()   
+			// Specifica un nuovo dataset da utilizzare.
+			session.playbackDatasetUri = newRecordingUri
+			// Inizia il playback del nuovo file.
+			session.resume()  
+				
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}	
+	\noindent
+	Tramite il metodo \verb|getPlaybackStatus()| della classe \verb|Session| è possibile verificare lo stato della registrazione, tramite il valore di tipo \verb|PlaybackStatus| restituito.
+	
+	\section{Dati aggiuntivi}
+	Durante la registrazione di una sessione ARCore è possibile aggiungere dati aggiuntivi oltre ai dati video e dei sensori, da ricavare poi durante il playback della registrazione. Tale funzionalità può essere utile ad esempio per registrare una stanza e gli oggetti presenti in essa, e aggiungere durante il playback altri oggetti, come una lampada, senza essere presenti fisicamente nella stanza.
+	 
+	\newpage
+	\noindent
+	I dati aggiuntivi devono essere inseriti in un oggetto di tipo \verb|Track| identificato da un \verb|UUID|, che rappresenta un identificativo unico e immutabile. La traccia \verb|Track| deve poi essere inserita nella configurazione della sessione ARCore per la registrazione, come descritto dal listing~\vref{lst:UUID} tratto dalla documentazione ufficiale. Inoltre, è possibile aggiungere alla traccia dei dati di identificazione aggiuntivi, come una descrizione sul luogo e l'orario in cui la registrazione è stata fatta. Se la registrazione deve essere compatibile con altre applicazioni, essa può inoltre essere associata con un identificativo \verb|MIME| che descrive il tipo di dati registrati sulla traccia.
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Aggiunta di una traccia alla sessione ARCore.}, label={lst:UUID}, language=Kotlin]
+			// Inizializza una nuova traccia con un identificativo UUID.
+			// Tale identificativo sarà necessario per recuperare i dati aggiuntivi durante il playback.
+			val trackUUID = UUID.fromString("de5ec7a4-09ec-4c48-b2c3-a98b66e71893")
+			val track = Track(session).setId(trackUUID)
+			
+			// Viene aggiunta come descrizione il luogo in cui è stata effettuata.
+			val customTrackData: ByteArray = "airport".toByteArray()
+			track.setMetadata(ByteBuffer.wrap(customTrackData))
+			
+			// Imposta un tipo MIME per essere compatibile con altre applicazioni.
+			track.setMimeType("text/csv")
+			
+			// Aggiunge l'oggetto Track alla configurazione della sessione.
+			recordingConfig.addTrack(track)  
+			
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+
+	\noindent
+	Durante il playback, è possibile recuperare le tracce aggiuntive tramite il metodo \verb|getUpdatedTrackData()| che restituisce una \verb|Collection| di oggetti \verb|TrackData|, dai quali è possibile estrarre i dai aggiuntivi inseriti durante il recording. Si veda il listing~\vref{lst:playback_retrieve} per un esempio di utilizzo.
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\begin{lstlisting}[caption={Recupero della traccia aggiuntiva durante il playback.}, label={lst:playback_retrieve}, language=Kotlin]
+			// Recupero della collection di tracce aggiuntive.
+			val trackDataList:Collection<TrackData> = frame.getUpdatedTrackData(trackUUID)
+			
+			// Ispezione delle tracce restituite dal metodo.
+			for (trackData in trackDataList) {
+				// Dati della traccia
+				val bytes = trackData.data
+			}
+				
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+
+
+
 
 
 \end{document}

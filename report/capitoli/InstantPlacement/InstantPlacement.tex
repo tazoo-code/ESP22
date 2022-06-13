@@ -8,7 +8,7 @@
 
 \begin{document}
 	\chapter{Instant Placement}
-	L'API di posizionamento istantaneo consente di posizionare gli oggetti nell’ambiente prima ancora che venga spostato il dispositivo e che vengano individuati i piani. \\
+	L'API di posizionamento istantaneo consente di posizionare gli oggetti nell’ambiente prima ancora che venga spostato il dispositivo e che vengano individuati i piani \cite{google2022instant}. \\
 	\noindent
 	Dopo che l’utente ha posizionato l’oggetto, la sua posizione viene perfezionata in tempo reale mentre l’utente si muove nell’ambiente.
 	\\
@@ -18,16 +18,16 @@
 		\centering
 		\copyrightbox[b]{\includegraphics[width=0.6\textwidth]{./resources/images/InstantPlacement/InstantPlacementImg.jpg} }%
 		{Fonte: \url{https://developers.google.com}}
-		\caption{dfgdf}
-		\label{fig:light_effects}
+		\caption{Instant Placement}
+		\label{fig:instant}
 	\end{figure}
 	\\
 	\noindent
-	Per abilitare l’instant placement bisogna creare una sessione configurata per supportare l’instant placement, come descritto dal listing~\vref{lst:ip_session}
+	Per abilitare l’Instant Placement bisogna creare una sessione configurata per supportare tale funzionalità, come descritto dal listing~\vref{lst:ip_session} tratto dalla documentazione ufficiale \cite{google2022instant2}.
 		
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
-			\begin{lstlisting}[caption={Descrizione del listing.}, label={lst:ip_session}, language=Kotlin]
+			\begin{lstlisting}[caption={Creazione della sessione ARCore con Instant Placement abilitato.}, label={lst:ip_session}, language=Kotlin]
 			fun createSession() {
 				
 			val session = Session(applicationContext);

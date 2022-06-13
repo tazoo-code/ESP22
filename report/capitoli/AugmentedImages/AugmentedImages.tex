@@ -32,24 +32,23 @@
 	Se l’immagine si muove fuori dall’inquadratura ARCore continua a stimare la sua posizione assumendo che l’immagine sia statica e non si muova nell’ambiente (\verb|LAST_KNOWN_POSE|).
 
 	\newpage
-	\section{Requisiti}
-	L’immagine deve:
+	\noindent
+	L’immagine deve rispettare i seguenti requisiti:
 	\begin{itemize}
 		\item Essere visibile almeno al 25\% nell'inquadratura
 		\item Essere piatta e non accartocciata
 		\item Essere libera da ogni oggetto tra la fotocamera e l'immagine. Non deve essere oscurata, vista troppo angolata oppure vista quando la fotocamera si muove troppo velocemente
 	\end{itemize}
-
 	
-	\section{Utilizzo della CPU e considerazioni sulle performance}
-	
+	\noindent
 	In base alle funzionalità di ARCore abilitate, la batteria potrebbe scaricarsi più velocemente e può aumentare l’utilizzo della CPU. E’ consigliato disabilitare le funzionalità non utilizzate per preservare la batteria e rendere più leggero il carico della CPU.
 	
 	\section{Creazione del database}
-	Esistono due metodi per creare un database di immagini che verranno successivamente usate da ARCore.\\
+	Esistono due metodi per creare un database di immagini che verranno successivamente usate da ARCore.
+	\\
 	
 	\noindent
-	Il primo metodo è importare un database creato in precedenza con il tool \textit{Arcoreimg} descritto nel paragrafo~\vref{sec:arcoreimg}.
+	Il primo metodo consiste nell'importare un database creato in precedenza con il tool \textit{arcoreimg} descritto nel paragrafo~\vref{sec:arcoreimg}.
 	Per importarlo si procede come descritto dal listing~\vref{lst:ai_dbimport}, tratto dalla guida ufficiale.
 	
 	\begin{center}
@@ -64,14 +63,14 @@
 	\end{center}
 	
 	\noindent
-	Il secondo metodo consiste nel crearlo a runtime partendo con delle immagini contenuti nella cartella assets dell’applicazione, come descritto dal listing~\vref{lst:ai_dbruntime}.
-	
+	Il secondo metodo consiste nel creare un database a runtime partendo con delle immagini contenuti nella cartella \verb|assets| dell’applicazione, come descritto dal listing~\vref{lst:ai_dbruntime}.
+	\\
 	\begin{center}
 		\begin{minipage}{0.95\textwidth}
 			\begin{lstlisting}[caption={Creazione del database.}, label={lst:ai_dbruntime}, language=Kotlin]
 			val imageDatabase = AugmentedImageDatabase(session)
 			
-			val bitmap = assets.open("dog.jpg").use {  BitmapFactory.decodeStream(it) }
+			val bitmap = assets.open("dog.jpg").use { BitmapFactory.decodeStream(it) }
 			
 			// Se la dimensione fisica dell'immagine è sconosciuta usa il metodo 
 			// addImage(String, Bitmap), che diminuisce il tempo di rilevamento dell'immagine.
