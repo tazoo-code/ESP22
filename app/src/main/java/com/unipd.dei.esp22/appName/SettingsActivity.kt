@@ -1,20 +1,14 @@
 package com.unipd.dei.esp22.appName
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import java.util.*
-import kotlin.system.exitProcess
 
 
 // Activity per le impostazioni
