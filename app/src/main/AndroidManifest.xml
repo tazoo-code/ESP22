@@ -38,17 +38,20 @@
 
         <activity
             android:name="com.unipd.dei.esp22.ar3DViewer.PlaneDetectionActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="uiMode|locale|layoutDirection" >
         </activity>
 
         <activity
             android:name="com.unipd.dei.esp22.ar3DViewer.AugmentedImagesActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:configChanges="uiMode|locale|layoutDirection" >
         </activity>
 
         <activity
             android:name="com.unipd.dei.esp22.ar3DViewer.ImagesGalleryActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:configChanges="uiMode|locale|layoutDirection" >
         </activity>
 
         <!-- Definizione del File Provider del Manifest che specifica l'autorizzazione

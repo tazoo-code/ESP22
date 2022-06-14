@@ -1,5 +1,6 @@
 package com.unipd.dei.esp22.ar3DViewer
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -12,6 +13,8 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 // Classe che gestisce la Galleria di immagini per la condivisione
 class ImagesGalleryActivity : AppCompatActivity() {
@@ -23,10 +26,10 @@ class ImagesGalleryActivity : AppCompatActivity() {
     private lateinit var modelPlanets: Array<ModelPlanet>
 
     // Lista dei nomi delle immagini selezionate
-    private lateinit var namesImg: MutableList<String>
+    private var namesImg: MutableList<String> = mutableListOf()
 
     // Lista delle imageview selezionate
-    private lateinit var imgs: MutableList<ImageView>
+    private var imgs: MutableList<ImageView> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,6 +151,18 @@ class ImagesGalleryActivity : AppCompatActivity() {
             Toast.makeText(this, "" + e.message, Toast.LENGTH_LONG).show()
         }
         return uri
+    }
+
+    // Prima della creazione dell'activity viene scelta la lingua
+    // in base alle impostazioni scelte
+    override fun attachBaseContext(newBase: Context) {
+        // Metodo per la scelta della lingua, passando il contesto attuale
+        val lang = LocaleHelper.chooseLanguage(newBase)
+        // Imposta la lingua al contesto
+        newBase.resources.configuration.setLocale(Locale(lang))
+        applyOverrideConfiguration(newBase.resources.configuration)
+
+        super.attachBaseContext(newBase)
     }
 }
 

@@ -3,6 +3,7 @@ package com.unipd.dei.esp22.ar3DViewer
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -317,6 +318,12 @@ class PlaneDetectionActivity : AppCompatActivity() {
         applyOverrideConfiguration(newBase.resources.configuration)
 
         super.attachBaseContext(newBase)
+    }
+
+    // In caso di configurazioni cambiate viene aggiornata l'activity
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        recreate()
     }
 
     //Crea il modello 3d che sarà renderizzato nello spazio 3D

@@ -4,6 +4,7 @@ package com.unipd.dei.esp22.ar3DViewer
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -277,5 +278,11 @@ class AugmentedImagesActivity: AppCompatActivity() {
         applyOverrideConfiguration(newBase.resources.configuration)
 
         super.attachBaseContext(newBase)
+    }
+
+    // In caso di configurazioni cambiate viene aggiornata l'activity
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        recreate()
     }
 }
