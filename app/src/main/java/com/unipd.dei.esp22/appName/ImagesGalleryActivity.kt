@@ -119,9 +119,8 @@ class ImagesGalleryActivity : AppCompatActivity() {
 
     private fun getImageToShare(bitmap: Bitmap, name:String): Uri? {
 
-        /* Creo un file nella sottodirectory file/images (definita nel file xml paths)
-           con filesDir viene indicato il percorso assoluto nel filesystem dell'applicazione
-           in cui è presente la sottodirectory images*/
+        /* Creo un file che si riferisce alla sottodirectory images all'interno di files/.
+           Con filesDir viene indicato il percorso assoluto nel filesystem dell'applicazione*/
         val imgfolder = File(filesDir, "images")
 
         var uri: Uri? = null

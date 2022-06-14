@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
+    //Serve per tenere traccia delle view selezionate
     private val elements : MutableList<View> = arrayListOf()
 
+    //Serve per impostare
     private val isSelected : MutableList<Boolean> = arrayListOf()
 
     private val cyan : Int
@@ -54,9 +56,13 @@ class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
 
         holder.bind(list[position].getText() as String)
 
+        /*Ogni volta che viene scelto un animale, vengono impostati i background
+          trasparenti per tutti gli animali che erano stati selezionati in precedenza.
+         */
         holder.itemImageView.setOnClickListener {
 
             Log.i("Slider",position.toString())
+
                 //disattivare gli altri
                 for(e in elements){
                     e.setBackgroundColor(Color.TRANSPARENT)
@@ -92,7 +98,6 @@ class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
             }
 
             itemImageView.setImageResource(id)
-
         }
     }
 }
