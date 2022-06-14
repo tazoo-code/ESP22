@@ -1,4 +1,4 @@
-package com.unipd.dei.esp22.appName
+package com.unipd.dei.esp22.ar3DViewer
 
 import android.content.Context
 import android.content.res.Configuration

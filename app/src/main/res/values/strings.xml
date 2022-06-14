@@ -1,6 +1,6 @@
 <resources>
     <!-- app name -->
-    <string name="app_name" translatable="false">AR 3DModels Viewer </string>
+    <string name="app_name" translatable="false">AR3DViewer</string>
 
     <!-- imageview descriptions -->
     <string name="settings_button_icon">Settings</string>

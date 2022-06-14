@@ -8,7 +8,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId 'com.unipd.dei.esp22.appName'
+        applicationId 'com.unipd.dei.esp22.ar3DViewer'
         minSdkVersion 24
         targetSdk 31
         versionCode 1
