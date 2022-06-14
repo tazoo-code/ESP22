@@ -13,17 +13,19 @@ import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
 
-//Classe che gestisce la Galleria di immagini per la condivisione
+// Classe che gestisce la Galleria di immagini per la condivisione
 class ImagesGalleryActivity : AppCompatActivity() {
 
-    //Array di stringhe che contiene i nomi delle immagini dei pianeti
+    // Array di stringhe che contiene i nomi delle immagini dei pianeti
     private lateinit var planets : Array<String>
 
-    //Array che contiene oggetti ModelPlanet che verrà passato come parametro ad ImagesGalleryAdapter
+    // Array che contiene oggetti ModelPlanet che verrà passato come parametro ad ImagesGalleryAdapter
     private lateinit var modelPlanets: Array<ModelPlanet>
 
+    // Lista dei nomi delle immagini selezionate
     private lateinit var namesImg: MutableList<String>
 
+    // Lista delle imageview selezionate
     private lateinit var imgs: MutableList<ImageView>
 
     override fun onCreate(savedInstanceState: Bundle?) {

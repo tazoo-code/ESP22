@@ -9,19 +9,21 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
+class SliderAdapter(private val list: Array<String>, context: Context) :
     RecyclerView.Adapter<SliderAdapter.ItemViewHolder>() {
 
     //Serve per tenere traccia delle view selezionate
     private val elements : MutableList<View> = arrayListOf()
 
-    //Serve per impostare
+    //Serve per identificare l'immagine selezionata
     private val isSelected : MutableList<Boolean> = arrayListOf()
 
+    //Colore per l'immagine selezionata
     private val cyan : Int
 
     init {
         val typedValue = TypedValue()
+        // Prende il colore colorSecondary dal tema
         context.theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
         cyan = typedValue.data
     }
@@ -54,7 +56,7 @@ class SliderAdapter(private val list: Array<ModelAnimal>, context: Context) :
             Log.d("Slider", "$position Trasparente")
         }
 
-        holder.bind(list[position].getText() as String)
+        holder.bind(list[position])
 
         /*Ogni volta che viene scelto un animale, vengono impostati i background
           trasparenti per tutti gli animali che erano stati selezionati in precedenza.

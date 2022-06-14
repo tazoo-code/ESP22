@@ -26,7 +26,7 @@
     <string name="slider_item">Elemento dello slider</string>
     <string name="info_main">In questa applicazione sono presenti due modalità\:\n
         \t\- Plane Detection\: ARCore rileva dei piani nell\'ambiente circostante, sui quali è possibile posizionare degli animali virtuali.\n
-        \t\- Augmented Image\: ARCore rileva delle immagini dei pianeti del sistema solare e crea i modelli 3D corrispondenti in realtà aumentata.\n
+        \t\- Augmented Images\: ARCore rileva delle immagini dei pianeti del sistema solare e crea i modelli 3D corrispondenti in realtà aumentata.\n
         \n
         All\'interno delle modalità sono presenti informazioni aggiuntive su come utilizzare ciascuna di esse.</string>
     <string name="share_button_icon">Condividi</string>
